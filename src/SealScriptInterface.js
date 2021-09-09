@@ -1,4 +1,4 @@
-export class SealScriptInterface {
+exports.SealScriptInterface = class {
   constructor(scriptDirectory, inputDirectory) {
     console.log(scriptDirectory);
     console.log(inputDirectory);

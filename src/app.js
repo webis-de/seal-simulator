@@ -14,6 +14,8 @@ const options = program.opts();
 const resolve = require('path').resolve;
 
 // Source SEAL script
-const SealScript = require(resolve(options.scriptDirectory + "/SealScript")).SealScript;
+// const SealScript = require(resolve(options.scriptDirectory + "/SealScript")).SealScript;
+const SealScriptClass = require("./SealScriptInterface").SealScriptInterface;
+console.log(SealScriptClass);
 
 
