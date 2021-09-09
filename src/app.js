@@ -4,7 +4,7 @@ program
   .requiredOption('-s, --script-directory <directory>', 'TODO description')
   .requiredOption('-i, --input-directory <directory>', 'TODO description')
   .requiredOption('-o, --output-directory <directory>', 'TODO description')
-  .option('-p, --port <directory>', 'TODO description');
+  .option('-p, --proxy <address>', 'TODO description');
 program.parse(process.argv);
 const options = program.opts();
 
