@@ -14,7 +14,6 @@ const options = program.opts();
 const resolve = require('path').resolve;
 
 // Source SEAL script
-const scriptModule = require(resolve(options.scriptDirectory));
+const SealScript = require(resolve(options.scriptDirectory + "/SealScript")).SealScript;
 
-scriptModule.foo();
 
