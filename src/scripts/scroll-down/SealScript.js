@@ -1,6 +1,6 @@
-const SealScriptInterface = require("./SealScriptInterface").SealScriptInterface;
+const SealScriptInterface = require("../../SealScriptInterface").SealScriptInterface;
 
-export class SealScript extends SealScriptInterface {
+exports.SealScript = class extends SealScriptInterface {
   constructor(scriptDirectory, inputDirectory) {
     super(scriptDirectory, inputDirectory);
     console.log("extended");
