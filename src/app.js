@@ -1,3 +1,6 @@
+require.cache = {};
+
+// Command line interface
 const { program } = require('commander');
 program.version('0.1.0');
 program
@@ -8,9 +11,10 @@ program
 program.parse(process.argv);
 const options = program.opts();
 
-if (options.scriptDirectory) {
-  console.log(`- ${options.scriptDirectory}`);
-}
+const resolve = require('path').resolve;
 
-console.log(`Hello World`);
+// Source SEAL script
+const scriptModule = require(resolve(options.scriptDirectory));
+
+scriptModule.foo();
 
