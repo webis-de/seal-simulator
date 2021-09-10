@@ -10,7 +10,7 @@ const seal = require('./seal');
 program.version('0.1.0');
 program
   .requiredOption('-s, --script-directory <directory>', 'TODO description')
-  .requiredOption('-i, --input-directory <directory>', 'TODO description')
+  .option('-i, --input-directory <directory>', 'TODO description', null)
   .requiredOption('-o, --output-directory <directory>', 'TODO description')
   .option('-p, --proxy <address>', 'TODO description');
 
