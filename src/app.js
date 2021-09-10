@@ -1,11 +1,12 @@
-const Seal = require('./seal');
+const path = require('path');
+const program = require('commander');
+const seal = require('./seal');
 
 ////////////////////////////////////////////////////////////////////////////////
 // Command line interface
 ////////////////////////////////////////////////////////////////////////////////
 
 // Declare
-const { program } = require('commander');
 program.version('0.1.0');
 program
   .requiredOption('-s, --script-directory <directory>', 'TODO description')
@@ -18,9 +19,9 @@ program.parse(process.argv);
 const options = program.opts();
 
 // Validate
-const resolve = require('path').resolve;
-const scriptDirectory = resolve(options.scriptDirectory);
-const scriptFile = scriptDirectory + "/SealScript";
+const scriptDirectory = path.resolve(options.scriptDirectory);
+const scriptModule = path.join(scriptDirectory, "SealScript");
+const scriptFile = scriptModule + ".js";
 const inputDirectory = options.inputDirectory;
 const outputDirectory = options.outputDirectory;
 
@@ -28,21 +29,21 @@ const outputDirectory = options.outputDirectory;
 ////////////////////////////////////////////////////////////////////////////////
 // Source SEAL script
 ////////////////////////////////////////////////////////////////////////////////
-Seal.log("script-source", {scriptFile: scriptFile + ".js"});
-const SealScript = require(scriptFile).SealScript;
+seal.log("script-source", {scriptFile: scriptFile});
+const SealScript = require(scriptModule).SealScript;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiate SEAL script
 ////////////////////////////////////////////////////////////////////////////////
-Seal.log("script-instantiate", {scriptDirectory: scriptDirectory, inputDirectory: inputDirectory});
+seal.log("script-instantiate", {scriptDirectory: scriptDirectory, inputDirectory: inputDirectory});
 const script = new SealScript(scriptDirectory, inputDirectory);
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Create browser context options
 ////////////////////////////////////////////////////////////////////////////////
-Seal.log("browser-context-options-get");
+seal.log("browser-context-options-get");
 const browserContextOptions = script.getBrowserContextOptions();
 // TODO: add own stuff
 
@@ -50,22 +51,22 @@ const browserContextOptions = script.getBrowserContextOptions();
 ////////////////////////////////////////////////////////////////////////////////
 // Instantiate browser context
 ////////////////////////////////////////////////////////////////////////////////
-Seal.log("browser-context-instantiate", {browserContextOptions: browserContextOptions});
+seal.log("browser-context-instantiate", {browserContextOptions: browserContextOptions});
 const browserContext = null; // TODO with state (from inputDirectory), proxy, tracing, ...
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Run SEAL script
 ////////////////////////////////////////////////////////////////////////////////
-Seal.log("script-run", {outputDirectory, outputDirectory});
+seal.log("script-run", {outputDirectory, outputDirectory});
 const simulationComplete = script.run(browserContext, outputDirectory);
-Seal.log("script-run-finished", {simulationComplete: simulationComplete});
+seal.log("script-run-finished", {simulationComplete: simulationComplete});
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Save
 ////////////////////////////////////////////////////////////////////////////////
-Seal.log("save", {outputDirectory, outputDirectory});
+seal.log("save", {outputDirectory, outputDirectory});
 // TODO: on browser context
 
 
