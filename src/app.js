@@ -1,6 +1,8 @@
 const path = require('path');
 const program = require('commander');
+
 const seal = require('./seal');
+const BrowserContexts = require('./BrowserContexts').BrowserContexts;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Command line interface
