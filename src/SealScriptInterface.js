@@ -15,11 +15,11 @@ exports.SealScriptInterface = class {
   }
 
   getBrowserContextOptions() {
-    return null; // TODO: some sensible defaults
+    return {}; // TODO: read json file from script and input directories if they exist
   }
 
   run(browserContext, outputDirectory) {
-    return false; // TODO: throw
+    throw new Error("Run method not implemented");
   }
 };
 
