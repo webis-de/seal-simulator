@@ -1,4 +1,4 @@
-const Seal = require('../../seal');
+const seal = require('../../seal');
 const SealScriptInterface = require("../../SealScriptInterface").SealScriptInterface;
 
 exports.SealScript = class extends SealScriptInterface {
