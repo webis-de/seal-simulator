@@ -14,9 +14,10 @@ const readBrowserContextOptions = function(directory) {
   }
 }
 
-exports.SealScriptInterface = class {
+exports.AbstractSealScript = class {
   #scriptDirectory;
   #inputDirectory;
+  contextOptions;
   constructor(scriptDirectory, inputDirectory = null) {
     this.#scriptDirectory = scriptDirectory;
     this.#inputDirectory = inputDirectory;
@@ -37,6 +38,12 @@ exports.SealScriptInterface = class {
       Object.assign(browserContextOptions, readBrowserContextOptions(this.getInputDirectory()));
     }
     return browserContextOptions;
+  }
+
+  getNewContext(contextOptions){
+    this.contextOptions = contextOptions
+    // TODO : Hier müssen wir noch mal reden... Ich würde am liebsten, wenn ich einen neuen Context brauch einfach einen anfordern und da die contextOptions mit schicken.
+    return newContext
   }
 
   run(browserContext, outputDirectory) {

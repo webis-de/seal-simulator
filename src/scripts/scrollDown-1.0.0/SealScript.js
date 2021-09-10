@@ -1,7 +1,6 @@
-const seal = require('../../seal');
-const SealScriptInterface = require("../../SealScriptInterface").SealScriptInterface;
+const {AbstractSealScript} = require("../../AbstractSealScript");
 
-exports.SealScript = class extends SealScriptInterface {
+exports.SealScript = class extends AbstractSealScript {
   constructor(scriptDirectory, inputDirectory) {
     super(scriptDirectory, inputDirectory);
   }
