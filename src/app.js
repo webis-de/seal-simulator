@@ -16,6 +16,6 @@ const resolve = require('path').resolve;
 // Source SEAL script
 const SealScript = require(resolve(options.scriptDirectory + "/SealScript")).SealScript;
 const script = new SealScript(options.scriptDirectory, options.inputDirectory);
-script.foo();
+script.run("eyo");
 
 
