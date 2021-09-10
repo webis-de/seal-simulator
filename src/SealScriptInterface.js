@@ -1,11 +1,25 @@
 exports.SealScriptInterface = class {
+  #scriptDirectory;
+  #inputDirectory;
   constructor(scriptDirectory, inputDirectory) {
-    console.log(scriptDirectory);
-    console.log(inputDirectory);
+    this.#scriptDirectory = scriptDirectory;
+    this.#inputDirectory = inputDirectory;
   }
 
-  foo() {
-    console.log("foo");
+  getScriptDirectory() {
+    return this.#scriptDirectory;
+  }
+
+  getInputDirectory() {
+    return this.#inputDirectory;
+  }
+
+  getBrowserContextOptions() {
+    return null; // TODO: some sensible defaults
+  }
+
+  run(browserContext, outputDirectory) {
+    return false; // TODO: throw
   }
 };
 
