@@ -61,6 +61,10 @@ exports.BrowserContexts = class {
     return this.#scriptDirectory;
   }
 
+  getBrowserContextNames() {
+    return null; // TODO
+  }
+
   getOptions(browserContextName = defaultBrowserContextName, ignoreForcedOptions = false) {
     return null; // TODO
   }
