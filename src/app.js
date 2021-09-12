@@ -2,7 +2,7 @@ const path = require('path');
 const program = require('commander');
 
 const seal = require('./seal');
-const BrowserContexts = require('./BrowserContexts').BrowserContexts;
+const { BrowserContexts } = require('./BrowserContexts');
 
 ////////////////////////////////////////////////////////////////////////////////
 // Command line interface
@@ -45,23 +45,18 @@ const script = new SealScript(scriptDirectory, inputDirectory);
 ////////////////////////////////////////////////////////////////////////////////
 // Create browser context options
 ////////////////////////////////////////////////////////////////////////////////
-seal.log("browser-context-options-get");
-const browserContextOptions = script.getBrowserContextOptions();
-// TODO : add own stuff
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Instantiate browser context
-////////////////////////////////////////////////////////////////////////////////
-seal.log("browser-context-instantiate", {browserContextOptions: browserContextOptions});
-const browserContext = null; // TODO with state (from inputDirectory), proxy, tracing, ...
+seal.log("browser-contexts-instantiate");
+const forcedBrowserContextOptions = {};
+const browserContexts = new BrowserContexts(
+  scriptDirectory, inputDirectory, outputDirectory,
+  forcedBrowserContextOptions);
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Run SEAL script
 ////////////////////////////////////////////////////////////////////////////////
 seal.log("script-run", {outputDirectory, outputDirectory});
-const simulationComplete = script.run(browserContext, outputDirectory);
+const simulationComplete = script.run(browserContexts, outputDirectory);
 seal.log("script-run-finished", {simulationComplete: simulationComplete});
 
 
