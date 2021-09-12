@@ -3,6 +3,17 @@ const path = require('path');
 const playwright = require('playwright');
 const seal = require('./seal');
 
+// TODO: this is getting too complicated.
+//   - Rather go back to a getBrowserContextOptions, with some option to return several?
+//     - A map from name to options?
+//     - An array of objects with name, browser, and options? (or just an object if it is just one)
+//
+// Directory structure:
+//   browserContexts/
+//     <name>.json
+//       { browser: "", options: {} }
+//     <name>/
+
 // TODO: move constants to seal
 
 /**
