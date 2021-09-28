@@ -20,7 +20,7 @@ class SealScript extends AbstractSealScript {
          */
         const intervalObj = setInterval(() => {
             // main()
-            console.log("runTooToo");
+            console.log("runrunrun");
         }, 1000); // 1min = 600000ms
     }
 }
