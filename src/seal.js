@@ -1,7 +1,6 @@
 exports.log = function(name, attributes = {}) {
-  const record = Object.assign({}, attributes);
+  const record = Object.assign({timestamp: true, event: true}, attributes);
   record.timestamp = new Date().toISOString();
   record.event = name;
-  const keyOrder = ["timestamp", "event"].concat(Object.keys(attributes));
-  console.log(JSON.stringify(record, keyOrder));
+  console.log(JSON.stringify(record));
 }

@@ -1,6 +1,8 @@
 const path = require('path');
 const program = require('commander');
+
 const seal = require('./seal');
+const { BrowserContexts } = require('./BrowserContexts');
 
 ////////////////////////////////////////////////////////////////////////////////
 // Command line interface
@@ -10,7 +12,7 @@ const seal = require('./seal');
 program.version('0.1.0');
 program
   .requiredOption('-s, --script-directory <directory>', 'TODO description')
-  .requiredOption('-i, --input-directory <directory>', 'TODO description')
+  .option('-i, --input-directory <directory>', 'TODO description', null)
   .requiredOption('-o, --output-directory <directory>', 'TODO description')
   .option('-p, --proxy <address>', 'TODO description');
 
@@ -43,23 +45,18 @@ const script = new SealScript(scriptDirectory, inputDirectory);
 ////////////////////////////////////////////////////////////////////////////////
 // Create browser context options
 ////////////////////////////////////////////////////////////////////////////////
-seal.log("browser-context-options-get");
-const browserContextOptions = script.getBrowserContextOptions();
-// TODO: add own stuff
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Instantiate browser context
-////////////////////////////////////////////////////////////////////////////////
-seal.log("browser-context-instantiate", {browserContextOptions: browserContextOptions});
-const browserContext = null; // TODO with state (from inputDirectory), proxy, tracing, ...
+seal.log("browser-contexts-instantiate");
+const forcedBrowserContextOptions = {};
+const browserContexts = new BrowserContexts(
+  scriptDirectory, inputDirectory, outputDirectory,
+  forcedBrowserContextOptions);
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Run SEAL script
 ////////////////////////////////////////////////////////////////////////////////
 seal.log("script-run", {outputDirectory, outputDirectory});
-const simulationComplete = script.run(browserContext, outputDirectory);
+const simulationComplete = script.run(browserContexts, outputDirectory);
 seal.log("script-run-finished", {simulationComplete: simulationComplete});
 
 

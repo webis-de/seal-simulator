@@ -1,7 +1,11 @@
+const seal = require('./seal');
+
 exports.AbstractSealScript = class {
+
   #scriptDirectory;
   #inputDirectory;
-  constructor(scriptDirectory, inputDirectory) {
+
+  constructor(scriptDirectory, inputDirectory = null) {
     this.#scriptDirectory = scriptDirectory;
     this.#inputDirectory = inputDirectory;
   }
@@ -14,11 +18,7 @@ exports.AbstractSealScript = class {
     return this.#inputDirectory;
   }
 
-  getBrowserContextOptions() {
-    return {}; // TODO: read json file from script and input directories if they exist
-  }
-
-  run(browserContext, outputDirectory) {
+  run(browserContexts, outputDirectory) {
     throw new Error("Run method not implemented");
   }
 };
