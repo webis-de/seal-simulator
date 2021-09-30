@@ -1,4 +1,4 @@
-import {Browser, chromium, devices} from "playwright";
+import {Browser, BrowserContext, chromium, devices} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Usermodel} from "./datamodels/Usermodel";
 import {readUsermodels, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
@@ -20,19 +20,19 @@ export class SealScript extends AbstractSealScript{
     }
 
 
-    run(){
+    run(browserContext: any, outputDirectory: String) {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
         // main()
-
+        let context = browserContext.get()
+        runTestWiki(context)
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
-        const intervalObj = setInterval(() => {
-            // main()
-            console.log("runrunrun")
-        }, 1000); // 1min = 600000ms
+        const intervalObj = setInterval(async () => {
+            await runTestWiki(context)
+        }, 600000); // 1min = 600000ms
     }
 
 }
@@ -61,10 +61,9 @@ async function main(): Promise<void> {
  * Tests the Wikipedia page Simulation
  * @param browser Instance of the Playwright browser
  */
-async function runTestWiki(browser : Browser) {
+async function runTestWiki(context : BrowserContext) {
 
     // Go to https://www.wikipedia.org/
-    const context = await browser.newContext();
 
     // Start tracing before creating / navigating a page.
     await context.tracing.start(

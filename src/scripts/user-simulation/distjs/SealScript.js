@@ -10,18 +10,19 @@ class SealScript extends AbstractSealScript {
         super(scriptDirectory, inputDirectory);
         console.log("extended");
     }
-    run() {
+    run(browserContext, outputDirectory) {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
         // main()
+        let context = browserContext.get();
+        runTestWiki(context);
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
-        const intervalObj = setInterval(() => {
-            // main()
-            console.log("runrunrun");
-        }, 1000); // 1min = 600000ms
+        const intervalObj = setInterval(async () => {
+            await runTestWiki(context);
+        }, 600000); // 1min = 600000ms
     }
 }
 exports.SealScript = SealScript;
@@ -41,9 +42,8 @@ async function main() {
  * Tests the Wikipedia page Simulation
  * @param browser Instance of the Playwright browser
  */
-async function runTestWiki(browser) {
+async function runTestWiki(context) {
     // Go to https://www.wikipedia.org/
-    const context = await browser.newContext();
     // Start tracing before creating / navigating a page.
     await context.tracing.start({
         screenshots: true,

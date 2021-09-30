@@ -55,7 +55,6 @@ export class SessionManagement {
 
         this.context = await this.browser.newContext(contextOptions)
 
-        // TODO ADBlocker
        /* PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
             blocker.enableBlockingInPage(page);
         });*/
