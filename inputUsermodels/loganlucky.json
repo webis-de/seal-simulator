@@ -1,0 +1,36 @@
+{
+  "name": "loganlucky",
+  "device" : "iPhone 6",
+  "intrests": [
+    {
+      "name": "Playwright"
+    }
+  ],
+  "influencedBy": [
+    {
+      "name": "Google"
+    }
+  ],
+  "useBuilder": false,
+  "freqentlyVisits": [
+    {
+      "url": "https://playwright.dev/dotnet/docs/trace-viewer/#recording-a-trace",
+      "id": 0,
+      "type": "OpenUrl",
+      "executionTime": "21:20",
+      "subscriptions": []
+    },{
+      "url": "https://www.markdownguide.org/basic-syntax/",
+      "id": 1,
+      "type": "OpenUrl",
+      "executionTime": "21:30",
+      "subscriptions": []
+    },{
+      "url": "https://www.google.com/search?q=All+Classes+that+needs+to+be+documented.&oq=All+Classes+that+needs+to+be+documented.&aqs=edge..69i57.816j0j4&sourceid=chrome&ie=UTF-8",
+      "id": 2,
+      "type": "OpenUrl",
+      "executionTime": "21:40",
+      "subscriptions": []
+    }
+  ]
+}

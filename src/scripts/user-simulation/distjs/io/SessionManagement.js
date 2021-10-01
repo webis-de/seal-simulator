@@ -3,19 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SessionManagement = void 0;
 const playwright_1 = require("playwright");
 const OutputConfiguration_1 = require("./OutputConfiguration");
-const TempConfiguration_1 = require("./TempConfiguration");
 const fs = require('fs');
 /**
  * This class keeps track of the current Session.
  *
  */
 class SessionManagement {
-    constructor(user, browser) {
+    constructor(user, browser, outputDirectory) {
         this.user = user;
         this.browser = browser;
         this.context = null;
-        let outputConfiguration = new OutputConfiguration_1.OutputConfiguration();
-        this.tempConfiguration = new TempConfiguration_1.TempConfiguration(user);
+        console.log(outputDirectory); // TODO just for testing
+        let outputConfiguration = new OutputConfiguration_1.OutputConfiguration(outputDirectory, user);
+        // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration;
     }
     /**
@@ -25,18 +25,16 @@ class SessionManagement {
      * 3. Start Tracing the session
      */
     async setupSession() {
-        this.outputConfiguration.user = this.user;
         //Set the device for emulation
         let usedDevice = playwright_1.devices[this.user.device];
         let contextOptions = { ...usedDevice };
         //Set the session if present
-        let sessionPath = this.tempConfiguration.getSessionStatePath();
-        if (this.tempConfiguration.sessionPathExists()) {
+        let sessionPath = this.outputConfiguration.getSessionStatePath();
+        if (this.outputConfiguration.sessionPathExists()) {
             //
             contextOptions.storageState = sessionPath;
         }
         this.context = await this.browser.newContext(contextOptions);
-        // TODO ADBlocker
         /* PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
              blocker.enableBlockingInPage(page);
          });*/
@@ -66,7 +64,7 @@ class SessionManagement {
      * @param out
      */
     async finishSession() {
-        await this.getContext().storageState({ path: this.tempConfiguration.getSessionStatePath() });
+        await this.getContext().storageState({ path: this.outputConfiguration.getSessionStatePath() });
         await this.getContext().tracing.stop({
             path: this.outputConfiguration.getNewFilelocation("trace.zip")
         });
@@ -79,11 +77,6 @@ class SessionManagement {
         else {
             return this.context;
         }
-    }
-    getSessionStatePath() {
-        // TODO get the storageState
-        // it empty create one
-        return "";
     }
 }
 exports.SessionManagement = SessionManagement;
