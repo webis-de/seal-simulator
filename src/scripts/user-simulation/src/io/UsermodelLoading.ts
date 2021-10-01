@@ -17,14 +17,14 @@ export function writeUsermodel(usermodel: Usermodel, path: string) {
     });
 }
 
-export function readUsermodels(): Usermodel[] {
+export function readUsermodels(inputDirectory: string): Usermodel[] {
 
     let usermodels: Usermodel[] = [];
 
     try {
         // Get the files as an array
         let fullPath = function genFullPath(): string {
-            return INPUTUSERMODELFOLDER
+            return inputDirectory
         }();
         const files = fs.readdirSync(fullPath);
 
@@ -65,24 +65,27 @@ function readUsermodel(path: string): Usermodel {
     return usermodel
 }
 
-async function runInteractionModules(sessionManagement : SessionManagement) {
+async function runInteractionModules(sessionManagement: SessionManagement) {
     // output.user = user
     let modules = await sessionManagement.user.modules
     for (const indexModul of modules) {
-        if(indexModul.executionTime.isNow()){
+        if (indexModul.executionTime.isNow()) {
             await indexModul.runModule(sessionManagement);
         }
     }
 }
 
-export async function runSimulations(users: Usermodel[], browser: Browser) {
-    for (let user of users) {
-        let sessionManager = new SessionManagement(user,browser)
+export async function runSimulations(users: Usermodel[], browser: Browser, outputDirectory: string) {
+    /*for (let user of users) {
+    }*/
+    let user = users[0]
 
-        await sessionManager.setupSession()
+    let sessionManager = new SessionManagement(user, browser, outputDirectory)
 
-        await runInteractionModules(sessionManager)
+    await sessionManager.setupSession()
 
-        await sessionManager.finishSession()
-    }
+    // TODO await runInteractionModules(sessionManager)
+
+    await sessionManager.finishSession()
+
 }

@@ -2,7 +2,7 @@ import {Usermodel} from "../datamodels/Usermodel";
 import {Browser, BrowserContext, BrowserContextOptions, devices} from "playwright";
 import {OutputConfiguration} from "./OutputConfiguration";
 import {OUTPUTDIRECTORY, TEMPFOLDER} from "../Constants";
-import {TempConfiguration} from "./TempConfiguration";
+// import {TempConfiguration} from "./TempConfiguration";
 import {expect} from "playwright/types/test";
 // import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
 // import fetch from 'cross-fetch';
@@ -20,16 +20,19 @@ export class SessionManagement {
     browser: Browser
     private context: BrowserContext | null
     outputConfiguration: OutputConfiguration
-    tempConfiguration: TempConfiguration
+    // tempConfiguration: TempConfiguration
 
     static sessionCounter : number
 
-    constructor(user: Usermodel, browser: Browser) {
+    constructor(user: Usermodel, browser: Browser, outputDirectory : string) {
         this.user = user
         this.browser = browser
         this.context = null
-        let outputConfiguration = new OutputConfiguration()
-        this.tempConfiguration = new TempConfiguration(user)
+
+        console.log(outputDirectory) // TODO just for testing
+
+        let outputConfiguration = new OutputConfiguration(outputDirectory,user)
+        // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration
     }
 
@@ -40,15 +43,14 @@ export class SessionManagement {
      * 3. Start Tracing the session
      */
     async setupSession() {
-        this.outputConfiguration.user = this.user
 
         //Set the device for emulation
         let usedDevice = devices[this.user.device]
         let contextOptions : BrowserContextOptions = {...usedDevice}
 
         //Set the session if present
-        let sessionPath = this.tempConfiguration.getSessionStatePath()
-        if(this.tempConfiguration.sessionPathExists()){
+        let sessionPath = this.outputConfiguration.getSessionStatePath()
+        if(this.outputConfiguration.sessionPathExists()){
             //
             contextOptions.storageState = sessionPath
         }
@@ -90,7 +92,7 @@ export class SessionManagement {
      */
     async finishSession() {
 
-        await this.getContext().storageState({path: this.tempConfiguration.getSessionStatePath()})
+        await this.getContext().storageState({path: this.outputConfiguration.getSessionStatePath()})
         await this.getContext().tracing.stop(
             {
                 path: this.outputConfiguration.getNewFilelocation("trace.zip")
@@ -105,13 +107,4 @@ export class SessionManagement {
             return this.context
         }
     }
-
-    getSessionStatePath(): string {
-        // TODO get the storageState
-        // it empty create one
-
-        return ""
-    }
-
-
 }

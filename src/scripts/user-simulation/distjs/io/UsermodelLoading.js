@@ -14,12 +14,12 @@ function writeUsermodel(usermodel, path) {
     });
 }
 exports.writeUsermodel = writeUsermodel;
-function readUsermodels() {
+function readUsermodels(inputDirectory) {
     let usermodels = [];
     try {
         // Get the files as an array
         let fullPath = function genFullPath() {
-            return Constants_1.INPUTUSERMODELFOLDER;
+            return inputDirectory;
         }();
         const files = fs.readdirSync(fullPath);
         // Loop files
@@ -64,12 +64,13 @@ async function runInteractionModules(sessionManagement) {
         }
     }
 }
-async function runSimulations(users, browser) {
-    for (let user of users) {
-        let sessionManager = new SessionManagement_1.SessionManagement(user, browser);
-        await sessionManager.setupSession();
-        await runInteractionModules(sessionManager);
-        await sessionManager.finishSession();
-    }
+async function runSimulations(users, browser, outputDirectory) {
+    /*for (let user of users) {
+    }*/
+    let user = users[0];
+    let sessionManager = new SessionManagement_1.SessionManagement(user, browser, outputDirectory);
+    await sessionManager.setupSession();
+    // TODO await runInteractionModules(sessionManager)
+    await sessionManager.finishSession();
 }
 exports.runSimulations = runSimulations;

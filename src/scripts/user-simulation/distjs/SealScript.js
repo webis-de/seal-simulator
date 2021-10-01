@@ -14,30 +14,48 @@ class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        // main()
-        let context = browserContext.get();
-        runTestWiki(context);
+        this.main(browserContext, outputDirectory);
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
         const intervalObj = setInterval(async () => {
-            await runTestWiki(context);
+            await this.main(browserContext, outputDirectory);
         }, 600000); // 1min = 600000ms
+    }
+    /**
+     * Tests the User Simulation
+     * @param browser Instance of the Playwright browser
+     */
+    async runTestSimulation(browser, outputDirectory) {
+        /**
+         * Load 3 users programmatically. (Works)
+         */
+        // let andrea = ANDREA
+        // let loganlucky = LOGANLUCKY
+        // let lena = LENA
+        // let usermodels = [andrea, loganlucky,lena]
+        // TODO Load users from file.
+        let usermodels = (0, UsermodelLoading_1.readUsermodels)(this.getInputDirectory());
+        console.log(usermodels);
+        // TODO Move this Function to the SessionManagement
+        /* writeUsermodel(andrea, "andrea.json")
+         writeUsermodel(loganlucky, "loganlucky.json")*/
+        await (0, UsermodelLoading_1.runSimulations)(usermodels, browser, outputDirectory);
+    }
+    /**
+     * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
+     */
+    async main(browserContext, outputDirectory) {
+        console.log("Started Simulation");
+        const browser = await playwright_1.chromium.launch({
+            headless: false
+        });
+        // let context = await browser.newContext()
+        await this.runTestSimulation(browser, outputDirectory);
+        await browser.close();
     }
 }
 exports.SealScript = SealScript;
-let userScript = new SealScript("input", "output");
-/**
- * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
- */
-async function main() {
-    console.log("Started Simulation");
-    const browser = await playwright_1.chromium.launch({
-        headless: false
-    });
-    await runTestSimulation(browser);
-    await browser.close();
-}
 /**
  * Tests the Wikipedia page Simulation
  * @param browser Instance of the Playwright browser
@@ -65,23 +83,4 @@ async function runTestWiki(context) {
     await context.tracing.stop({
         path: "trace1.zip"
     });
-}
-/**
- * Tests the User Simulation
- * @param browser Instance of the Playwright browser
- */
-async function runTestSimulation(browser) {
-    /**
-     * Load 3 users programmatically. (Works)
-     */
-    // let andrea = ANDREA
-    // let loganlucky = LOGANLUCKY
-    // let lena = LENA
-    // let usermodels = [andrea, loganlucky,lena]
-    // TODO Load users from file.
-    let usermodels = (0, UsermodelLoading_1.readUsermodels)();
-    // TODO Move this Function to the SessionManagement
-    /* writeUsermodel(andrea, "andrea.json")
-     writeUsermodel(loganlucky, "loganlucky.json")*/
-    await (0, UsermodelLoading_1.runSimulations)(usermodels, browser);
 }
