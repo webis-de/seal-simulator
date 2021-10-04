@@ -4,6 +4,8 @@ import {Influence} from "./Influence";
 import {OpenUrlModule} from "../interactionModules/general/OpenUrlModule";
 import {Time} from "./Time";
 import {ManualUrlModule} from "../interactionModules/general/ManualUrlModule";
+import {Geolocation} from "playwright";
+import {ContextOptions} from "./ContextOptions";
 
 /**
  * The format of the json files that can be Used as an input.
@@ -36,6 +38,21 @@ export interface IUsermodel {
      */
     device?: string;
     /**
+     * Sets a geolocation of the User and allows the browser to access the location of the user.
+     * @default no geolocation permission
+     */
+    geolocation? : Geolocation
+    /**
+     * Sets the locale/language of the user
+     * @Default de-DE
+     */
+    locale? : string
+    /**
+     * Sets the timezone of the User.
+     * @default Europe/Berlin
+     */
+    timezoneId? : string
+    /**
      * Represents the Routine of the User.\
      * Read the Documentation for [[IInteractionModule]] for more information.
      */
@@ -50,10 +67,10 @@ export interface IUsermodel {
 
 export class Usermodel {
     name: string
+    contextOptions : ContextOptions
     intrests: Influence[]
     influencedBy: Influence[]
     freqentlyVisits: InteractionModule[]
-    device: string
     useBuilder: boolean
 
     /**
@@ -78,18 +95,27 @@ export class Usermodel {
                     freqentlyVisits = [],
                     useBuilder = false,
                     name = "Kevin",
-                    device = 'Desktop Chrome HiDPI'
+                    device = 'Desktop Chrome HiDPI',
+                    locale = `de-DE`,
+                    timezoneId = `Europe/Berlin`,
+                    geolocation = undefined
                 }: IUsermodel) {
         this.name = name
         this.intrests = interests
         this.influencedBy = influencedBy
         this.useBuilder = useBuilder
         this.freqentlyVisits = []
-        this.device = device
+        this.contextOptions = new ContextOptions({
+            device : device,
+            locale: locale,
+            timezoneId : timezoneId,
+            geolocation:geolocation
+        })
+
         for (let im of freqentlyVisits) {
             switch (+InteractionModuleType[im.type]) {
                 case InteractionModuleType.OpenUrl: {
-                    this.freqentlyVisits.push(new OpenUrlModule(im.url))
+                    this.freqentlyVisits.push(new OpenUrlModule({url : im.url}))
                     break
                 }
                 case InteractionModuleType.ManualUrl: {
@@ -106,7 +132,7 @@ export class Usermodel {
             }
 
         }
-        console.log(this)
+        // console.log(this)
     }
 
     /**
@@ -114,5 +140,19 @@ export class Usermodel {
      */
     get modules(): InteractionModule[] {
         return this.freqentlyVisits
+    }
+
+    toJSON() : IUsermodel{
+        return {
+            name : this.name,
+            device : this.contextOptions.device,
+            locale : this.contextOptions.locale,
+            timezoneId : this.contextOptions.timezoneId,
+            geolocation : this.contextOptions.geolocation,
+            interests : this.intrests,
+            influencedBy : this.influencedBy,
+            freqentlyVisits : this.freqentlyVisits,
+            useBuilder : this.useBuilder
+        }
     }
 }

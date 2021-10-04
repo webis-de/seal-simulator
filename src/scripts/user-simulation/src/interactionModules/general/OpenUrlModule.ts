@@ -1,4 +1,4 @@
-import {InteractionModule, InteractionModuleType} from "../InteractionModule";
+import {IInteractionModule, InteractionModule, InteractionModuleType} from "../InteractionModule";
 import {BrowserContext} from "playwright";
 import {OutputConfiguration} from "../../io/OutputConfiguration";
 import {SessionManagement} from "../../io/SessionManagement";
@@ -13,10 +13,11 @@ export class OpenUrlModule extends InteractionModule{
      * This Module ignores subscriptions.
      * @param url Is the url that is opened.
      */
-    constructor(url : string) {
+    constructor({url,executionTime}:IInteractionModule) {
         super({
             id: 0,
             url: url,
+            executionTime : executionTime,
             type : InteractionModuleType.OpenUrl
         });
     }

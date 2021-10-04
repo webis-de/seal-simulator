@@ -42,11 +42,11 @@ export class OutputConfiguration {
         this.outDirectory = this.createIfNotThere(`${(this.directory)}/${this.dateFormated}`)
         this.tempDirectory = this.createIfNotThere(`${this.directory}/temp`)
 
-        this._user = user //new Usermodel({})
+        this._user = user
         this._fileCounter = 0
 
-
         this.writeUsermodel(user)
+        this.writeContextOptions(user)
     }
 
     /**
@@ -130,6 +130,17 @@ export class OutputConfiguration {
      */
     writeUsermodel(usermodel: Usermodel) {
         fs.writeFileSync(`${this.tempDirectory}/${usermodel.name}.json`, JSON.stringify(usermodel, null, 2), function (err: Error) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    }
+
+    /**
+     * Writes down the ContextOptions for a specific user. They can be read from the file or by calling user.contextOptions.build()
+     */
+    writeContextOptions(usermodel : Usermodel){
+        fs.writeFileSync(`${this.tempDirectory}/contextOptions.json`, JSON.stringify(usermodel.contextOptions.build(), null, 2), function (err: Error) {
             if (err) {
                 console.log(err);
             }

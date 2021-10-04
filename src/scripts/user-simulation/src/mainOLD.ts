@@ -12,19 +12,19 @@ import Console = Protocol.Console;
 /**
  * First execution is done manually, since the [[intervalObj]] starts after given time period.
  */
-main()
+mainOLD()
 
 /**
  * Starts the simulation after given time period. -> Repeat forever.
  */
 const intervalObj = setInterval(() => {
-    main()
+    mainOLD()
 }, 600000); // 1min = 600000ms
 
 /**
  * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
  */
-async function main(): Promise<void> {
+async function mainOLD(): Promise<void> {
 
     console.log("Started Simulation");
     const browser = await chromium.launch({
@@ -32,7 +32,7 @@ async function main(): Promise<void> {
         }
     );
 
-    await runTestSimulation(browser)
+    // await runTestSimulation(browser)
 
     await browser.close();
 }
@@ -77,7 +77,7 @@ async function runTestWiki(browser : Browser) {
  * Tests the User Simulation
  * @param browser Instance of the Playwright browser
  */
-async function  runTestSimulation(browser : Browser){
+async function  runTestSimulation(browser : Browser, inputDirectory : string){
     /**
      * Load 3 users programmatically. (Works)
      */
@@ -86,14 +86,13 @@ async function  runTestSimulation(browser : Browser){
     // let lena = LENA
     // let usermodels = [andrea, loganlucky,lena]
 
-    // TODO Load users from file.
-    let usermodels = readUsermodels()
 
-    // TODO Move this Function to the SessionManagement
+    let usermodels = readUsermodels(inputDirectory)
+
    /* writeUsermodel(andrea, "andrea.json")
     writeUsermodel(loganlucky, "loganlucky.json")*/
 
 
-    await runSimulations(usermodels,browser)
+    await runSimulations(usermodels,browser,inputDirectory)
 
 }

@@ -7,6 +7,7 @@ import {Influence} from "./datamodels/Influence";
 import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";
 import {expect} from "playwright/types/test";
 import Console = Protocol.Console;
+import {TICKPERIOD} from "./Constants";
 const {AbstractSealScript} = require("../../../AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 
@@ -30,34 +31,7 @@ export class SealScript extends AbstractSealScript{
          */
         const intervalObj = setInterval(async () => {
             await this.main(browserContext, outputDirectory)
-        }, 600000); // 1min = 600000ms
-    }
-
-
-    /**
-     * Tests the User Simulation
-     * @param browser Instance of the Playwright browser
-     */
-    async runTestSimulation(browser : Browser,outputDirectory:string){
-        /**
-         * Load 3 users programmatically. (Works)
-         */
-            // let andrea = ANDREA
-            // let loganlucky = LOGANLUCKY
-            // let lena = LENA
-            // let usermodels = [andrea, loganlucky,lena]
-
-            // TODO Load users from file.
-        let usermodels = readUsermodels(this.getInputDirectory())
-
-        console.log(usermodels)
-        // TODO Move this Function to the SessionManagement
-        /* writeUsermodel(andrea, "andrea.json")
-         writeUsermodel(loganlucky, "loganlucky.json")*/
-
-
-        await runSimulations(usermodels,browser,outputDirectory)
-
+        }, TICKPERIOD); // 10min = 600000ms
     }
 
     /**
@@ -65,17 +39,23 @@ export class SealScript extends AbstractSealScript{
      */
     async main(browserContext: any, outputDirectory: string): Promise<void> {
 
-        console.log("Started Simulation");
+        // console.log("Started Simulation");
         const browser = await chromium.launch({
                 headless: false
             }
         );
-        // let context = await browser.newContext()
 
-        await this.runTestSimulation(browser,outputDirectory)
+        /**
+         * Load multiple usermodels. All need to be located in the inputDirectory.
+         * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
+         */
+        let usermodels = readUsermodels(this.getInputDirectory())
+
+        await runSimulations(usermodels,browser,outputDirectory)
 
         await browser.close();
     }
+
 }
 
 

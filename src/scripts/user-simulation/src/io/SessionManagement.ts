@@ -29,8 +29,6 @@ export class SessionManagement {
         this.browser = browser
         this.context = null
 
-        console.log(outputDirectory) // TODO just for testing
-
         let outputConfiguration = new OutputConfiguration(outputDirectory,user)
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration
@@ -44,9 +42,9 @@ export class SessionManagement {
      */
     async setupSession() {
 
-        //Set the device for emulation
-        let usedDevice = devices[this.user.device]
-        let contextOptions : BrowserContextOptions = {...usedDevice}
+        //Set the contextOptions for emulation
+        // let usedDevice = devices[this.user.device]
+        let contextOptions : BrowserContextOptions = this.user.contextOptions.build()
 
         //Set the session if present
         let sessionPath = this.outputConfiguration.getSessionStatePath()
@@ -78,8 +76,7 @@ export class SessionManagement {
             }
         }
         SessionManagement.sessionCounter++
-        console.log(SessionManagement.sessionCounter)
-         // TODO  Accept Google Cookies:
+        // console.log(SessionManagement.sessionCounter)
 
     }
 

@@ -34,11 +34,11 @@ export interface IInteractionModule {
     /**
      * See [[InteractionModule.id]]
      */
-    id: number;
+    id?: number;
     /**
      * See [[InteractionModule.type]]
      */
-    type :InteractionModuleType;
+    type? :InteractionModuleType;
     /**
      * See [[InteractionModule.executionTime]]
      */
@@ -81,8 +81,12 @@ export abstract class InteractionModule {
      */
     protected constructor({url, id, executionTime = "1200", subscriptions=[], type }: IInteractionModule) {
         this.url = url
-        this.id = id
-        this.type = type
+        if(id == undefined){
+            throw new Error("ID cant be left empty when creating an Interaction Module")
+        }else this.id = id
+        if(type == undefined){
+            throw new Error("Type cant be left empty when creating an Interaction Module")
+        }else this.type = type
         this.executionTime = new Time(executionTime)
         this.subscriptions = subscriptions
     }

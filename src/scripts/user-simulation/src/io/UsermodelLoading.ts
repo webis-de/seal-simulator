@@ -37,13 +37,13 @@ export function readUsermodels(inputDirectory: string): Usermodel[] {
             const stat = fs.statSync(fromPath);
 
             if (stat.isFile()) {
-                console.log(`Start loading from ${fromPath}`)
+                // console.log(`Start loading from ${fromPath}`)
                 // Read the usermodel and add it to the List
                 usermodels.push(readUsermodel(fromPath))
-            } else if (stat.isDirectory())
-                console.log("'%s' is a directory.", fromPath);
+            } else if (stat.isDirectory()){}
+                // console.log("'%s' is a directory.", fromPath);
             else {
-                console.log("'%s' is not identified.", fromPath);
+                // console.log("'%s' is not identified.", fromPath);
             }
         }
 
@@ -67,7 +67,7 @@ function readUsermodel(path: string): Usermodel {
 
 async function runInteractionModules(sessionManagement: SessionManagement) {
     // output.user = user
-    let modules = await sessionManagement.user.modules
+    let modules = sessionManagement.user.modules
     for (const indexModul of modules) {
         if (indexModul.executionTime.isNow()) {
             await indexModul.runModule(sessionManagement);
@@ -84,7 +84,7 @@ export async function runSimulations(users: Usermodel[], browser: Browser, outpu
 
     await sessionManager.setupSession()
 
-    // TODO await runInteractionModules(sessionManager)
+    await runInteractionModules(sessionManager)
 
     await sessionManager.finishSession()
 
