@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SessionManagement = void 0;
-const playwright_1 = require("playwright");
 const OutputConfiguration_1 = require("./OutputConfiguration");
 const fs = require('fs');
 /**
@@ -13,7 +12,6 @@ class SessionManagement {
         this.user = user;
         this.browser = browser;
         this.context = null;
-        console.log(outputDirectory); // TODO just for testing
         let outputConfiguration = new OutputConfiguration_1.OutputConfiguration(outputDirectory, user);
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration;
@@ -25,9 +23,9 @@ class SessionManagement {
      * 3. Start Tracing the session
      */
     async setupSession() {
-        //Set the device for emulation
-        let usedDevice = playwright_1.devices[this.user.device];
-        let contextOptions = { ...usedDevice };
+        //Set the contextOptions for emulation
+        // let usedDevice = devices[this.user.device]
+        let contextOptions = this.user.contextOptions.build();
         //Set the session if present
         let sessionPath = this.outputConfiguration.getSessionStatePath();
         if (this.outputConfiguration.sessionPathExists()) {
@@ -53,8 +51,7 @@ class SessionManagement {
             }
         }
         SessionManagement.sessionCounter++;
-        console.log(SessionManagement.sessionCounter);
-        // TODO  Accept Google Cookies:
+        // console.log(SessionManagement.sessionCounter)
     }
     /**
      * Will finish the session by following the steps:

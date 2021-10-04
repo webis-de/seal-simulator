@@ -11,10 +11,11 @@ class OpenUrlModule extends InteractionModule_1.InteractionModule {
      * This Module ignores subscriptions.
      * @param url Is the url that is opened.
      */
-    constructor(url) {
+    constructor({ url, executionTime }) {
         super({
             id: 0,
             url: url,
+            executionTime: executionTime,
             type: InteractionModule_1.InteractionModuleType.OpenUrl
         });
     }

@@ -5,6 +5,7 @@ exports.Usermodel = void 0;
 const InteractionModule_1 = require("../interactionModules/InteractionModule");
 const OpenUrlModule_1 = require("../interactionModules/general/OpenUrlModule");
 const ManualUrlModule_1 = require("../interactionModules/general/ManualUrlModule");
+const ContextOptions_1 = require("./ContextOptions");
 class Usermodel {
     /**
      * This is an essential part of the automated creation of the usermodel\
@@ -22,17 +23,22 @@ class Usermodel {
      * @param name See [[IUsermodel]] for more documentation.
      * @param device See [[IUsermodel]] for more documentation.
      */
-    constructor({ interests = [], influencedBy = [], freqentlyVisits = [], useBuilder = false, name = "Kevin", device = 'Desktop Chrome HiDPI' }) {
+    constructor({ interests = [], influencedBy = [], freqentlyVisits = [], useBuilder = false, name = "Kevin", device = 'Desktop Chrome HiDPI', locale = `de-DE`, timezoneId = `Europe/Berlin`, geolocation = undefined }) {
         this.name = name;
         this.intrests = interests;
         this.influencedBy = influencedBy;
         this.useBuilder = useBuilder;
         this.freqentlyVisits = [];
-        this.device = device;
+        this.contextOptions = new ContextOptions_1.ContextOptions({
+            device: device,
+            locale: locale,
+            timezoneId: timezoneId,
+            geolocation: geolocation
+        });
         for (let im of freqentlyVisits) {
             switch (+InteractionModule_1.InteractionModuleType[im.type]) {
                 case InteractionModule_1.InteractionModuleType.OpenUrl: {
-                    this.freqentlyVisits.push(new OpenUrlModule_1.OpenUrlModule(im.url));
+                    this.freqentlyVisits.push(new OpenUrlModule_1.OpenUrlModule({ url: im.url }));
                     break;
                 }
                 case InteractionModule_1.InteractionModuleType.ManualUrl: {
@@ -47,13 +53,26 @@ class Usermodel {
                 }
             }
         }
-        console.log(this);
+        // console.log(this)
     }
     /**
      * Get all [[InteractionModule]]s of the user.
      */
     get modules() {
         return this.freqentlyVisits;
+    }
+    toJSON() {
+        return {
+            name: this.name,
+            device: this.contextOptions.device,
+            locale: this.contextOptions.locale,
+            timezoneId: this.contextOptions.timezoneId,
+            geolocation: this.contextOptions.geolocation,
+            interests: this.intrests,
+            influencedBy: this.influencedBy,
+            freqentlyVisits: this.freqentlyVisits,
+            useBuilder: this.useBuilder
+        };
     }
 }
 exports.Usermodel = Usermodel;

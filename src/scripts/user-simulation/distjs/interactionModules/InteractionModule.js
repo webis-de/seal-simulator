@@ -27,8 +27,16 @@ class InteractionModule {
      */
     constructor({ url, id, executionTime = "1200", subscriptions = [], type }) {
         this.url = url;
-        this.id = id;
-        this.type = type;
+        if (id == undefined) {
+            throw new Error("ID cant be left empty when creating an Interaction Module");
+        }
+        else
+            this.id = id;
+        if (type == undefined) {
+            throw new Error("Type cant be left empty when creating an Interaction Module");
+        }
+        else
+            this.type = type;
         this.executionTime = new Time_1.Time(executionTime);
         this.subscriptions = subscriptions;
     }

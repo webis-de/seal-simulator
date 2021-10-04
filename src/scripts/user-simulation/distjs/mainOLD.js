@@ -6,22 +6,22 @@ const UsermodelLoading_1 = require("./io/UsermodelLoading");
 /**
  * First execution is done manually, since the [[intervalObj]] starts after given time period.
  */
-main();
+mainOLD();
 /**
  * Starts the simulation after given time period. -> Repeat forever.
  */
 const intervalObj = setInterval(() => {
-    main();
+    mainOLD();
 }, 600000); // 1min = 600000ms
 /**
  * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
  */
-async function main() {
+async function mainOLD() {
     console.log("Started Simulation");
     const browser = await playwright_1.chromium.launch({
         headless: false
     });
-    await runTestSimulation(browser);
+    // await runTestSimulation(browser)
     await browser.close();
 }
 /**
@@ -57,7 +57,7 @@ async function runTestWiki(browser) {
  * Tests the User Simulation
  * @param browser Instance of the Playwright browser
  */
-async function runTestSimulation(browser) {
+async function runTestSimulation(browser, inputDirectory) {
     /**
      * Load 3 users programmatically. (Works)
      */
@@ -65,10 +65,8 @@ async function runTestSimulation(browser) {
     // let loganlucky = LOGANLUCKY
     // let lena = LENA
     // let usermodels = [andrea, loganlucky,lena]
-    // TODO Load users from file.
-    let usermodels = (0, UsermodelLoading_1.readUsermodels)();
-    // TODO Move this Function to the SessionManagement
+    let usermodels = (0, UsermodelLoading_1.readUsermodels)(inputDirectory);
     /* writeUsermodel(andrea, "andrea.json")
      writeUsermodel(loganlucky, "loganlucky.json")*/
-    await (0, UsermodelLoading_1.runSimulations)(usermodels, browser);
+    await (0, UsermodelLoading_1.runSimulations)(usermodels, browser, inputDirectory);
 }
