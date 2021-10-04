@@ -13,47 +13,32 @@ const playwright = require('playwright');
  * The directory contains one directory for each available browser context,
  * with the name of that directory being the context name.
  */
-const BROWSER_CONTEXTS_DIRECTORY_NAME = "browserContexts";
-exports.BROWSER_CONTEXTS_DIRECTORY_NAME = BROWSER_CONTEXTS_DIRECTORY_NAME;
+const CONTEXTS_DIRECTORY = "browserContexts";
+exports.CONTEXTS_DIRECTORY = CONTEXTS_DIRECTORY;
 
 /**
- * Name of the directory in a browser context directory that contains the user
- * data (cookies, local storage).
+ * Name of the directory in a context directory that contains the user data
+ * (cookies, local storage).
  */
-const BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME = "userData";
-exports.BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME =
-  BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME;
+const CONTEXT_DIRECTORY_USER_DATA = "userData";
+exports.CONTEXT_DIRECTORY_USER_DATA = CONTEXT_DIRECTORY_USER_DATA;
 
 /**
  * Names of JSON files that contain browser context options as used in
  * Playwright.
  *
  * If the file is directly within the browser contexts directory
- * ({@link BROWSER_CONTEXTS_DIRECTORY_NAME}), it applies to all browser contexts. If
- * it is within a sub-directory, it applies only to the respective browser
- * context.
+ * ({@link CONTEXTS_DIRECTORY}), it applies to all browser contexts. If it is
+ * within a sub-directory, it applies only to the respective browser context.
  */
-const BROWSER_CONTEXT_OPTIONS_FILE_NAME = "options.json";
-exports.BROWSER_CONTEXT_OPTIONS_FILE_NAME = BROWSER_CONTEXT_OPTIONS_FILE_NAME;
+const BROWSER_CONTEXT_OPTIONS_FILE = "browser.json";
+exports.BROWSER_CONTEXT_OPTIONS_FILE = BROWSER_CONTEXT_OPTIONS_FILE;
 
 /**
  * Name of the default browser context.
  */
-const DEFAULT_BROWSER_CONTEXT_NAME = "default";
-exports.DEFAULT_BROWSER_CONTEXT_NAME = DEFAULT_BROWSER_CONTEXT_NAME;
-
-/**
- * Browser context option that specified the type of browser to use.
- */
-const BROWSER_CONTEXT_OPTION_BROWSER_TYPE = "browserType";
-exports.BROWSER_CONTEXT_OPTION_BROWSER_TYPE = BROWSER_CONTEXT_OPTION_BROWSER_TYPE;
-
-/**
- * Default browser to use unless specified otherwise using
- * {@link BROWSER_CONTEXT_OPTION_BROWSER_TYPE}.
- */
-const DEFAULT_BROWSER_TYPE = "chromium";
-exports.DEFAULT_BROWSER_TYPE = DEFAULT_BROWSER_TYPE;
+const DEFAULT_BROWSER_CONTEXT = "default";
+exports.DEFAULT_BROWSER_CONTEXT = DEFAULT_BROWSER_CONTEXT;
 
 ////////////////////////////////////////////////////////////////////////////////
 // STATIC FUNCTIONS
@@ -84,116 +69,100 @@ const readJsonIfExists = function(jsonFile) {
 }
 exports.readJsonIfExists = readJsonIfExists;
 
-// BROWSER CONTEXT
+// CONTEXT DIRECTORIES
 
-const startBrowserContext = async function(
-    browserContextName, browserContextOptions,
-    scriptDirectory, inputDirectory, outputDirectory,
-    sealOptions = {}) {
-  // Copy or create user data directory
-  const contextOutputDirectory = path.join(
-    outputDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME, browserContextName);
-  fs.mkdirSync(contextOutputDirectory, { recursive: true });
-  const userDataDirectory = path.join(
-    contextOutputDirectory, BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME);
-  if (inputDirectory !== null && fs.existsSync(path.join(
-      inputDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME, browserContextName,
-      BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME))) {
-    // copy from existing user data directory in input directory
-    fs.copySync(
-      path.join(inputDirectory,
-        BROWSER_CONTEXTS_DIRECTORY_NAME, browserContextName,
-        BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME),
-      userDataDirectory);
-  } else if (fs.existsSync(path.join(
-      scriptDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME, browserContextName,
-      BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME)) {
-    // copy from existing user data directory in script directory
-    fs.copySync(
-      path.join(scriptDirectory,
-        BROWSER_CONTEXTS_DIRECTORY_NAME, browserContextName,
-        BROWSER_CONTEXT_USER_DATA_DIRECTORY_NAME),
-      userDataDirectory);
-  } else {
-    // create new data directory
-    fs.mkdirSync(userDataDirectory);
-  }
-
-  // Launch
-  const browserType =
-    browserContextOptions[BROWSER_CONTEXT_OPTION_BROWSER_TYPE]
-    || DEFAULT_BROWSER_TYPE;
-  const browserContext = playwright[browserType]
-    .launchPersistentContext(userDataDirectory, browserContextOptions);
-  return browserContext;
+const getContextsDirectory = function(baseDirectory) {
+  return path.join(baseDirectory, CONTEXTS_DIRECTORY);
 }
-exports.startBrowserContext = startBrowserContext;
+exports.getContextsDirectory = getContextsDirectory;
 
-// READING BROWSER CONTEXT OPTIONS
+const getContextDirectory = function(contextName, baseDirectory) {
+  return path.join(getContextsDirectory(baseDirectory), contextName);
+}
+exports.getContextDirectory = getContextDirectory;
 
-const readBrowserContextOptions = function(
-    browserContextName, scriptDirectory, inputDirectory) {
-  const browserContextOptions = {};
+// OPTIONS
 
-  // Read options from the input directory if files exist
-  if (inputDirectory !== null) {
-    const genericBrowserContextOptionsFile = path.join(
-      inputDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME,
-      BROWSER_CONTEXT_OPTIONS_FILE_NAME);
-    const specificBrowserContextOptionsFile = path.join(
-      inputDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME,
-      browserContextName, BROWSER_CONTEXT_OPTIONS_FILE_NAME);
-    if (fs.existsSync(genericBrowserContextOptionsFile)
-        || fs.existsSync(specificBrowserContextOptionsFile)) {
-      Object.assign(browserContextOptions,
-        readJsonIfExists(genericBrowserContextOptionsFile));
-      Object.assign(browserContextOptions,
-        readJsonIfExists(specificBrowserContextOptionsFile));
-      return browserContextOptions;
+const readOptions = function(fileName, scriptDirectory, inputDirectory) {
+  for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
+    if (baseDirectory !== null) {
+      const optionsFile = path.join(baseDirectory, fileName);
+      if (fs.existsSync(optionsFile)) {
+        return readJson(optionsFile);
+      }
     }
   }
-
-  // input directory == null or contains bo browser context options file
-  // => use browser context options file from script directory
-  const genericBrowserContextOptionsFile = path.join(
-    scriptDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME,
-    BROWSER_CONTEXT_OPTIONS_FILE_NAME);
-  const specificBrowserContextOptionsFile = path.join(
-    scriptDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME,
-    browserContextName, BROWSER_CONTEXT_OPTIONS_FILE_NAME);
-  Object.assign(browserContextOptions,
-    readJsonIfExists(genericBrowserContextOptionsFile));
-  Object.assign(browserContextOptions,
-    readJsonIfExists(specificBrowserContextOptionsFile));
-  return browserContextOptions;
+  return {};
 }
-exports.readBrowserContextOptions = readBrowserContextOptions;
+exports.readOptions = readOptions;
 
-const readBrowserContextOptionsAll = function(scriptDirectory, inputDirectory) {
-  const listDirectories = (parent) => {
-    if (fs.existsSync(parent)) {
-      return fs.readdirSync(parent, {withFileTypes: true})
-        .filter(child => child.isDirectory())
-        .map(directory => directory.name);
-    } else {
-      return [];
+const writeOptions = function(options, fileName, outputDirectory) {
+  fs.mkdirsSync(outputDirectory);
+  const optionsFile = path.join(outputDirectory, fileName);
+  fs.writeJsonSync(optionsFile, options);
+}
+exports.writeOptions = writeOptions;
+
+const readContextNames = function(scriptDirectory, inputDirectory) {
+  const contextNames = new Set();
+  for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
+    if (baseDirectory !== null) {
+      const contextsDirectory = getContextsDirectory(baseDirectory);
+      if (fs.existsSync(contextsDirectory)) {
+        fs.readdirSync(contextsDirectory, {withFileTypes: true})
+          .filter(contextDirectory => contextDirectory.isDirectory())
+          .forEach(contextDirectory => {
+            contextNames.add(contextDirectory.name);
+          });
+      }
     }
   }
+  return Array.from(contextNames);
+}
+exports.readContextNames = readContextNames;
 
-  const browserContextNames = new Set(listDirectories(path.join(
-    scriptDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME)));
-  if (inputDirectory !== null) {
-    listDirectories(path.join(
-      inputDirectory, BROWSER_CONTEXTS_DIRECTORY_NAME)).forEach(
-        directoryName => browserContextNames.add(directoryName));
+const readContextOptions = function(
+    contextName, fileName, scriptDirectory, inputDirectory) {
+  const contextOptions = {};
+  for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
+    if (baseDirectory !== null) {
+      const genericContextOptionsFile =
+        path.join(getContextsDirectory(baseDirectory), fileName);
+      const specificContextOptionsFile =
+        path.join(getContextDirectory(contextName, baseDirectory), fileName);
+      if (fs.existsSync(genericContextOptionsFile)
+          || fs.existsSync(specificContextOptionsFile)) {
+        Object.assign(contextOptions,
+          readJsonIfExists(genericContextOptionsFile));
+        Object.assign(contextOptions,
+          readJsonIfExists(specificContextOptionsFile));
+        break;
+      }
+    }
   }
+  return contextOptions;
+}
+exports.readContextOptions = readContextOptions;
 
-  const browserContextOptions = {};
-  browserContextNames.forEach(browserContextName => {
-    browserContextOptions[browserContextName] = readBrowserContextOptions(
-      browserContextName, scriptDirectory, inputDirectory);
+const readContextOptionsAll = function(fileName, scriptDirectory, inputDirectory) {
+  const contextNames = readContextNames(scriptDirectory, inputDirectory);
+
+  const contextOptions = {};
+  contextNames.forEach(contextName => {
+    contextOptions[contextName] = readContextOptions(
+      contextName, scriptDirectory, inputDirectory);
   });
-  return browserContextOptions;
+  return contextOptions;
 }
-exports.readBrowserContextOptionsAll = readBrowserContextOptionsAll;
+exports.readContextOptionsAll = readContextOptionsAll;
+
+const writeContextOptions = function(
+    contextOptions, contextName, fileName, outputDirectory) {
+  const contextDirectory =
+    getContextDirectory(contextName, outputDirectory);
+  fs.mkdirsSync(contextDirectory);
+  const contextOptionsFile = path.join(contextDirectory, fileName);
+  fs.writeJsonSync(contextOptionsFile, contextOptions);
+}
+exports.writeContextOptions = writeContextOptions;
 

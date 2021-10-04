@@ -2,13 +2,25 @@ const seal = require('./seal');
 
 exports.AbstractSealScript = class {
 
+  ////////////////////////////////////////////////////////////////////////////////
+  // MEMBERS
+  ////////////////////////////////////////////////////////////////////////////////
+
   #scriptDirectory;
   #inputDirectory;
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // CONSTRUCTOR
+  ////////////////////////////////////////////////////////////////////////////////
 
   constructor(scriptDirectory, inputDirectory = null) {
     this.#scriptDirectory = scriptDirectory;
     this.#inputDirectory = inputDirectory;
   }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // GETTERS
+  ////////////////////////////////////////////////////////////////////////////////
 
   getScriptDirectory() {
     return this.#scriptDirectory;
@@ -18,20 +30,27 @@ exports.AbstractSealScript = class {
     return this.#inputDirectory;
   }
 
-  getBrowserContextOptions() {
-    const browserContextOptions = seal.readBrowserContextOptionsAll(
+  ////////////////////////////////////////////////////////////////////////////////
+  // FUNCTIONALITY
+  ////////////////////////////////////////////////////////////////////////////////
+
+  getBrowserContextsOptions() {
+    const browserContextsOptions = seal.readContextOptionsAll(
+      seal.BROWSER_CONTEXT_OPTIONS_FILE,
       this.getScriptDirectory(), this.getInputDirectory());
-    if (Object.keys(browserContextOptions).length == 0) {
+    if (Object.keys(browserContextsOptions).length == 0) {
       // no explicit context defined: use default context
-      browserContextOptions[seal.DEFAULT_BROWSER_CONTEXT_NAME] =
-        seal.readBrowserContextOptions(seal.DEFAULT_BROWSER_CONTEXT_NAME,
+      browserContextsOptions[seal.DEFAULT_BROWSER_CONTEXT] =
+        seal.readContextOptions(seal.DEFAULT_BROWSER_CONTEXT,
+          seal.BROWSER_CONTEXT_OPTIONS_FILE,
           this.getScriptDirectory(), this.getInputDirectory());
     }
-    return browserContextOptions;
+    return browserContextsOptions;
   }
 
   run(browserContexts, outputDirectory) {
     throw new Error("Run method not implemented");
   }
+
 };
 
