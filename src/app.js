@@ -27,6 +27,8 @@ const scriptFile = scriptModule + ".js";
 const inputDirectory = options.inputDirectory;
 const outputDirectory = options.outputDirectory;
 
+const sealOptions = {}; // TODO
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Source SEAL script
@@ -45,11 +47,21 @@ const script = new SealScript(scriptDirectory, inputDirectory);
 ////////////////////////////////////////////////////////////////////////////////
 // Create browser context options
 ////////////////////////////////////////////////////////////////////////////////
-seal.log("browser-contexts-instantiate");
-const forcedBrowserContextOptions = {};
-const browserContexts = new BrowserContexts(
-  scriptDirectory, inputDirectory, outputDirectory,
-  forcedBrowserContextOptions);
+const browserContextOptions = script.getBrowserContextOptions();
+seal.log("browser-contexts-options", browserContextOptions);
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Create browser contexts
+////////////////////////////////////////////////////////////////////////////////
+const browserContexts = {}; 
+for (const browserContextName in browserContextOptions) {
+  const browserContext = await seal.startBrowserContext(browserContextName,
+      browserContextOptions[browserContextName],
+      scriptDirectory, inputDirectory, outputDirectory,
+      sealOptions);
+  Object.assign(browserContexts[browserContextName], browserContext);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +76,9 @@ seal.log("script-run-finished", {simulationComplete: simulationComplete});
 // Save
 ////////////////////////////////////////////////////////////////////////////////
 seal.log("save", {outputDirectory, outputDirectory});
-// TODO: on browser context
+for (const browserContextName in browserContexts) {
+  browserContexts[browserContextName].close();
+}
+
 
 
