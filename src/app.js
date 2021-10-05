@@ -108,6 +108,11 @@ if (Object.keys(browserContextsOptions).length == 0) {
   browserContextOptions[seal.DEFAULT_BROWSER_CONTEXT] = {};
 }
 seal.log("browser-contexts-options", browserContextsOptions);
+for (const contextName in browserContextOptions) {
+  script.writeContextOptions(
+    browserContextsOptions[contextName], contextName,
+    seal.BROWSER_CONTEXT_OPTIONS_FILE, outputDirectory);
+}
 
 
 // Create browser contexts
@@ -124,9 +129,6 @@ instantiateBrowserContexts(browserContextsOptions,
         seal.log("save", {outputDirectory, outputDirectory});
         for (const contextName in browserContexts) {
           browserContexts[contextName].close().then(_ => {
-            seal.writeContextOptions(
-              browserContextsOptions[contextName], contextName,
-              seal.BROWSER_CONTEXT_OPTIONS_FILE, outputDirectory);
             seal.log("browser-context-closed", {contextName: contextName});
           });
         }
@@ -160,7 +162,7 @@ async function instantiateBrowserContext(
     scriptDirectory, inputDirectory, outputDirectory,
     runOptions = {}) {
   const contextOutputDirectory =
-    seal.getContextDirectory(contextName, outputDirectory);
+    script.getContextDirectory(contextName, outputDirectory);
   fs.mkdirsSync(contextOutputDirectory, { recursive: true });
 
   // Copy existing user data directory
@@ -169,7 +171,7 @@ async function instantiateBrowserContext(
   for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
     if (baseDirectory !== undefined) {
       const sourceUserDataDirectory = path.join(
-        seal.getContextDirectory(contextName, baseDirectory),
+        script.getContextDirectory(contextName, baseDirectory),
         seal.CONTEXT_DIRECTORY_USER_DATA);
       if (fs.existsSync(sourceUserDataDirectory)) {
         seal.log("user-data-copy", {
