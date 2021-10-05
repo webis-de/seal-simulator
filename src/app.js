@@ -5,31 +5,6 @@ const program = require('commander');
 
 const seal = require('./seal');
 
-////////////////////////////////////////////////////////////////////////////////
-// Command line interface
-////////////////////////////////////////////////////////////////////////////////
-
-// Declare
-program.version('0.1.0');
-program
-  .requiredOption('-s, --script-directory <directory>', 'TODO description')
-  .option('-i, --input-directory <directory>', 'TODO description', null)
-  .requiredOption('-o, --output-directory <directory>', 'TODO description')
-  .option('-p, --proxy <address>', 'TODO description');
-
-// Parse
-program.parse(process.argv);
-const options = program.opts();
-
-// Validate
-const scriptDirectory = path.resolve(options.scriptDirectory);
-const scriptModule = path.join(scriptDirectory, "SealScript");
-const scriptFile = scriptModule + ".js";
-const inputDirectory = options.inputDirectory;
-const outputDirectory = options.outputDirectory;
-
-const sealOptions = {}; // TODO
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS
@@ -45,6 +20,69 @@ const CONTEXT_OPTION_BROWSER_TYPE = "browserType";
  * {@link BROWSER_CONTEXT_OPTION_BROWSER_TYPE}.
  */
 const DEFAULT_BROWSER_TYPE = "chromium";
+
+/**
+ * Option to specify the proxy to use (absent for none).
+ */
+const RUN_OPTION_PROXY = "proxy";
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Command line interface
+////////////////////////////////////////////////////////////////////////////////
+
+// Declare
+program.version('0.1.0');
+program
+  .requiredOption('-s, --script-directory <directory>',
+    'Directory that contains the SealScript.js and other run-independent files '
+    + 'for the script')
+  .option('-i, --input-directory <directory>',
+    'Directory that contains files for this specific run.')
+  .requiredOption('-o, --output-directory <directory>',
+    'Directory to write the run output to. Must not exist yet. Can be the '
+    + '--input-directory of a later run to continue this run.')
+  .option('-p, --proxy <address>', 'Proxy server to connect to.');
+
+// Parse
+program.parse(process.argv);
+const options = program.opts();
+
+// Validate
+const scriptDirectory = path.resolve(options.scriptDirectory);
+if (!fs.existsSync(scriptDirectory)) {
+  throw new Error("Script directory '" + scriptDirectory + "' does not exist.");
+}
+if (!fs.statSync(scriptDirectory).isDirectory()) {
+  throw new Error("Script directory '" + scriptDirectory + "' is not a directory.");
+}
+const scriptModule = path.join(scriptDirectory, "SealScript");
+const scriptFile = scriptModule + ".js";
+if (!fs.existsSync(scriptFile)) {
+  throw new Error("Script file '" + scriptFile + "' does not exist.");
+}
+
+const inputDirectory = options.inputDirectory;
+if (inputDirectory !== undefined) {
+  if (!fs.existsSync(inputDirectory)) {
+    throw new Error("Input directory '" + inputDirectory + "' does not exist.");
+  }
+  if (!fs.statSync(inputDirectory).isDirectory()) {
+    throw new Error("Input directory '" + inputDirectory + "' is not a directory.");
+  }
+}
+
+const outputDirectory = options.outputDirectory;
+if (fs.existsSync(outputDirectory)) {
+  throw new Error("Output directory '" + outputDirectory + "' already exists.");
+}
+
+const runOptions = {};
+if (options.proxy !== undefined) {
+  runOptions[RUN_OPTION_PROXY] = options.proxy;
+}
+// TODO
+// video, tracing, HAR
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +112,7 @@ seal.log("browser-contexts-options", browserContextsOptions);
 
 // Create browser contexts
 instantiateBrowserContexts(browserContextsOptions,
-    scriptDirectory, inputDirectory, outputDirectory, sealOptions)
+    scriptDirectory, inputDirectory, outputDirectory, runOptions)
   .then(browserContexts => {
     // Run script
     seal.log("script-run", {outputDirectory, outputDirectory});
@@ -103,14 +141,14 @@ instantiateBrowserContexts(browserContextsOptions,
 async function instantiateBrowserContexts(
     browserContextsOptions,
     scriptDirectory, inputDirectory, outputDirectory,
-    sealOptions = {}) {
+    runOptions = {}) {
   const browserContexts = {}; 
   return Promise.all(Object.keys(browserContextsOptions).map(
     browserContextName => {
       return instantiateBrowserContext(browserContextName,
           browserContextsOptions[browserContextName],
           scriptDirectory, inputDirectory, outputDirectory,
-          sealOptions)
+          runOptions)
         .then(browserContext => {
           browserContexts[browserContextName] = browserContext;
         });
@@ -120,7 +158,7 @@ async function instantiateBrowserContexts(
 async function instantiateBrowserContext(
     contextName, browserContextOptions,
     scriptDirectory, inputDirectory, outputDirectory,
-    sealOptions = {}) {
+    runOptions = {}) {
   const contextOutputDirectory =
     seal.getContextDirectory(contextName, outputDirectory);
   fs.mkdirsSync(contextOutputDirectory, { recursive: true });
@@ -129,7 +167,7 @@ async function instantiateBrowserContext(
   const userDataDirectory = path.join(
     contextOutputDirectory, seal.CONTEXT_DIRECTORY_USER_DATA);
   for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
-    if (baseDirectory !== null) {
+    if (baseDirectory !== undefined) {
       const sourceUserDataDirectory = path.join(
         seal.getContextDirectory(contextName, baseDirectory),
         seal.CONTEXT_DIRECTORY_USER_DATA);

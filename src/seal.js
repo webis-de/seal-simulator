@@ -83,30 +83,10 @@ exports.getContextDirectory = getContextDirectory;
 
 // OPTIONS
 
-const readOptions = function(fileName, scriptDirectory, inputDirectory) {
-  for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
-    if (baseDirectory !== null) {
-      const optionsFile = path.join(baseDirectory, fileName);
-      if (fs.existsSync(optionsFile)) {
-        return readJson(optionsFile);
-      }
-    }
-  }
-  return {};
-}
-exports.readOptions = readOptions;
-
-const writeOptions = function(options, fileName, outputDirectory) {
-  fs.mkdirsSync(outputDirectory);
-  const optionsFile = path.join(outputDirectory, fileName);
-  fs.writeJsonSync(optionsFile, options);
-}
-exports.writeOptions = writeOptions;
-
 const readContextNames = function(scriptDirectory, inputDirectory) {
   const contextNames = new Set();
   for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
-    if (baseDirectory !== null) {
+    if (baseDirectory !== undefined) {
       const contextsDirectory = getContextsDirectory(baseDirectory);
       if (fs.existsSync(contextsDirectory)) {
         fs.readdirSync(contextsDirectory, {withFileTypes: true})
@@ -125,7 +105,7 @@ const readContextOptions = function(
     contextName, fileName, scriptDirectory, inputDirectory) {
   const contextOptions = {};
   for (baseDirectory of [ inputDirectory, scriptDirectory ]) {
-    if (baseDirectory !== null) {
+    if (baseDirectory !== undefined) {
       const genericContextOptionsFile =
         path.join(getContextsDirectory(baseDirectory), fileName);
       const specificContextOptionsFile =
@@ -150,7 +130,7 @@ const readContextOptionsAll = function(fileName, scriptDirectory, inputDirectory
   const contextOptions = {};
   contextNames.forEach(contextName => {
     contextOptions[contextName] = readContextOptions(
-      contextName, scriptDirectory, inputDirectory);
+      contextName, fileName, scriptDirectory, inputDirectory);
   });
   return contextOptions;
 }

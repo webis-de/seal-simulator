@@ -1,3 +1,6 @@
+const fs = require("fs-extra");
+const path = require('path');
+
 const seal = require('./seal');
 
 exports.AbstractSealScript = class {
@@ -13,7 +16,7 @@ exports.AbstractSealScript = class {
   // CONSTRUCTOR
   ////////////////////////////////////////////////////////////////////////////////
 
-  constructor(scriptDirectory, inputDirectory = null) {
+  constructor(scriptDirectory, inputDirectory = undefined) {
     this.#scriptDirectory = scriptDirectory;
     this.#inputDirectory = inputDirectory;
   }
@@ -50,6 +53,39 @@ exports.AbstractSealScript = class {
 
   async run(browserContexts, outputDirectory) {
     throw new Error("Run method not implemented");
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  ////////////////////////////////////////////////////////////////////////////////
+
+  resolveFile(fileName) {
+    for (const baseDirectory of
+        [ this.getInputDirectory(), this.getScriptDirectory() ]) {
+      if (baseDirectory !== undefined) {
+        const file = path.join(baseDirectory, fileName);
+        if (fs.existsSync(file)) {
+          return file;
+        }
+      }
+    }
+    return undefined;
+  }
+
+  readOptions(fileName) {
+    const file = this.resolveFile(fileName);
+    if (file !== undefined) {
+      const json = fs.readFileSync(file, "utf8");
+      return JSON.parse(json);
+    } else {
+      return {};
+    }
+  }
+
+  writeOptions(options, fileName, outputDirectory) {
+    fs.mkdirsSync(outputDirectory);
+    const optionsFile = path.join(outputDirectory, fileName);
+    fs.writeJsonSync(optionsFile, options);
   }
 
 };
