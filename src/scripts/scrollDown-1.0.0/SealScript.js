@@ -6,7 +6,7 @@ exports.SealScript = class extends AbstractSealScript {
     super(scriptDirectory, inputDirectory);
   }
 
-  run(browserContexts, outputDirectory) {
+  async run(browserContexts, outputDirectory) {
     // TODO
 
     const simulationComplete = true;

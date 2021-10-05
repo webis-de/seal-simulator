@@ -48,7 +48,7 @@ exports.AbstractSealScript = class {
     return browserContextsOptions;
   }
 
-  run(browserContexts, outputDirectory) {
+  async run(browserContexts, outputDirectory) {
     throw new Error("Run method not implemented");
   }
 

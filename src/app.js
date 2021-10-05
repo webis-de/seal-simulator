@@ -78,20 +78,22 @@ instantiateBrowserContexts(browserContextsOptions,
   .then(browserContexts => {
     // Run script
     seal.log("script-run", {outputDirectory, outputDirectory});
-    const simulationComplete = script.run(browserContexts, outputDirectory);
-    seal.log("script-run-finished", {simulationComplete: simulationComplete});
+    script.run(browserContexts, outputDirectory)
+      .then(simulationComplete => {
+        seal.log("script-run-finished", {simulationComplete: simulationComplete});
 
-    // Clean up
-    seal.log("save", {outputDirectory, outputDirectory});
-    for (const contextName in browserContexts) {
-      browserContexts[contextName].close().then(_ => {
-        seal.writeContextOptions(
-          browserContextsOptions[contextName], contextName,
-          seal.BROWSER_CONTEXT_OPTIONS_FILE, outputDirectory);
-        seal.log("browser-context-closed", {contextName: contextName});
+        // Clean up
+        seal.log("save", {outputDirectory, outputDirectory});
+        for (const contextName in browserContexts) {
+          browserContexts[contextName].close().then(_ => {
+            seal.writeContextOptions(
+              browserContextsOptions[contextName], contextName,
+              seal.BROWSER_CONTEXT_OPTIONS_FILE, outputDirectory);
+            seal.log("browser-context-closed", {contextName: contextName});
+          });
+        }
       });
-    }
-});
+  });
 
 
 ////////////////////////////////////////////////////////////////////////////////
