@@ -73,7 +73,7 @@ seal.log("browser-contexts-options", browserContextsOptions);
 
 
 // Create browser contexts
-startBrowserContexts(browserContextsOptions,
+instantiateBrowserContexts(browserContextsOptions,
     scriptDirectory, inputDirectory, outputDirectory, sealOptions)
   .then(browserContexts => {
     // Run script
@@ -98,14 +98,14 @@ startBrowserContexts(browserContextsOptions,
 // HELPERS
 ////////////////////////////////////////////////////////////////////////////////
 
-async function startBrowserContexts(
+async function instantiateBrowserContexts(
     browserContextsOptions,
     scriptDirectory, inputDirectory, outputDirectory,
     sealOptions = {}) {
   const browserContexts = {}; 
   return Promise.all(Object.keys(browserContextsOptions).map(
     browserContextName => {
-      return startBrowserContext(browserContextName,
+      return instantiateBrowserContext(browserContextName,
           browserContextsOptions[browserContextName],
           scriptDirectory, inputDirectory, outputDirectory,
           sealOptions)
@@ -115,7 +115,7 @@ async function startBrowserContexts(
   })).then(_ =>{ return browserContexts; });
 }
 
-async function startBrowserContext(
+async function instantiateBrowserContext(
     contextName, browserContextOptions,
     scriptDirectory, inputDirectory, outputDirectory,
     sealOptions = {}) {
