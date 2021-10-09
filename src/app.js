@@ -35,14 +35,15 @@ const RUN_OPTION_PROXY = "proxy";
 program.version('0.1.0');
 program
   .requiredOption('-s, --script-directory <directory>',
-    'Directory that contains the SealScript.js and other run-independent files '
-    + 'for the script')
+    'specifies the directory containing the SealScript.js and other '
+    + 'run-independent files for the user simulation script')
   .option('-i, --input-directory <directory>',
-    'Directory that contains files for this specific run.')
+    'specifies the directory containing files for this specific run')
   .requiredOption('-o, --output-directory <directory>',
-    'Directory to write the run output to. Must not exist yet. Can be the '
-    + '--input-directory of a later run to continue this run.')
-  .option('-p, --proxy <address>', 'Proxy server to connect to.');
+    'specifies the directory to write the run output to (must not exist yet; '
+    + 'can later be --input-directory for another run to continue this one)')
+  .option('-p, --proxy <address>', 'specifies a proxy server for connecting to '
+    + 'the Internet');
 
 // Parse
 program.parse(process.argv);
@@ -108,7 +109,7 @@ if (Object.keys(browserContextsOptions).length == 0) {
   browserContextOptions[seal.DEFAULT_BROWSER_CONTEXT] = {};
 }
 seal.log("browser-contexts-options", browserContextsOptions);
-for (const contextName in browserContextOptions) {
+for (const contextName in browserContextsOptions) {
   script.writeContextOptions(
     browserContextsOptions[contextName], contextName,
     seal.BROWSER_CONTEXT_OPTIONS_FILE, outputDirectory);
