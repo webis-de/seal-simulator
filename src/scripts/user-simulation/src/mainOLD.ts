@@ -93,6 +93,6 @@ async function  runTestSimulation(browser : Browser, inputDirectory : string){
     writeUsermodel(loganlucky, "loganlucky.json")*/
 
 
-    await runSimulations(usermodels,browser,inputDirectory)
+    // await runSimulations(usermodels,browser,inputDirectory)
 
 }

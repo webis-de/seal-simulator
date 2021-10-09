@@ -1,4 +1,4 @@
-import {Browser, BrowserContext, chromium, devices} from "playwright";
+import {Browser, BrowserContext, BrowserContextOptions, chromium, devices} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Usermodel} from "./datamodels/Usermodel";
 import {readUsermodels, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
@@ -8,15 +8,22 @@ import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";
 import {expect} from "playwright/types/test";
 import Console = Protocol.Console;
 import {TICKPERIOD} from "./Constants";
+import {SessionManagement} from "./io/SessionManagement";
 const {AbstractSealScript} = require("../../../AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 
 
 
 export class SealScript extends AbstractSealScript{
+
+    user : Usermodel
+    outputConfiguration? : OutputConfiguration
+
+    //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory : string, inputDirectory:string) {
         super(scriptDirectory, inputDirectory);
         console.log("extended");
+        this.user = readUsermodels(this.getInputDirectory())[0]
 
     }
 
@@ -49,11 +56,20 @@ export class SealScript extends AbstractSealScript{
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        let usermodels = readUsermodels(this.getInputDirectory())
 
-        await runSimulations(usermodels,browser,outputDirectory)
+        await runSimulations(this.user,browser,outputDirectory)
 
         await browser.close();
+    }
+
+    getContextOptions() : BrowserContextOptions{
+        let contextOptions = this.user.contextOptions
+        let sessionPath = this.outputConfiguration.getSessionStatePath()
+        if(this.outputConfiguration.sessionPathExists()){
+            //
+            contextOptions.storageState = sessionPath
+        }
+        return
     }
 
 }

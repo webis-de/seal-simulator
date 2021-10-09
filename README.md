@@ -1,7 +1,12 @@
-# seal-simulator
+# SEAL-Simulator
 Application framework to simulate web users
 
-# introduction
+## Quickstart 
+```
+npm install
+```
+
+## Introduction
 The starting point of the application is the *app.js* file.
 
 The Application Arguments could be:

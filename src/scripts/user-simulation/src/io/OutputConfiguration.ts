@@ -129,7 +129,7 @@ export class OutputConfiguration {
      * @param usermodel The usermodel that needs to be written
      */
     writeUsermodel(usermodel: Usermodel) {
-        fs.writeFileSync(`${this.tempDirectory}/${usermodel.name}.json`, JSON.stringify(usermodel, null, 2), function (err: Error) {
+        fs.writeFileSync(`${this.directory}/${usermodel.name}.json`, JSON.stringify(usermodel, null, 2), function (err: Error) {
             if (err) {
                 console.log(err);
             }

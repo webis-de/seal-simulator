@@ -7,9 +7,11 @@ const Constants_1 = require("./Constants");
 const { AbstractSealScript } = require("../../../AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
+    //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory, inputDirectory) {
         super(scriptDirectory, inputDirectory);
         console.log("extended");
+        this.user = UsermodelLoading_1.readUsermodels(this.getInputDirectory())[0];
     }
     run(browserContext, outputDirectory) {
         /**
@@ -35,9 +37,17 @@ class SealScript extends AbstractSealScript {
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        let usermodels = (0, UsermodelLoading_1.readUsermodels)(this.getInputDirectory());
-        await (0, UsermodelLoading_1.runSimulations)(usermodels, browser, outputDirectory);
+        await UsermodelLoading_1.runSimulations(this.user, browser, outputDirectory);
         await browser.close();
+    }
+    getContextOptions() {
+        let contextOptions = this.user.contextOptions;
+        let sessionPath = this.outputConfiguration.getSessionStatePath();
+        if (this.outputConfiguration.sessionPathExists()) {
+            //
+            contextOptions.storageState = sessionPath;
+        }
+        return;
     }
 }
 exports.SealScript = SealScript;

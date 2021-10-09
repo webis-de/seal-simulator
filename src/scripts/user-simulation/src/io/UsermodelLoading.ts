@@ -75,10 +75,9 @@ async function runInteractionModules(sessionManagement: SessionManagement) {
     }
 }
 
-export async function runSimulations(users: Usermodel[], browser: Browser, outputDirectory: string) {
+export async function runSimulations(user: Usermodel, browser: Browser, outputDirectory: string) {
     /*for (let user of users) {
     }*/
-    let user = users[0]
 
     let sessionManager = new SessionManagement(user, browser, outputDirectory)
 

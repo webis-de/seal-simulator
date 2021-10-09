@@ -11,8 +11,8 @@
     "url": "git+https://github.com/webis-de/seal-simulator.git"
   },
   "dependencies": {
-    "playwright": "^1.14",
-    "typescript": "^4.4.2"
+    "fs-extra": "^10.0.0",
+    "playwright": "^1.15"
   },
   "keywords": [
     "browser",
