@@ -7,6 +7,12 @@ const playwright = require('playwright');
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Current version of SEAL.
+ */
+const VERSION = '0.1.0';
+exports.VERSION = VERSION
+
+/**
  * Default name for the main script configuration file in the input directory.
  */
 const DEFAULT_SCRIPT_CONFIGURATION_FILE = "run.json";

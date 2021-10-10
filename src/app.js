@@ -5,14 +5,12 @@ const program = require('commander');
 const seal = require('./seal');
 const AbstractSealScript = require('./AbstractSealScript');
 
-const VERSION = '0.1.0';
-
 ////////////////////////////////////////////////////////////////////////////////
 // Command line interface
 ////////////////////////////////////////////////////////////////////////////////
 
 // Declare
-program.version(VERSION);
+program.version(seal.VERSION);
 program
   .requiredOption('-s, --script-directory <directory>',
     'specifies the directory containing the SealScript.js and other '
@@ -35,7 +33,7 @@ program
 // Parse
 program.parse(process.argv);
 const options = program.opts();
-seal.log('seal-run', { version: VERSION })
+seal.log('seal-run', { version: seal.VERSION })
 
 const scriptDirectory = path.resolve(options.scriptDirectory);
 const inputDirectory = options.inputDirectory;
