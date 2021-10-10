@@ -417,7 +417,7 @@ exports.AbstractSealScript = class {
     }
     fs.mkdirsSync(userDataDirectory);
 
-    // Set context options depending on SEAL options
+    // Set context options from run options
     const completeBrowserContextOptions =
       Object.assign({}, browserContextOptions);
     if (completeBrowserContextOptions["viewport"] === undefined) {
