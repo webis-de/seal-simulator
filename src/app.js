@@ -1,4 +1,5 @@
 const fs = require("fs-extra");
+const os = require("os");
 const path = require('path');
 const program = require('commander');
 
@@ -13,22 +14,26 @@ const AbstractSealScript = require('./AbstractSealScript');
 program.version(seal.VERSION);
 program
   .requiredOption('-s, --script-directory <directory>',
-    'specifies the directory containing the SealScript.js and other '
-    + 'run-independent files for the user simulation script')
+    'the directory containing the SealScript.js and other run-independent '
+    + 'files for the user simulation script')
   .option('-i, --input-directory <directory>',
-    'specifies the directory containing files for this specific run')
+    'the directory containing files for this specific run (conflicts with '
+    + '--configuration-from-stdin)')
+  .option('-c, --configuration-from-stdin',
+    'create and use a temporary --input-directory containing a '
+    + seal.DEFAULT_SCRIPT_CONFIGURATION_FILE + ' read from standard input '
+    + '(conflicts with --input-directory)')
   .requiredOption('-o, --output-directory <directory>',
-    'specifies the directory to write the run output to (must not exist yet; '
-    + 'can later be --input-directory for another run to continue this one)')
-  .option('-p, --proxy <address>', 'specifies a proxy server for connecting to '
-    + 'the Internet (e.g., "http://myproxy.com:3128" or '
-    + '"socks5://myproxy.com:3128")')
-  .option('-a, --har', 'specifies to store a HAR archive of the run')
-  .option('-v, --video [scale-factor]', 'specifies to store a video '
-    + 'recording of the run, and optionally its scale factor based on the '
-    + 'viewport')
-  .option('-t, --tracing', 'specifies to store a playwright trace of the '
-    + 'run');
+    'the directory to write the run output to (can later be --input-directory '
+    + 'for another run to continue this one)')
+  .option('-p, --proxy <address>',
+    'use this proxy server for connecting to the Internet (e.g., '
+    + '"http://myproxy.com:3128" or "socks5://myproxy.com:3128")')
+  .option('-a, --har', 'store a HAR archive of the run')
+  .option('-v, --video [scale-factor]',
+    'store a video recording of the run, and optionally set its scale factor '
+    + 'based on the viewport')
+  .option('-t, --tracing', 'store a playwright trace of the run');
 
 // Parse
 program.parse(process.argv);
@@ -36,12 +41,23 @@ const options = program.opts();
 seal.log('seal-run', { version: seal.VERSION })
 
 const scriptDirectory = path.resolve(options.scriptDirectory);
-const inputDirectory = options.inputDirectory;
-
-const outputDirectory = options.outputDirectory;
-if (fs.existsSync(outputDirectory)) {
-  throw new Error("Output directory '" + outputDirectory + "' already exists.");
+let inputDirectory = options.inputDirectory;
+if (options.configurationFromStdin !== undefined) {
+  if (inputDirectory !== undefined) {
+    throw new Error("--input-directory and --configuration-from-stdin can not "
+      + "be specified at the same time");
+  }
+  inputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "seal-input-"));
+  const configurationString = fs.readFileSync(0); // read from STDIN
+  const configurationFile =
+    path.join(inputDirectory, seal.DEFAULT_SCRIPT_CONFIGURATION_FILE);
+  seal.log("configuration-from-stdin", {
+    file: configurationFile,
+    configuration: JSON.parse(configurationString)
+  });
+  fs.writeFileSync(configurationFile, configurationString);
 }
+const outputDirectory = options.outputDirectory;
 
 const runOptions = {};
 if (options.proxy !== undefined) {

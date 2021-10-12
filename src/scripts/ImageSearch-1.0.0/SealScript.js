@@ -1,4 +1,5 @@
 const fs = require("fs-extra");
+const http = require("http");
 const https = require("https");
 const path = require('path');
 
@@ -10,9 +11,8 @@ const VERSION = "1.0.0";
 
 const SCRIPT_OPTION_QUERY = "query";
 const SCRIPT_OPTION_NUM_PAGES = "numPages";
-const DEFAULT_NUM_PAGES = 10;
+const DEFAULT_NUM_PAGES = 3;
 
-const BASE_URL = "https://www.startpage.com";
 const HOME_URL = "https://www.startpage.com/en/pics.html";
 const HOME_QUERY_BOX = "#query"
 
@@ -56,8 +56,7 @@ exports.SealScript = class extends AbstractSealScript {
     for (let pageNumber = 1; pageNumber <= this.#numPages; ++pageNumber) {
       const imageContainers = await page.$$(".image-container");
       for (const imageContainer of imageContainers) {
-        const html = await imageContainer.innerHTML();
-        const imageDirectory = path.join(outputDirectory, "results", imageNumber.toString());
+        const imageDirectory = path.join(outputDirectory, "results", imageNumber.toString().padStart(6, '0'));
         fs.mkdirsSync(imageDirectory);
         await page.waitForTimeout(1000);
         await imageContainer.click();
@@ -65,17 +64,32 @@ exports.SealScript = class extends AbstractSealScript {
         await page.waitForLoadState("networkidle");
         await page.waitForTimeout(1000);
 
-        const image = await page.$(".expanded-image-container > img");
-        const imageUrl = BASE_URL + await image.getAttribute("src");
-        console.log(imageUrl);
-        https.get(imageUrl, response => {
-          const imageFileStream = fs.createWriteStream(path.join(imageDirectory, "image"));
-          response.pipe(imageFileStream);
+        const imageProxyLink = await page.$('a:has-text("View image anonymously")');
+        const imageProxyUrl = await imageProxyLink.getAttribute("href");
+        const imageUrl = new URL(imageProxyUrl).searchParams.get("piurl");
+        fs.writeFileSync(path.join(imageDirectory, "image-url.txt"), imageUrl);
+        const suffix = imageUrl.replace(/.*\./, "").replace(/\?.*/, "");
+        seal.log("download-image", {
+          rank: imageNumber + 1,
+          page: pageNumber,
+          imageUrl: imageUrl
         });
+        const writeImage = (response) => {
+          const imageFileStream = fs.createWriteStream(path.join(imageDirectory, "image." + suffix));
+          response.pipe(imageFileStream);
+        };
+        const imageRequestProtocol = imageUrl.replace(/:.*/, ":");
+        const imageRequest = imageRequestProtocol === "http:"
+          ? http.get(imageUrl, writeImage)
+          : https.get(imageUrl, writeImage);
+        imageRequest.on("error", (error) => {
+          console.log("request error", error);
+        });
+        imageRequest.end();
 
         const sourceLink = await page.$(".expanded-site-links > a");
         const sourceUrl = await sourceLink.getAttribute("href");
-        fs.writeFileSync(path.join(imageDirectory, "source.txt"), sourceUrl);
+        fs.writeFileSync(path.join(imageDirectory, "source-url.txt"), sourceUrl);
 
         ++imageNumber;
         
@@ -83,8 +97,7 @@ exports.SealScript = class extends AbstractSealScript {
         await closeButton.click();
       }
 
-      // TODO: hit "Next" button
-
+      await page.click('button:has-text("Next")');
       await page.waitForLoadState("domcontentloaded");
       await page.waitForLoadState("networkidle");
     }
