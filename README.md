@@ -5,7 +5,7 @@ Web user simulation framework.
 ```
 npm install
 node src/app.js \
-  --script-directory src/scripts/scrollDown \
+  --script-directory src/scripts/ScrollDown \
   --input-directory doc/example/scrollDownInput \
   --output-directory output
 ```
