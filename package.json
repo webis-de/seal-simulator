@@ -2,10 +2,7 @@
   "name": "seal-simulator",
   "version": "0.1.0",
   "description": "Application framework to simulate web users",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "src/app.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webis-de/seal-simulator.git"
