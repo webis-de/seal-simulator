@@ -12,6 +12,8 @@ const VERSION = "1.0.0";
 const SCRIPT_OPTION_QUERY = "query";
 const SCRIPT_OPTION_NUM_PAGES = "numPages";
 const DEFAULT_NUM_PAGES = 5;
+const SCRIPT_OPTION_IMAGE_TIMEOUT = "imageTimeout";
+const DEFAULT_IMAGE_TIMEOUT = 10 * 1000;
 
 const HOME_URL = "https://www.startpage.com/en/pics.html";
 const HOME_QUERY_BOX = "#query"
@@ -23,12 +25,15 @@ exports.SealScript = class extends AbstractSealScript {
     this.setConfigurationRequired(SCRIPT_OPTION_QUERY);
     this.setConfigurationDefault(
       SCRIPT_OPTION_NUM_PAGES, DEFAULT_NUM_PAGES);
+    this.setConfigurationDefault(
+      SCRIPT_OPTION_IMAGE_TIMEOUT, DEFAULT_IMAGE_TIMEOUT);
   }
 
   async run(browserContexts, outputDirectory) {
     const browserContext = browserContexts[seal.DEFAULT_BROWSER_CONTEXT];
     const query = this.getConfiguration(SCRIPT_OPTION_QUERY);
     const numPages = this.getConfiguration(SCRIPT_OPTION_NUM_PAGES);
+    const imageTimeout = this.getConfiguration(SCRIPT_OPTION_IMAGE_TIMEOUT);
 
     const page = await browserContext.newPage();
     await page.goto(HOME_URL);
@@ -64,9 +69,12 @@ exports.SealScript = class extends AbstractSealScript {
           response.pipe(imageFileStream);
         };
         const imageRequestProtocol = imageUrl.replace(/:.*/, ":");
+        const httpOptions = {
+          timeout: imageTimeout
+        };
         const imageRequest = imageRequestProtocol === "http:"
-          ? http.get(imageUrl, writeImage)
-          : https.get(imageUrl, writeImage);
+          ? http.get(imageUrl, httpOptions, writeImage)
+          : https.get(imageUrl, httpOptions, writeImage);
         imageRequest.on("error", (error) => {
           console.log("request error", error);
         });
