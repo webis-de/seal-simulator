@@ -1,8 +1,7 @@
 const fs = require("fs-extra");
 const path = require('path');
 
-const { AbstractSealScript } = require("../../AbstractSealScript");
-const seal = require('../../seal');
+const seal = require('../../lib/index');
 
 const NAME = "ScrollDown";
 const VERSION = "1.0.0";
@@ -11,7 +10,7 @@ const SCRIPT_OPTION_URL = "url";
 const SCRIPT_OPTION_MIN_HEIGHT = "minHeigth";
 const DEFAULT_MIN_HEIGHT = 663;
 
-exports.SealScript = class extends AbstractSealScript {
+exports.SealScript = class extends seal.AbstractSealScript {
 
   constructor(scriptDirectory, inputDirectory) {
     super(NAME, VERSION, scriptDirectory, inputDirectory);
@@ -21,7 +20,8 @@ exports.SealScript = class extends AbstractSealScript {
   }
 
   async run(browserContexts, outputDirectory) {
-    const browserContext = browserContexts[seal.DEFAULT_BROWSER_CONTEXT];
+    const browserContext =
+      browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
 
     const page = await browserContext.newPage();
     await page.goto(this.getConfiguration(SCRIPT_OPTION_URL));
@@ -30,10 +30,10 @@ exports.SealScript = class extends AbstractSealScript {
     await page.waitForLoadState('networkidle');
 
     const viewportSize = page.viewportSize();
-    viewportSize.height = await seal.getScrollHeight(page);
+    viewportSize.height = await seal.pages.getScrollHeight(page);
     await page.setViewportSize(viewportSize); 
 
-    const nodesSnapshot = seal.getNodesSnapshot(page)
+    const nodesSnapshot = seal.pages.getNodesSnapshot(page)
       .then(nodes => fs.writeFile(path.join(outputDirectory, "nodes.jsonl"), nodes));
 
     await page.screenshot({
@@ -41,7 +41,7 @@ exports.SealScript = class extends AbstractSealScript {
       fullPage: true 
     });
 
-    const domSnapshot = seal.getDomSnapshot(page)
+    const domSnapshot = seal.pages.getDomSnapshot(page)
       .then(dom => fs.writeFile(path.join(outputDirectory, "dom.html"), dom));
 
     await nodesSnapshot;
