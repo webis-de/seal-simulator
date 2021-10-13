@@ -11,49 +11,34 @@ const VERSION = "1.0.0";
 
 const SCRIPT_OPTION_QUERY = "query";
 const SCRIPT_OPTION_NUM_PAGES = "numPages";
-const DEFAULT_NUM_PAGES = 3;
+const DEFAULT_NUM_PAGES = 5;
 
 const HOME_URL = "https://www.startpage.com/en/pics.html";
 const HOME_QUERY_BOX = "#query"
 
 exports.SealScript = class extends AbstractSealScript {
 
-  #query;
-  #numPages;
-
   constructor(scriptDirectory, inputDirectory) {
     super(NAME, VERSION, scriptDirectory, inputDirectory);
-    const scriptOptions = this.readOptions(seal.DEFAULT_SCRIPT_CONFIGURATION_FILE);
-    if (scriptOptions[SCRIPT_OPTION_QUERY] === undefined) {
-      throw new Error("This script requires an input directory that contains "
-        + "at least a '" + seal.DEFAULT_SCRIPT_CONFIGURATION_FILE + "' with an '"
-        + SCRIPT_OPTION_QUERY + "' attribute.");
-    } else {
-      this.#query = scriptOptions[SCRIPT_OPTION_QUERY];
-    }
-    if (scriptOptions[SCRIPT_OPTION_NUM_PAGES] === undefined) {
-      this.#numPages = DEFAULT_NUM_PAGES;
-    } else {
-      this.#numPages = scriptOptions[SCRIPT_OPTION_NUM_PAGES];
-    }
-    seal.log("script-options-complete", {
-      query: this.#query,
-      numPages: this.#numPages
-    })
+    this.setConfigurationRequired(SCRIPT_OPTION_QUERY);
+    this.setConfigurationDefault(
+      SCRIPT_OPTION_NUM_PAGES, DEFAULT_NUM_PAGES);
   }
 
   async run(browserContexts, outputDirectory) {
     const browserContext = browserContexts[seal.DEFAULT_BROWSER_CONTEXT];
+    const query = this.getConfiguration(SCRIPT_OPTION_QUERY);
+    const numPages = this.getConfiguration(SCRIPT_OPTION_NUM_PAGES);
 
     const page = await browserContext.newPage();
     await page.goto(HOME_URL);
-    await page.fill(HOME_QUERY_BOX, this.#query);
+    await page.fill(HOME_QUERY_BOX, query);
     await page.keyboard.press("Enter");
     await page.waitForLoadState("domcontentloaded");
     await page.waitForLoadState("networkidle");
 
     let imageNumber = 0;
-    for (let pageNumber = 1; pageNumber <= this.#numPages; ++pageNumber) {
+    for (let pageNumber = 1; pageNumber <= numPages; ++pageNumber) {
       const imageContainers = await page.$$(".image-container");
       for (const imageContainer of imageContainers) {
         const imageDirectory = path.join(outputDirectory, "results", imageNumber.toString().padStart(6, '0'));

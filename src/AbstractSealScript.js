@@ -57,6 +57,18 @@ exports.CONTEXT_TRACE_DIR = CONTEXT_TRACE_DIR;
 const BROWSER_CONTEXT_OPTIONS_FILE = "browser.json";
 exports.BROWSER_CONTEXT_OPTIONS_FILE = BROWSER_CONTEXT_OPTIONS_FILE;
 
+/**
+ * Name for the main script configuration file in the input directory.
+ */
+const SCRIPT_CONFIGURATION_FILE = "config.json";
+exports.SCRIPT_CONFIGURATION_FILE = SCRIPT_CONFIGURATION_FILE;
+
+/**
+ * Name for storing the input configuration in the output directory.
+ */
+const OUTPUT_SCRIPT_CONFIGURATION_FILE = "original-" + SCRIPT_CONFIGURATION_FILE;
+exports.OUTPUT_SCRIPT_CONFIGURATION_FILE = OUTPUT_SCRIPT_CONFIGURATION_FILE;
+
 ////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS: ADDITIONAL CONTEXT OPTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -178,6 +190,7 @@ exports.AbstractSealScript = class {
   #version;
   #scriptDirectory;
   #inputDirectory;
+  #configuration;
 
   ////////////////////////////////////////////////////////////////////////////////
   // CONSTRUCTOR
@@ -188,9 +201,11 @@ exports.AbstractSealScript = class {
     this.#version = version;
     this.#scriptDirectory = scriptDirectory;
     this.#inputDirectory = inputDirectory;
+    this.#configuration = this.readOptions(SCRIPT_CONFIGURATION_FILE);
     seal.log("script-instantiate", {
       scriptDirectory: scriptDirectory,
-      inputDirectory: inputDirectory
+      inputDirectory: inputDirectory,
+      configuration: this.#configuration
     });
   }
 
@@ -212,6 +227,30 @@ exports.AbstractSealScript = class {
 
   getInputDirectory() {
     return this.#inputDirectory;
+  }
+
+  getConfiguration(key = undefined) {
+    if (key === undefined) {
+      return this.#configuration;
+    } else {
+      return this.#configuration[key];
+    }
+  }
+
+  setConfigurationDefault(key, defaultValue) {
+    const configuration = this.getConfiguration();
+    if (configuration[key] === undefined) {
+      configuration[key] = defaultValue;
+    }
+  }
+
+  setConfigurationRequired(key) {
+    const value = this.getConfiguration(key);
+    if (value === undefined) {
+      throw new Error("This script requires a " + SCRIPT_CONFIGURATION_FILE
+        + " (either in --input-directory or per --configuration-from-stdin) "
+        + "that contains a value for '" + key + "'");
+    }
   }
 
   getContextsDirectory(baseDirectory) {
@@ -243,6 +282,9 @@ exports.AbstractSealScript = class {
   ////////////////////////////////////////////////////////////////////////////////
 
   async start(outputDirectory, runOptions = {}) {
+    this.writeOptions(
+      this.getConfiguration(), OUTPUT_SCRIPT_CONFIGURATION_FILE, outputDirectory);
+
     const browserContexts =
       await this.#instantiateBrowserContexts(outputDirectory, runOptions);
 

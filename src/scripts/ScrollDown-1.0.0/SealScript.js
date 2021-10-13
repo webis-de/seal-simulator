@@ -13,34 +13,18 @@ const DEFAULT_MIN_HEIGHT = 663;
 
 exports.SealScript = class extends AbstractSealScript {
 
-  #scriptOptions;
-  #url;
-  #minHeight;
-
   constructor(scriptDirectory, inputDirectory) {
     super(NAME, VERSION, scriptDirectory, inputDirectory);
-    this.#scriptOptions =
-      this.readOptions(seal.DEFAULT_SCRIPT_CONFIGURATION_FILE);
-    if (this.#scriptOptions[SCRIPT_OPTION_URL] === undefined) {
-      throw new Error("This script requires an input directory that contains "
-        + "at least a '" + seal.DEFAULT_SCRIPT_CONFIGURATION_FILE + "' with an '"
-        + SCRIPT_OPTION_URL + "' attribute.");
-    } else {
-      this.#url = this.#scriptOptions[SCRIPT_OPTION_URL];
-    }
-    if (this.#scriptOptions[SCRIPT_OPTION_MIN_HEIGHT] === undefined) {
-      this.#minHeight = DEFAULT_MIN_HEIGHT;
-    } else {
-      this.#minHeight = this.#scriptOptions[SCRIPT_OPTION_MIN_HEIGHT];
-    }
-    seal.log("script-options-complete", this.#scriptOptions)
+    this.setConfigurationRequired(SCRIPT_OPTION_URL);
+    this.setConfigurationDefault(
+      SCRIPT_OPTION_MIN_HEIGHT, DEFAULT_MIN_HEIGHT);
   }
 
   async run(browserContexts, outputDirectory) {
     const browserContext = browserContexts[seal.DEFAULT_BROWSER_CONTEXT];
 
     const page = await browserContext.newPage();
-    await page.goto(this.#url);
+    await page.goto(this.getConfiguration(SCRIPT_OPTION_URL));
 
     await page.waitForLoadState('domcontentloaded');
     await page.waitForLoadState('networkidle');

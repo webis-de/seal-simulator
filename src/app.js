@@ -21,8 +21,8 @@ program
     + '--configuration-from-stdin)')
   .option('-c, --configuration-from-stdin',
     'create and use a temporary --input-directory containing a '
-    + seal.DEFAULT_SCRIPT_CONFIGURATION_FILE + ' read from standard input '
-    + '(conflicts with --input-directory)')
+    + AbstractSealScript.SCRIPT_CONFIGURATION_FILE + ' read from standard '
+    + 'input (conflicts with --input-directory)')
   .requiredOption('-o, --output-directory <directory>',
     'the directory to write the run output to (can later be --input-directory '
     + 'for another run to continue this one)')
@@ -38,53 +38,66 @@ program
 // Parse
 program.parse(process.argv);
 const options = program.opts();
-seal.log('seal-run', { version: seal.VERSION })
+seal.log('seal-run', { version: seal.VERSION, options: options });
 
 const scriptDirectory = path.resolve(options.scriptDirectory);
-let inputDirectory = options.inputDirectory;
-if (options.configurationFromStdin !== undefined) {
-  if (inputDirectory !== undefined) {
-    throw new Error("--input-directory and --configuration-from-stdin can not "
-      + "be specified at the same time");
-  }
-  inputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "seal-input-"));
-  const configurationString = fs.readFileSync(0); // read from STDIN
-  const configurationFile =
-    path.join(inputDirectory, seal.DEFAULT_SCRIPT_CONFIGURATION_FILE);
-  seal.log("configuration-from-stdin", {
-    file: configurationFile,
-    configuration: JSON.parse(configurationString)
-  });
-  fs.writeFileSync(configurationFile, configurationString);
-}
+const inputDirectory = getInputDirectory(options);
 const outputDirectory = options.outputDirectory;
+const runOptions = getRunOptions(options);
 
-const runOptions = {};
-if (options.proxy !== undefined) {
-  runOptions[AbstractSealScript.RUN_OPTION_PROXY] = options.proxy;
-}
-if (options.har !== undefined) {
-  runOptions[AbstractSealScript.RUN_OPTION_HAR] = true;
-}
-if (options.video !== undefined) {
-  if (options.video === true) {
-    runOptions[AbstractSealScript.RUN_OPTION_VIDEO_SCALE_FACTOR] =
-      AbstractSealScript.DEFAULT_VIDEO_SCALE_FACTOR;
-  } else {
-    runOptions[AbstractSealScript.RUN_OPTION_VIDEO_SCALE_FACTOR] =
-      parseFloat(options.video);
-  }
-}
-if (options.tracing !== undefined) {
-  runOptions[AbstractSealScript.RUN_OPTION_TRACING] = true;
-}
-seal.log("run-options-complete", runOptions);
-
-
-////////////////////////////////////////////////////////////////////////////////
-// RUN
-////////////////////////////////////////////////////////////////////////////////
-
+// Run
 const script = AbstractSealScript.instantiate(scriptDirectory, inputDirectory);
 script.start(outputDirectory, runOptions);
+
+// Done
+
+
+////////////////////////////////////////////////////////////////////////////////
+// HELPERS
+////////////////////////////////////////////////////////////////////////////////
+
+function getInputDirectory(options) {
+  if (options.configurationFromStdin === undefined) {
+    return options.inputDirectory;
+  } else {
+    if (options.inputDirectory !== undefined) {
+      throw new Error("--input-directory and --configuration-from-stdin can not "
+        + "be specified at the same time");
+    }
+    const inputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "seal-input-"));
+    const configurationString = fs.readFileSync(0); // read from STDIN
+    const configurationFile = path.join(
+      inputDirectory, AbstractSealScript.SCRIPT_CONFIGURATION_FILE);
+    seal.log("configuration-from-stdin", {
+      file: configurationFile,
+      configuration: JSON.parse(configurationString)
+    });
+    fs.writeFileSync(configurationFile, configurationString);
+    return inputDirectory;
+  }
+}
+
+function getRunOptions(options) {
+  const runOptions = {};
+  if (options.proxy !== undefined) {
+    runOptions[AbstractSealScript.RUN_OPTION_PROXY] = options.proxy;
+  }
+  if (options.har !== undefined) {
+    runOptions[AbstractSealScript.RUN_OPTION_HAR] = true;
+  }
+  if (options.video !== undefined) {
+    if (options.video === true) {
+      runOptions[AbstractSealScript.RUN_OPTION_VIDEO_SCALE_FACTOR] =
+        AbstractSealScript.DEFAULT_VIDEO_SCALE_FACTOR;
+    } else {
+      runOptions[AbstractSealScript.RUN_OPTION_VIDEO_SCALE_FACTOR] =
+        parseFloat(options.video);
+    }
+  }
+  if (options.tracing !== undefined) {
+    runOptions[AbstractSealScript.RUN_OPTION_TRACING] = true;
+  }
+  seal.log("run-options-complete", runOptions);
+  return runOptions;
+}
 

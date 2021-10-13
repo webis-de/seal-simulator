@@ -13,12 +13,6 @@ const VERSION = '0.1.0';
 exports.VERSION = VERSION
 
 /**
- * Default name for the main script configuration file in the input directory.
- */
-const DEFAULT_SCRIPT_CONFIGURATION_FILE = "run.json";
-exports.DEFAULT_SCRIPT_CONFIGURATION_FILE = DEFAULT_SCRIPT_CONFIGURATION_FILE;
-
-/**
  * Name of the default browser context.
  */
 const DEFAULT_BROWSER_CONTEXT = "default";
