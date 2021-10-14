@@ -36,7 +36,7 @@ program
 // Parse
 program.parse(process.argv);
 const options = program.opts();
-seal.log('start', { version: seal.constants.VERSION, options: options });
+seal.log('start', options);
 
 const scriptDirectory = path.resolve(options.scriptDirectory);
 const inputDirectory = getInputDirectory(options);

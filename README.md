@@ -28,7 +28,7 @@ cat doc/example/scrollDownInput/config.json \
 ```
 
 ## CI
-Update version (X.X.X) in `package.json` and `lib/constants.js`.
+Update version (X.X.X) in `package.json`.
 ```
 git tag vX.X.X
 git push origin vX.X.X
