@@ -1,3 +1,5 @@
+output
+
 # Logs
 logs
 *.log
@@ -80,9 +82,11 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
+
+#Output from SimulationScript
 dist
 out
-.idea
+out2
 
 # Gatsby files
 .cache/

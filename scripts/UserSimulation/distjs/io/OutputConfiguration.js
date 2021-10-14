@@ -14,13 +14,20 @@ class OutputConfiguration {
      */
     constructor(outputDirectory, user) {
         this._date = new Date();
-        this.directory = this.createIfNotThere(`${outputDirectory}/${user.name}`);
+        this.directory = this.createIfNotThere(`${outputDirectory}/scriptOutput`);
         this.outDirectory = this.createIfNotThere(`${(this.directory)}/${this.dateFormated}`);
         this.tempDirectory = this.createIfNotThere(`${this.directory}/temp`);
         this._user = user;
         this._fileCounter = 0;
-        this.writeUsermodel(user);
-        this.writeContextOptions(user);
+    }
+    /**
+     * Write Output for next execution:
+     * 1. Write the Usermodel to name.json
+     * 2. Write the ContextOptions of the User
+     */
+    writeOutput() {
+        this.writeUsermodel(this._user);
+        this.writeContextOptions(this._user);
     }
     /**
      * @return Date in format "year-month-day"\
@@ -95,7 +102,7 @@ class OutputConfiguration {
      * @param usermodel The usermodel that needs to be written
      */
     writeUsermodel(usermodel) {
-        fs.writeFileSync(`${this.tempDirectory}/${usermodel.name}.json`, JSON.stringify(usermodel, null, 2), function (err) {
+        fs.writeFileSync(`${this.directory}/${usermodel.name}.json`, JSON.stringify(usermodel, null, 2), function (err) {
             if (err) {
                 console.log(err);
             }

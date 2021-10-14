@@ -1,12 +1,26 @@
-# seal-simulator
-Application framework to simulate web users
+# SEAL
+Web user simulation framework.
 
-# introduction
-The starting point of the application is the *app.js* file.
+## Quickstart 
 
-The Application Arguments could be:
+Global installation
 ```
-app.js -o outputdirectory -i inputdirectory -s src/scripts/user-simulation/distjs
+npm install -g # may require sudo
+
+# adjust for your system, might already be set
+export NODE_PATH=/usr/local/lib/node_modules/
+
+# run with configuration in input directory
+seal-simulator \
+  --script-directory scripts/ScrollDown \
+  --input-directory doc/example/scrollDownInput \
+  --output-directory output
+
+# run with configuration from standard input
+cat doc/example/scrollDownInput/run.json \
+  | seal-simulator \
+      --script-directory scripts/ScrollDown \
+      --configuration-from-stdin \
+      --output-directory output
 ```
-The script-directory ( *-s* ) containing a valid *SealScript.js*, 
-which needs to be a derived class from the *AbstractSealScript.js* class.
+

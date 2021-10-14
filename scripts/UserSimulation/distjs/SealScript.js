@@ -3,13 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SealScript = void 0;
 const playwright_1 = require("playwright");
 const UsermodelLoading_1 = require("./io/UsermodelLoading");
+const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const Constants_1 = require("./Constants");
-const { AbstractSealScript } = require("../../../AbstractSealScript");
+const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
+    //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory, inputDirectory) {
-        super(scriptDirectory, inputDirectory);
+        super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
         console.log("extended");
+        this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
+        this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
     run(browserContext, outputDirectory) {
         /**
@@ -35,9 +39,16 @@ class SealScript extends AbstractSealScript {
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        let usermodels = (0, UsermodelLoading_1.readUsermodels)(this.getInputDirectory());
-        await (0, UsermodelLoading_1.runSimulations)(usermodels, browser, outputDirectory);
+        await UsermodelLoading_1.runSimulations(this.user, browser, outputDirectory);
         await browser.close();
+    }
+    getContextOptions() {
+        let contextOptions = this.user.contextOptions;
+        if (this.inputConfiguration.sessionPathExists()) {
+            //
+            contextOptions.storageState = this.inputConfiguration.getSessionStatePath();
+        }
+        return contextOptions;
     }
 }
 exports.SealScript = SealScript;
