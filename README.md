@@ -5,7 +5,7 @@ Web user simulation framework.
 
 Global installation
 ```
-npm install -g
+npm install -g # may require sudo
 
 # adjust for your system, might already be set
 export NODE_PATH=/usr/local/lib/node_modules/
