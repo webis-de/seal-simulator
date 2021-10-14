@@ -31,7 +31,8 @@ program
   .option('-v, --video [scale-factor]',
     'store a video recording of the run, and optionally set its scale factor '
     + 'based on the viewport')
-  .option('-t, --tracing', 'store a playwright trace of the run');
+  .option('-t, --tracing', 'store a playwright trace of the run')
+  .option('-x, --insecure', 'ignore HTTPS errors');
 
 // Parse
 program.parse(process.argv);
@@ -90,6 +91,9 @@ function getRunOptions(options) {
   }
   if (options.tracing !== undefined) {
     runOptions[seal.constants.RUN_OPTION_TRACING] = true;
+  }
+  if (options.insecure !== undefined) {
+    runOptions[seal.constants.RUN_OPTION_INSECURE] = true;
   }
   seal.log("run-options", runOptions);
   return runOptions;
