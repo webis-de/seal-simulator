@@ -2,7 +2,6 @@
 Web user simulation framework.
 
 ## Quickstart 
-
 Global installation
 ```
 npm install -g # may require sudo
