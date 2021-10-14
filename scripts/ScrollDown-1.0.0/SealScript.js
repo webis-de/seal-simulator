@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const path = require('path');
 
-const seal = require('../../lib/index');
+const seal = require('seal-simulator');
 
 const NAME = "ScrollDown";
 const VERSION = "1.0.0";

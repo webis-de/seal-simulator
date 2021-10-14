@@ -3,8 +3,7 @@ const http = require("http");
 const https = require("https");
 const path = require('path');
 
-const { AbstractSealScript } = require("../../AbstractSealScript");
-const seal = require('../../seal');
+const seal = require('seal-simulator');
 
 const NAME = "ImageSearch";
 const VERSION = "1.0.0";
@@ -18,7 +17,7 @@ const DEFAULT_IMAGE_TIMEOUT = 10 * 1000;
 const HOME_URL = "https://www.startpage.com/en/pics.html";
 const HOME_QUERY_BOX = "#query"
 
-exports.SealScript = class extends AbstractSealScript {
+exports.SealScript = class extends seal.AbstractSealScript {
 
   constructor(scriptDirectory, inputDirectory) {
     super(NAME, VERSION, scriptDirectory, inputDirectory);
@@ -30,7 +29,8 @@ exports.SealScript = class extends AbstractSealScript {
   }
 
   async run(browserContexts, outputDirectory) {
-    const browserContext = browserContexts[seal.DEFAULT_BROWSER_CONTEXT];
+    const browserContext =
+      browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
     const query = this.getConfiguration(SCRIPT_OPTION_QUERY);
     const numPages = this.getConfiguration(SCRIPT_OPTION_NUM_PAGES);
     const imageTimeout = this.getConfiguration(SCRIPT_OPTION_IMAGE_TIMEOUT);
