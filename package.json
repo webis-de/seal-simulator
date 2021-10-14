@@ -1,10 +1,11 @@
 {
   "name": "seal-simulator",
-  "version": "0.1.0",
-  "description": "Application framework to simulate web users",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "1.0.0",
+  "description": "Web user simulation framework",
+  "main": "lib/index.js",
+  "files": [ "bin", "lib" ],
+  "bin": {
+    "seal-simulate": "bin/simulate.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,7 @@
     "playwright",
     "user simulation"
   ],
-  "author": "johannes.kiesel@uni-weimar.de",
+  "author": "Johannes Kiesel <johannes.kiesel@uni-weimar.de>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/webis-de/seal-simulator/issues"
