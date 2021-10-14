@@ -20,7 +20,7 @@ seal-simulate \
 cat doc/example/scrollDownInput/config.json \
   | seal-simulate \
       --script-directory scripts/ScrollDown \
-      --configuration-from-stdin \
+      --input-directory - \
       --output-directory output
 ```
 

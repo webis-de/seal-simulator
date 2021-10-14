@@ -18,12 +18,9 @@ program
     'the directory containing the SealScript.js and other run-independent '
     + 'files for the user simulation script')
   .option('-i, --input-directory <directory>',
-    'the directory containing files for this specific run (conflicts with '
-    + '--configuration-from-stdin)')
-  .option('-c, --configuration-from-stdin',
-    'create and use a temporary --input-directory containing a '
-    + seal.constants.SCRIPT_CONFIGURATION_FILE + ' read from standard '
-    + 'input (conflicts with --input-directory)')
+    'the directory containing files for this specific run; if "-" creates a '
+    + 'temporary directory containing a '
+    + seal.constants.SCRIPT_CONFIGURATION_FILE + ' read from standard input')
   .requiredOption('-o, --output-directory <directory>',
     'the directory to write the run output to (can later be --input-directory '
     + 'for another run to continue this one)')
@@ -58,18 +55,14 @@ script.start(outputDirectory, runOptions);
 ////////////////////////////////////////////////////////////////////////////////
 
 function getInputDirectory(options) {
-  if (options.configurationFromStdin === undefined) {
+  if (options.inputDirectory !== "-") {
     return options.inputDirectory;
   } else {
-    if (options.inputDirectory !== undefined) {
-      throw new Error("--input-directory and --configuration-from-stdin can not "
-        + "be specified at the same time");
-    }
     const inputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "seal-input-"));
     const configurationString = fs.readFileSync(0); // read from STDIN
     const configurationFile =
       path.join(inputDirectory, seal.constants.SCRIPT_CONFIGURATION_FILE);
-    seal.log("configuration-from-stdin", {
+    seal.log("temporary-input-directory", {
       file: configurationFile,
       configuration: JSON.parse(configurationString)
     });
