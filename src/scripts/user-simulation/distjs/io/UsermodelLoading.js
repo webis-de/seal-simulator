@@ -31,9 +31,14 @@ function readUsermodels(inputDirectory) {
             if (stat.isFile()) {
                 // console.log(`Start loading from ${fromPath}`)
                 // Read the usermodel and add it to the List
-                usermodels.push(readUsermodel(fromPath));
             }
-            else if (stat.isDirectory()) { }
+            else if (stat.isDirectory()) {
+                /**
+                 * pathToUsermodel model refers to out/name/name.json
+                 */
+                const pathToUsermodel = p.join(fromPath, file) + ".json";
+                usermodels.push(readUsermodel(pathToUsermodel));
+            }
             // console.log("'%s' is a directory.", fromPath);
             else {
                 // console.log("'%s' is not identified.", fromPath);
