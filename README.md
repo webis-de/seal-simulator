@@ -1,5 +1,9 @@
-# SEAL
+# SEAL Simulator
 Web user simulation framework.
+
+[[code](https://github.com/webis-de/seal-simulator)]
+[[node](https://www.npmjs.com/package/seal-simulator)]
+[[docker](https://github.com/webis-de/seal-simulator/pkgs/container/seal-simulator)]
 
 ## Quickstart 
 Global installation
@@ -23,3 +27,10 @@ cat doc/example/scrollDownInput/config.json \
       --output-directory output
 ```
 
+## CI
+Update version (X.X.X) in `package.json` and `lib/constants.js`.
+```
+git tag vX.X.X
+git push origin vX.X.X
+```
+Will automatically publish to npm and ghcr.
