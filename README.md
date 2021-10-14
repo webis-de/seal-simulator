@@ -3,7 +3,7 @@ Web user simulation framework.
 
 ## Quickstart 
 
-Local installation
+Global installation
 ```
 npm install -g
 
