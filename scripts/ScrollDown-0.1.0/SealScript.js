@@ -4,7 +4,7 @@ const path = require('path');
 const seal = require('seal-simulator');
 
 const NAME = "ScrollDown";
-const VERSION = "1.0.0";
+const VERSION = "0.1.0";
 
 const SCRIPT_OPTION_URL = "url";
 const SCRIPT_OPTION_MIN_SCREENSHOT_HEIGHT = "minHeigth";
