@@ -3,15 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SealScript = void 0;
 const playwright_1 = require("playwright");
 const UsermodelLoading_1 = require("./io/UsermodelLoading");
+const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const Constants_1 = require("./Constants");
-const { AbstractSealScript } = require("../../../AbstractSealScript");
+const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
     //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory, inputDirectory) {
-        super(scriptDirectory, inputDirectory);
+        super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
         console.log("extended");
-        this.user = UsermodelLoading_1.readUsermodels(this.getInputDirectory())[0];
+        this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
+        this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
     run(browserContext, outputDirectory) {
         /**
@@ -42,12 +44,11 @@ class SealScript extends AbstractSealScript {
     }
     getContextOptions() {
         let contextOptions = this.user.contextOptions;
-        let sessionPath = this.outputConfiguration.getSessionStatePath();
-        if (this.outputConfiguration.sessionPathExists()) {
+        if (this.inputConfiguration.sessionPathExists()) {
             //
-            contextOptions.storageState = sessionPath;
+            contextOptions.storageState = this.inputConfiguration.getSessionStatePath();
         }
-        return;
+        return contextOptions;
     }
 }
 exports.SealScript = SealScript;

@@ -82,7 +82,11 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
+
+#Output from SimulationScript
 dist
+out
+out2
 
 # Gatsby files
 .cache/

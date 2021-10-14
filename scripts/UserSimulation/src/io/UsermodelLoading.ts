@@ -5,11 +5,11 @@ import {Protocol} from "playwright/types/protocol";
 import {Browser} from "playwright";
 import {INPUTUSERMODELFOLDER, TEMPFOLDER} from "../Constants";
 import {SessionManagement} from "./SessionManagement";
-
-const fs = require('fs');
-const p = require('path');
+import * as fs from 'fs';
+import * as p from 'path';
 
 export function writeUsermodel(usermodel: Usermodel, path: string) {
+    // @ts-ignore
     fs.writeFileSync(TEMPFOLDER + path, JSON.stringify(usermodel, null, 2), function (err: Error) {
         if (err) {
             console.log(err);
@@ -17,17 +17,33 @@ export function writeUsermodel(usermodel: Usermodel, path: string) {
     });
 }
 
-export function readUsermodels(inputDirectory: string): Usermodel[] {
+export function readUsermodelFormInputDirectory(inputDirectory: string): Usermodel {
+    /**
+     * If the old output directory now ist the input directory, we take the:
+     *     -> inputDirectory/scriptOutput/name.json
+     * otherwise (First Start of the Simulation) we take:
+     *     -> inputDirectory/name.json
+     */
+    const oldScriptPath = `${inputDirectory}/scriptOutput`
+    if (fs.existsSync(oldScriptPath)) {
+        let files = fs.readdirSync(oldScriptPath);
+        files = files.filter( file => {
+            let stat = fs.statSync(p.join(oldScriptPath,file))
+            return stat.isFile();
+        })
+        const usermodelPath = p.join(oldScriptPath, files[0])
+        console.log(`Usermodel found at ${usermodelPath}`)
+        return readUsermodel(usermodelPath)
+    } else {
+        const files = fs.readdirSync(inputDirectory);
+        const usermodelPath = p.join(inputDirectory, files[0])
+        console.log(`Usermodel found at ${usermodelPath}`)
+        return readUsermodel(usermodelPath)
+    }
 
-    let usermodels: Usermodel[] = [];
+}
 
-    try {
-        // Get the files as an array
-        let fullPath = function genFullPath(): string {
-            return inputDirectory
-        }();
-        const files = fs.readdirSync(fullPath);
-
+/*
         // Loop files
         for (const file of files) {
             // Get the full paths
@@ -40,9 +56,9 @@ export function readUsermodels(inputDirectory: string): Usermodel[] {
                 // console.log(`Start loading from ${fromPath}`)
                 // Read the usermodel and add it to the List
             } else if (stat.isDirectory()){
-                /**
-                 * pathToUsermodel model refers to out/name/name.json
-                 */
+                /!**
+                 * pathToUsermodel model refers to out/scriptOutput/name.json
+                 *!/
                 const pathToUsermodel = p.join(fromPath,file) + ".json"
                 usermodels.push(readUsermodel(pathToUsermodel))
             }
@@ -53,13 +69,10 @@ export function readUsermodels(inputDirectory: string): Usermodel[] {
         }
 
 
-    } catch (e) {
-        // Catch anything bad that happens
-        console.error("Reading Usermodels went wrong!", e);
     }
 
-    return usermodels
-}
+    return usermodels*/
+
 
 function readUsermodel(path: string): Usermodel {
     let usermodel = function genUsermodel(): Usermodel {

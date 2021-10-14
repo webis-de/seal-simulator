@@ -1,7 +1,7 @@
 import {Browser, BrowserContext, BrowserContextOptions, chromium, devices} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Usermodel} from "./datamodels/Usermodel";
-import {readUsermodels, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
+import {readUsermodelFormInputDirectory, readUsermodels, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
 import {OutputConfiguration} from "./io/OutputConfiguration";
 import {Influence} from "./datamodels/Influence";
 import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";
@@ -9,7 +9,7 @@ import {expect} from "playwright/types/test";
 import Console = Protocol.Console;
 import {TICKPERIOD} from "./Constants";
 import {SessionManagement} from "./io/SessionManagement";
-const {AbstractSealScript} = require("../../../AbstractSealScript");
+const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 
 
@@ -18,13 +18,14 @@ export class SealScript extends AbstractSealScript{
 
     user : Usermodel
     outputConfiguration? : OutputConfiguration
+    inputConfiguration : OutputConfiguration
 
     //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory : string, inputDirectory:string) {
-        super(scriptDirectory, inputDirectory);
+        super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
         console.log("extended");
-        this.user = readUsermodels(this.getInputDirectory())[0]
-
+        this.user = readUsermodelFormInputDirectory(this.getInputDirectory())
+        this.inputConfiguration = new OutputConfiguration(inputDirectory,this.user)
     }
 
 
@@ -62,14 +63,14 @@ export class SealScript extends AbstractSealScript{
         await browser.close();
     }
 
+
     getContextOptions() : BrowserContextOptions{
-        let contextOptions = this.user.contextOptions
-        let sessionPath = this.outputConfiguration.getSessionStatePath()
-        if(this.outputConfiguration.sessionPathExists()){
+        let contextOptions : BrowserContextOptions = this.user.contextOptions
+        if(this.inputConfiguration.sessionPathExists()){
             //
-            contextOptions.storageState = sessionPath
+            contextOptions.storageState = this.inputConfiguration.getSessionStatePath()
         }
-        return
+        return contextOptions
     }
 
 }

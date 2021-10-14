@@ -88,7 +88,7 @@ export class SessionManagement {
      * @param out
      */
     async finishSession() {
-
+        this.outputConfiguration.writeOutput()
         await this.getContext().storageState({path: this.outputConfiguration.getSessionStatePath()})
         await this.getContext().tracing.stop(
             {

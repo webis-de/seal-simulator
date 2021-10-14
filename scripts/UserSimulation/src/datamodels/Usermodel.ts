@@ -4,7 +4,7 @@ import {Influence} from "./Influence";
 import {OpenUrlModule} from "../interactionModules/general/OpenUrlModule";
 import {Time} from "./Time";
 import {ManualUrlModule} from "../interactionModules/general/ManualUrlModule";
-import {Geolocation} from "playwright";
+import {BrowserContextOptions, Geolocation} from "playwright";
 import {ContextOptions} from "./ContextOptions";
 
 /**
