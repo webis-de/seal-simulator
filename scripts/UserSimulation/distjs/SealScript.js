@@ -35,7 +35,7 @@ class SealScript extends AbstractSealScript {
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
      */
     async main(browserContext, outputDirectory) {
-        // console.log("Started Simulation");
+        // console.log("Started Simulation")
         const browser = await playwright_1.chromium.launch({
             headless: false
         });

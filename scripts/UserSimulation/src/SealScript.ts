@@ -10,22 +10,23 @@ import Console = Protocol.Console;
 import {TICKPERIOD} from "./Constants";
 import {SessionManagement} from "./io/SessionManagement";
 import {UnitTests} from "./tests/UnitTests";
+
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
+
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 
 
+export class SealScript extends AbstractSealScript {
 
-export class SealScript extends AbstractSealScript{
-
-    user : Usermodel
-    outputConfiguration? : OutputConfiguration
-    inputConfiguration : OutputConfiguration
+    user: Usermodel
+    outputConfiguration?: OutputConfiguration
+    inputConfiguration: OutputConfiguration
 
     //TODO Build function that find all directorys in out and new input direktory
-    constructor(scriptDirectory : string, inputDirectory:string) {
+    constructor(scriptDirectory: string, inputDirectory: string) {
         super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
         this.user = readUsermodelFormInputDirectory(this.getInputDirectory())
-        this.inputConfiguration = new OutputConfiguration(inputDirectory,this.user)
+        this.inputConfiguration = new OutputConfiguration(inputDirectory, this.user)
     }
 
 
@@ -52,7 +53,7 @@ export class SealScript extends AbstractSealScript{
      */
     async main(browserContext: any, outputDirectory: string): Promise<void> {
 
-        // console.log("Started Simulation");
+        // console.log("Started Simulation")
         const browser = await chromium.launch({
                 headless: false
             }
@@ -63,15 +64,15 @@ export class SealScript extends AbstractSealScript{
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
 
-        await runSimulations(this.user,browser,outputDirectory)
+        await runSimulations(this.user, browser, outputDirectory)
 
         await browser.close();
     }
 
 
-    getContextOptions() : BrowserContextOptions{
-        let contextOptions : BrowserContextOptions = this.user.contextOptions
-        if(this.inputConfiguration.sessionPathExists()){
+    getContextOptions(): BrowserContextOptions {
+        let contextOptions: BrowserContextOptions = this.user.contextOptions
+        if (this.inputConfiguration.sessionPathExists()) {
             //
             contextOptions.storageState = this.inputConfiguration.getSessionStatePath()
         }
@@ -85,7 +86,7 @@ export class SealScript extends AbstractSealScript{
  * Tests the Wikipedia page Simulation
  * @param browser Instance of the Playwright browser
  */
-async function runTestWiki(context : BrowserContext) {
+async function runTestWiki(context: BrowserContext) {
 
     // Go to https://www.wikipedia.org/
 
