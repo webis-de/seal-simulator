@@ -1,5 +1,5 @@
 # SEAL Simulator
-Web user simulation framework.
+Web user simulation and archiving framework.
 
 [[code](https://github.com/webis-de/seal-simulator)]
 [[node](https://www.npmjs.com/package/seal-simulator)]
