@@ -1,7 +1,7 @@
 import {Browser, chromium, devices} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Usermodel} from "./datamodels/Usermodel";
-import {readUsermodels, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
+import {readUsermodelFormInputDirectory, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
 import {OutputConfiguration} from "./io/OutputConfiguration";
 import {Influence} from "./datamodels/Influence";
 import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";
@@ -41,7 +41,7 @@ async function mainOLD(): Promise<void> {
  * Tests the Wikipedia page Simulation
  * @param browser Instance of the Playwright browser
  */
-async function runTestWiki(browser : Browser) {
+async function runTestWiki(browser: Browser) {
 
     // Go to https://www.wikipedia.org/
     const context = await browser.newContext();
@@ -73,24 +73,25 @@ async function runTestWiki(browser : Browser) {
             path: "trace1.zip"
         });
 }
+
 /**
  * Tests the User Simulation
  * @param browser Instance of the Playwright browser
  */
-async function  runTestSimulation(browser : Browser, inputDirectory : string){
+async function runTestSimulation(browser: Browser, inputDirectory: string) {
     /**
      * Load 3 users programmatically. (Works)
      */
-    // let andrea = ANDREA
-    // let loganlucky = LOGANLUCKY
-    // let lena = LENA
-    // let usermodels = [andrea, loganlucky,lena]
+        // let andrea = ANDREA
+        // let loganlucky = LOGANLUCKY
+        // let lena = LENA
+        // let usermodels = [andrea, loganlucky,lena]
 
 
-    let usermodels = readUsermodels(inputDirectory)
+    let usermodels = readUsermodelFormInputDirectory(inputDirectory)
 
-   /* writeUsermodel(andrea, "andrea.json")
-    writeUsermodel(loganlucky, "loganlucky.json")*/
+    /* writeUsermodel(andrea, "andrea.json")
+     writeUsermodel(loganlucky, "loganlucky.json")*/
 
 
     // await runSimulations(usermodels,browser,inputDirectory)
