@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require("fs-extra");
+const fsPromises = require("fs/promises");
 const os = require("os");
 const path = require('path');
 const program = require('commander');
@@ -37,8 +38,9 @@ const tmpDirectory = getTmpDirectory(options);
 const port = options.port;
 
 // Run
-pywbInit(tmpDirectory, archiveDirectory);
-pywbStart(tmpDirectory, port);
+pywbInit(tmpDirectory, archiveDirectory)
+  .then(() => pywbStart(tmpDirectory, port))
+  .then(() => seal.log("proxy-started"));
 
 // Done
 
@@ -59,18 +61,32 @@ function getTmpDirectory(options) {
   }
 }
 
-function pywbInit(tmpDirectory, archiveDirectory) {
+function openWriteStream(file, mode = "w") {
+  return new Promise((resolve, reject) => {
+    const stream = fs.createWriteStream(file, { flags: mode });
+    stream.on("open", () => { resolve(stream); });
+    if (!stream.pending) { resolve(stream); }
+  });
+}
+
+async function pywbInit(tmpDirectory, archiveDirectory) {
   fs.ensureDirSync(tmpDirectory);
   fs.ensureDirSync(archiveDirectory);
+
+  const commandLog =
+    await openWriteStream(path.join(archiveDirectory, "pywbInit.log"), "a");
+  const commandErr =
+    await openWriteStream(path.join(archiveDirectory, "pywbInit.err"), "a");
+
   const command = "wb-manager";
   const args = ["init", COLLECTION_NAME];
   const options = {
     cwd: tmpDirectory,
     timeout: 10 * 1000,
-    stdio: ['pipe', 'inherit', 'inherit']
+    stdio: [ 'pipe', commandLog, commandErr ]
   };
 
-  seal.log("wayback-init", { command: command, args: args, options: options });
+  seal.log("wayback-init", { command: command, args: args });
   const wbManager = child_process.spawnSync(command, args, options);
   if (wbManager.status !== 0) {
     throw new Error("Failed to initialize wayback collection");
@@ -92,7 +108,12 @@ function pywbInit(tmpDirectory, archiveDirectory) {
   fs.writeFileSync(path.join(tmpDirectory, "config.yaml"), config);
 }
 
-function pywbStart(tmpDirectory, port) {
+async function pywbStart(tmpDirectory, port) {
+  const commandLog =
+    await openWriteStream(path.join(archiveDirectory, "pywbStart.log"), "a");
+  const commandErr =
+    await openWriteStream(path.join(archiveDirectory, "pywbStart.err"), "a");
+
   const command = "wayback";
   const args = [
     "--bind", "127.0.0.1",
@@ -103,10 +124,10 @@ function pywbStart(tmpDirectory, port) {
   ];
   const options = {
     cwd: tmpDirectory,
-    stdio: ['pipe', 'inherit', 'inherit']
+    stdio: [ 'pipe', commandLog, commandErr ]
   };
 
-  seal.log("wayback-start", { command: command, args: args, options: options });
+  seal.log("wayback-start", { command: command, args: args });
   const wayback = child_process.spawn(command, args, options);
   wayback.on('exit', (code, signal) => {
     if (code !== 0) {
