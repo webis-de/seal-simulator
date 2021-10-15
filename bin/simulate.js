@@ -12,8 +12,12 @@ const seal = require('../lib/index.js');
 ////////////////////////////////////////////////////////////////////////////////
 
 // Declare
-program.version(seal.constants.VERSION);
 program
+  .version(seal.constants.VERSION)
+  .usage('[options] '
+    + '--script-directory <directory> '
+    + '--output-directory <directory>')
+  .description("Runs a user simulation using the script in --script-directory")
   .requiredOption('-s, --script-directory <directory>',
     'the directory containing the SealScript.js and other run-independent '
     + 'files for the user simulation script')

@@ -6,7 +6,7 @@
   "files": [ "bin", "lib" ],
   "bin": {
     "seal-simulate": "bin/simulate.js",
-    "seal-repeat": "bin/repeat.sh"
+    "seal-archive-proxy-start": "bin/archive-proxy-start.js"
   },
   "repository": {
     "type": "git",

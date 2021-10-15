@@ -15,6 +15,15 @@ if [ $# -lt 2 ];then
   exit 1
 fi
 
+#const argSeparator = process.argv.indexOf("--");
+#if (argSeparator < 0) {
+#  program.help();
+#}
+#const commandArgs = process.argv.slice(0, argSeparator);
+#const subCommandArgs = process.argv.slice(argSeparator + 1);
+#
+#program.parse(commandArgs);
+
 baseDirectory=$1
 shift
 baseCommand="$@"
