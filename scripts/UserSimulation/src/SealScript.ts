@@ -1,7 +1,7 @@
 import {Browser, BrowserContext, BrowserContextOptions, chromium, devices} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Usermodel} from "./datamodels/Usermodel";
-import {readUsermodelFormInputDirectory, readUsermodels, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
+import {readUsermodelFormInputDirectory, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
 import {OutputConfiguration} from "./io/OutputConfiguration";
 import {Influence} from "./datamodels/Influence";
 import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";
@@ -9,6 +9,7 @@ import {expect} from "playwright/types/test";
 import Console = Protocol.Console;
 import {TICKPERIOD} from "./Constants";
 import {SessionManagement} from "./io/SessionManagement";
+import {UnitTests} from "./tests/UnitTests";
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 
@@ -23,13 +24,17 @@ export class SealScript extends AbstractSealScript{
     //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory : string, inputDirectory:string) {
         super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
-        console.log("extended");
         this.user = readUsermodelFormInputDirectory(this.getInputDirectory())
         this.inputConfiguration = new OutputConfiguration(inputDirectory,this.user)
     }
 
 
     run(browserContext: any, outputDirectory: string) {
+        /**
+         * runTests
+         */
+        UnitTests.runUnitTests()
+
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
@@ -39,7 +44,7 @@ export class SealScript extends AbstractSealScript{
          */
         const intervalObj = setInterval(async () => {
             await this.main(browserContext, outputDirectory)
-        }, TICKPERIOD); // 10min = 600000ms
+        }, TICKPERIOD); // 10min = 600000ms*/
     }
 
     /**

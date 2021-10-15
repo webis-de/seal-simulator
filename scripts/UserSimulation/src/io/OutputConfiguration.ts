@@ -11,15 +11,15 @@ export class OutputConfiguration {
     /**
      * Holds the current directory for the output and temp files
      */
-    directory: string
+    _directory: string
     /**
      * Holds the current directory for the output, depending on the date
      */
-    outDirectory: string
+    _outDirectory: string
     /**
      * Holds the current directory for the temp files like state.json, usermodel.json, and contextoptions
      */
-    tempDirectory : string
+    _tempDirectory : string
     /**
      * Holds the current executed User, so the output directory can be named after the user.
      */
@@ -38,9 +38,9 @@ export class OutputConfiguration {
     constructor(outputDirectory: string, user: Usermodel) {
         this._date = new Date()
 
-        this.directory = this.createIfNotThere(`${outputDirectory}/scriptOutput`)
-        this.outDirectory = this.createIfNotThere(`${(this.directory)}/${this.dateFormated}`)
-        this.tempDirectory = this.createIfNotThere(`${this.directory}/temp`)
+        this._directory = `${outputDirectory}/scriptOutput`
+        this._outDirectory = `${(this._directory)}/${this.dateFormated}`
+        this._tempDirectory = `${this._directory}/temp`
 
         this._user = user
         this._fileCounter = 0
@@ -58,6 +58,26 @@ export class OutputConfiguration {
         this.writeContextOptions(this._user)
     }
 
+    /**
+     * Create the directory just when its used
+     */
+    get directory() : string{
+        return this.createIfNotThere(this._directory)
+    }
+
+    /**
+     * Create the outDirectory just when its used
+     */
+    get outDirectory() : string{
+        return this.createIfNotThere(this._outDirectory)
+    }
+
+    /**
+     * Create the tempDirectory just when its used
+     */
+    get tempDirectory() : string{
+        return this.createIfNotThere(this._tempDirectory)
+    }
 
     /**
      * @return Date in format "year-month-day"\

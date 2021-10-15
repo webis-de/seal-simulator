@@ -79,7 +79,7 @@ export abstract class InteractionModule {
      * Is used to create a new [[InteractionModule]] from a json file.
      * @param See [[IInteractionModule]] for more documentation.
      */
-    protected constructor({url, id, executionTime = "1200", subscriptions=[], type }: IInteractionModule) {
+    protected constructor({url, id, executionTime = "12:00", subscriptions=[], type }: IInteractionModule) {
         this.url = url
         if(id == undefined){
             throw new Error("ID cant be left empty when creating an Interaction Module")

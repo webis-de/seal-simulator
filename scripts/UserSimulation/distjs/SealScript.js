@@ -5,17 +5,21 @@ const playwright_1 = require("playwright");
 const UsermodelLoading_1 = require("./io/UsermodelLoading");
 const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const Constants_1 = require("./Constants");
+const UnitTests_1 = require("./tests/UnitTests");
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
     //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory, inputDirectory) {
         super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
-        console.log("extended");
         this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
         this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
     run(browserContext, outputDirectory) {
+        /**
+         * runTests
+         */
+        UnitTests_1.UnitTests.runUnitTests();
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
@@ -25,7 +29,7 @@ class SealScript extends AbstractSealScript {
          */
         const intervalObj = setInterval(async () => {
             await this.main(browserContext, outputDirectory);
-        }, Constants_1.TICKPERIOD); // 10min = 600000ms
+        }, Constants_1.TICKPERIOD); // 10min = 600000ms*/
     }
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].

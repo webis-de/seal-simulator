@@ -25,7 +25,7 @@ class InteractionModule {
      * Is used to create a new [[InteractionModule]] from a json file.
      * @param See [[IInteractionModule]] for more documentation.
      */
-    constructor({ url, id, executionTime = "1200", subscriptions = [], type }) {
+    constructor({ url, id, executionTime = "12:00", subscriptions = [], type }) {
         this.url = url;
         if (id == undefined) {
             throw new Error("ID cant be left empty when creating an Interaction Module");

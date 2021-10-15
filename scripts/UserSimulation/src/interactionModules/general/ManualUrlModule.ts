@@ -18,7 +18,7 @@ export class ManualUrlModule extends InteractionModule{
             id: 0,
             url: url,
             type : InteractionModuleType.ManualUrl,
-            executionTime : "start"
+            executionTime : "atStart"
         });
     }
 

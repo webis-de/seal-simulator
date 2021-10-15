@@ -9,9 +9,9 @@ class Time {
     /**
      *
      * @param string Pass a time as a string. \
-     * "1000" for 10:00
-     * "1230" for 12:30
-     * "905" for 9:05
+     * "10:00" for 10:00
+     * "12:30" for 12:30
+     * "09:05" for 9:05
      * "start" will be executed once at the start of the simulation.
      */
     constructor(time) {
@@ -24,16 +24,10 @@ class Time {
             case "number":
                 this._time = 0; // will be overwritten
                 this._timeAsString = ""; // will be overwritten
-                this.timeAsString = time;
+                this.time = time;
                 break;
             default:
                 throw new Error("Time needs to be a String or a Number");
-        }
-        if (time)
-            type == string;
-        {
-        }
-        {
         }
     }
     set timeAsString(time) {
@@ -43,16 +37,24 @@ class Time {
     }
     set time(time) {
         this._time = time;
-        this._timeAsString =
-        ;
+        this._timeAsString = this.convertTimeToStringTime(time);
+        this.checkTime();
     }
     convertStringTimeToTime(timeAsString) {
         if (timeAsString == "atStart") {
             return -1;
         }
+        if (!timeAsString.includes(":") && timeAsString.length >= 4 && timeAsString.length <= 5)
+            throw Error("The Time is not in the right format. it needs to be like \"hh:mm\" or \"atStart\"");
         let splitedStrings = timeAsString.split(":");
         let hours = parseInt(splitedStrings[0]);
+        if (hours > 24) {
+            throw Error("The time can't have more than 24 hours.");
+        }
         let minutes = parseInt(splitedStrings[1]);
+        if (minutes >= 60) {
+            throw Error("The time can't have more than 60 minutes.");
+        }
         return hours * 60 + minutes;
     }
     convertTimeToStringTime(time) {
@@ -60,8 +62,8 @@ class Time {
             return "atStart";
         }
         let hours = Math.floor(time / 60);
-        let minutes = parseInt(splitedStrings[1]);
-        return `${}:${}`;
+        let minutes = time - (hours * 60);
+        return `${hours}:${minutes}`;
     }
     isNow() {
         let now = new Date();
@@ -79,11 +81,25 @@ class Time {
         }
     }
     plus(time) {
-        let newTime = new Time(time._time + this._time);
-        while (newTime > 1440) {
-            newTime.
-            ;
-        }
+        // let newTime = new Time( this._time + time._time)
+        /*while(newTime._time > 1440){
+            newTime = newTime.minus(new Time(1440))
+        }*/
+        return this._time + time._time;
+    }
+    minus(time) {
+        // let newTime = new Time( this._time - time._time)
+        /*while(newTime._time < 0){
+            newTime = newTime.plus(new Time(1440))
+        }*/
+        return this._time - time._time;
+    }
+    equals(time) {
+        return (time._time == this._time);
+    }
+    static getCurrentTime() {
+        let now = new Date();
+        return new Time(now.getHours() * 60 + now.getMinutes());
     }
     checkTime() {
         if (this._time < -1 || this._time > 1440) {
