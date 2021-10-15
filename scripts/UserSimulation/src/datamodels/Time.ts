@@ -5,8 +5,18 @@ import {TICKPERIOD} from "../Constants";
  */
 
 export class Time {
-    time?: number
-    atStart: boolean
+    /**
+     * 0 till 1440 represents all minutes of a Day
+     * -1 means execute at Start
+     * @private
+     */
+    private _time: integer
+
+    /**
+     * Displayes the execution Time of the Transaction Module in format "hh:mm" or "atStart"
+     * @private
+     */
+    private _timeAsString : string
 
     /**
      *
@@ -17,14 +27,57 @@ export class Time {
      * "start" will be executed once at the start of the simulation.
      */
 
-    constructor(string: string) {
-        this.atStart = false
-        if (string == "start") {
-            this.atStart = true
-        } else {
-            this.time = parseInt(string)
+    constructor(time : any) {
+        switch (typeof time) {
+            case "string":
+                this._time = 0 // will be overwritten
+                this._timeAsString = "" // will be overwritten
+                this.timeAsString = time
+                break;
+            case "number":
+                this._time = 0 // will be overwritten
+                this._timeAsString = "" // will be overwritten
+                this.timeAsString = time
+                break;
+            default:
+                throw new Error("Time needs to be a String or a Number")
+        }
+        if(time type == string){
+
+        }else{
+
         }
 
+    }
+
+    set timeAsString(time : string){
+        this._timeAsString = time
+        this._time = this.convertStringTimeToTime(time)
+        this.checkTime()
+    }
+
+    set time(time : number){
+        this._time = time
+        this._timeAsString =
+    }
+
+    convertStringTimeToTime(timeAsString : string) : number {
+        if(timeAsString == "atStart"){
+            return -1
+        }
+        let splitedStrings = timeAsString.split(":")
+        let hours = parseInt(splitedStrings[0])
+        let minutes = parseInt(splitedStrings[1])
+        return hours*60 + minutes
+    }
+
+    convertTimeToStringTime(time : number) : string{
+        if(time == -1){
+            return "atStart"
+        }
+        let hours = Math.floor(time / 60)
+        let minutes = parseInt(splitedStrings[1])
+        return `${}:${}`
     }
 
     isNow() : boolean{
@@ -42,17 +95,24 @@ export class Time {
         }
     }
 
+    plus(time : Time): Time {
+        let newTime = new Time(time._time + this._time)
+        while(newTime > 1440){
+            newTime.
+        }
+    }
+
+    private checkTime(){
+        if(this._time < -1 || this._time >1440){
+            throw new Error("The Time needs to be between -1 and 1440")
+        }
+    }
+
     executeOnFirstStart() : boolean{
-        return this.atStart
+        return (this._time == -1)
     }
 
     toString(){
-        if(this.time != null){
-            return this.time.toString()
-        }else if (this.atStart){
-            return "start"
-        }else {
-            return ""
-        }
+        return this._timeAsString
     }
 }

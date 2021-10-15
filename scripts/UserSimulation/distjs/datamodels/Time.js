@@ -14,14 +14,54 @@ class Time {
      * "905" for 9:05
      * "start" will be executed once at the start of the simulation.
      */
-    constructor(string) {
-        this.atStart = false;
-        if (string == "start") {
-            this.atStart = true;
+    constructor(time) {
+        switch (typeof time) {
+            case "string":
+                this._time = 0; // will be overwritten
+                this._timeAsString = ""; // will be overwritten
+                this.timeAsString = time;
+                break;
+            case "number":
+                this._time = 0; // will be overwritten
+                this._timeAsString = ""; // will be overwritten
+                this.timeAsString = time;
+                break;
+            default:
+                throw new Error("Time needs to be a String or a Number");
         }
-        else {
-            this.time = parseInt(string);
+        if (time)
+            type == string;
+        {
         }
+        {
+        }
+    }
+    set timeAsString(time) {
+        this._timeAsString = time;
+        this._time = this.convertStringTimeToTime(time);
+        this.checkTime();
+    }
+    set time(time) {
+        this._time = time;
+        this._timeAsString =
+        ;
+    }
+    convertStringTimeToTime(timeAsString) {
+        if (timeAsString == "atStart") {
+            return -1;
+        }
+        let splitedStrings = timeAsString.split(":");
+        let hours = parseInt(splitedStrings[0]);
+        let minutes = parseInt(splitedStrings[1]);
+        return hours * 60 + minutes;
+    }
+    convertTimeToStringTime(time) {
+        if (time == -1) {
+            return "atStart";
+        }
+        let hours = Math.floor(time / 60);
+        let minutes = parseInt(splitedStrings[1]);
+        return `${}:${}`;
     }
     isNow() {
         let now = new Date();
@@ -38,19 +78,23 @@ class Time {
             return false;
         }
     }
+    plus(time) {
+        let newTime = new Time(time._time + this._time);
+        while (newTime > 1440) {
+            newTime.
+            ;
+        }
+    }
+    checkTime() {
+        if (this._time < -1 || this._time > 1440) {
+            throw new Error("The Time needs to be between -1 and 1440");
+        }
+    }
     executeOnFirstStart() {
-        return this.atStart;
+        return (this._time == -1);
     }
     toString() {
-        if (this.time != null) {
-            return this.time.toString();
-        }
-        else if (this.atStart) {
-            return "start";
-        }
-        else {
-            return "";
-        }
+        return this._timeAsString;
     }
 }
 exports.Time = Time;
