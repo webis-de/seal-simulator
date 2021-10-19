@@ -8,14 +8,14 @@ const fs = require('fs');
  *
  */
 class SessionManagement {
-    constructor(user, browser, outputDirectory) {
+    constructor(user, browserContext, outputDirectory) {
         this.user = user;
-        this.browser = browser;
-        this.context = null;
+        this.context = browserContext;
         let outputConfiguration = new OutputConfiguration_1.OutputConfiguration(outputDirectory, user);
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration;
     }
+
     /**
      * Setup Session by doing following steps:
      * 1. Get the Device and assign it to the Session
@@ -32,16 +32,11 @@ class SessionManagement {
             //
             contextOptions.storageState = sessionPath;
         }
-        this.context = await this.browser.newContext(contextOptions);
         /* PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
              blocker.enableBlockingInPage(page);
          });*/
         // this.context.storageState({path: sessionPath})
         // Start tracing before creating/navigating a page.
-        await this.context.tracing.start({
-            screenshots: true,
-            snapshots: true
-        });
         if (SessionManagement.sessionCounter == undefined) {
             SessionManagement.sessionCounter = 0;
             for (const indexModul of this.user.modules) {
@@ -62,11 +57,12 @@ class SessionManagement {
      */
     async finishSession() {
         this.outputConfiguration.writeOutput();
-        await this.getContext().storageState({ path: this.outputConfiguration.getSessionStatePath() });
-        await this.getContext().tracing.stop({
-            path: this.outputConfiguration.getNewFilelocation("trace.zip")
-        });
-        await this.getContext().close();
+        // await this.getContext().storageState({ path: this.outputConfiguration.getSessionStatePath() });
+        /*await this.getContext().tracing.stop(
+            {
+                path: this.outputConfiguration.getNewFilelocation("trace.zip")
+            })*/
+        // await this.getContext().close()
     }
     getContext() {
         if (this.context == null) {

@@ -8,7 +8,7 @@ import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";
 import {expect} from "playwright/types/test";
 import Console = Protocol.Console;
 import {TICKPERIOD} from "./Constants";
-import {SessionManagement} from "./io/SessionManagement";
+const seal = require('../../../lib/index');
 import {UnitTests} from "./tests/UnitTests";
 
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
@@ -51,22 +51,19 @@ export class SealScript extends AbstractSealScript {
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
      */
-    async main(browserContext: any, outputDirectory: string): Promise<void> {
+    async main(browserContexts: any, outputDirectory: string): Promise<void> {
 
         // console.log("Started Simulation")
-        const browser = await chromium.launch({
-                headless: false
-            }
-        );
+        const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
 
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
 
-        await runSimulations(this.user, browser, outputDirectory)
+        await runSimulations(this.user, browserContext, outputDirectory)
 
-        await browser.close();
+        // await browser.close();
     }
 
 
