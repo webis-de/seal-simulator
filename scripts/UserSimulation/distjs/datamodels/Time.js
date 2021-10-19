@@ -66,19 +66,30 @@ class Time {
         return `${hours}:${minutes}`;
     }
     isNow() {
-        let now = new Date();
-        let dateStringNow = now.getHours().toString() + now.getMinutes().toString(); // "930"
-        let timePeriod = Constants_1.TICKPERIOD / 60000; // timeperiod in min
-        if (this.time != null) {
-            // TODO 1000 - 930 = 70 ... Liegt aber nur 30 min zurück nicht 70. Besser mit echten Zeiten rechnen
-            // Less than 0 means execution is in future.
-            let timeDifference = parseInt(dateStringNow) - this.time;
-            // timeDifference needs to be between 0 and the timePeriod of the ExecutionIntervall
-            return (timeDifference < timePeriod && timeDifference >= 0);
-        }
-        else {
+        /**
+         * check if it the Module should be executed Only Once
+         */
+        if (this.executeOnFirstStart()) {
             return false;
         }
+        /**
+         * Sets the timer for the periodicly executing SealScript
+         */
+        let timePeriod = Constants_1.TICKPERIOD / 60000;
+        let currentTime = Time.getCurrentTime();
+        let timeDifference = currentTime.minus(this);
+        return (timeDifference < timePeriod && timeDifference >= 0);
+        /*let dateStringNow = now.getHours().toString() + now.getMinutes().toString() // "930"
+         // timeperiod in min
+        if(this.time != null) {
+            // TODO 1000 - 930 = 70 ... Liegt aber nur 30 min zurück nicht 70. Besser mit echten Zeiten rechnen
+            // Less than 0 means execution is in future.
+            let timeDifference = parseInt(dateStringNow) - this.time
+            // timeDifference needs to be between 0 and the timePeriod of the ExecutionIntervall
+            return (timeDifference < timePeriod && timeDifference >= 0)
+        }else{
+            return false
+        }*/
     }
     plus(time) {
         // let newTime = new Time( this._time + time._time)

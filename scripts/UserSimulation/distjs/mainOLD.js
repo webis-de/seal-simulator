@@ -61,10 +61,10 @@ async function runTestSimulation(browser, inputDirectory) {
     /**
      * Load 3 users programmatically. (Works)
      */
-        // let andrea = ANDREA
-        // let loganlucky = LOGANLUCKY
-        // let lena = LENA
-        // let usermodels = [andrea, loganlucky,lena]
+    // let andrea = ANDREA
+    // let loganlucky = LOGANLUCKY
+    // let lena = LENA
+    // let usermodels = [andrea, loganlucky,lena]
     let usermodels = UsermodelLoading_1.readUsermodelFormInputDirectory(inputDirectory);
     /* writeUsermodel(andrea, "andrea.json")
      writeUsermodel(loganlucky, "loganlucky.json")*/

@@ -41,7 +41,17 @@ export class UnitTests{
 
         // Test 4
         let time5 = Time.getCurrentTime() // User Debugging to see if the time is right
+        if(!time5.isNow()){
+            throw Error(`Test failed, the current Time is not created right or the time check is broken.`)
+        }
         // console.log(time5)
+
+        //Test 5
+        //Change Time one that is accepted (e.g. 10 min in past)
+        let time6 = new Time("11:20")
+        if(!time6.isNow()){
+        //    throw Error(`Test failed, the current Time is not created right or the time check is broken.`)
+        }
 
     }
 }
