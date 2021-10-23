@@ -15,7 +15,6 @@ class SessionManagement {
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration;
     }
-
     /**
      * Setup Session by doing following steps:
      * 1. Get the Device and assign it to the Session
@@ -57,7 +56,7 @@ class SessionManagement {
      */
     async finishSession() {
         this.outputConfiguration.writeOutput();
-        // await this.getContext().storageState({ path: this.outputConfiguration.getSessionStatePath() });
+        await this.getContext().storageState({ path: this.outputConfiguration.getSessionStatePath() });
         /*await this.getContext().tracing.stop(
             {
                 path: this.outputConfiguration.getNewFilelocation("trace.zip")

@@ -31,7 +31,6 @@ class SealScript extends AbstractSealScript {
             await this.main(browserContext, outputDirectory);
         }, Constants_1.TICKPERIOD); // 10min = 600000ms*/
     }
-
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
      */
@@ -45,7 +44,6 @@ class SealScript extends AbstractSealScript {
         await UsermodelLoading_1.runSimulations(this.user, browserContext, outputDirectory);
         // await browser.close();
     }
-
     getContextOptions() {
         let contextOptions = this.user.contextOptions;
         if (this.inputConfiguration.sessionPathExists()) {

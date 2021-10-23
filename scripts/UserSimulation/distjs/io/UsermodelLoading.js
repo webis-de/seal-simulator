@@ -106,7 +106,6 @@ async function runInteractionModules(sessionManagement) {
         }
     }
 }
-
 async function runSimulations(user, browserContext, outputDirectory) {
     /*for (let user of users) {
     }*/
