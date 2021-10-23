@@ -17,19 +17,17 @@ const fs = require('fs');
  */
 export class SessionManagement {
     user: Usermodel
-    browser: Browser
-    private context: BrowserContext | null
+    private context: BrowserContext
     outputConfiguration: OutputConfiguration
     // tempConfiguration: TempConfiguration
 
     static sessionCounter : number
 
-    constructor(user: Usermodel, browser: Browser, outputDirectory : string) {
+    constructor(user: Usermodel, browserContext: BrowserContext, outputDirectory: string) {
         this.user = user
-        this.browser = browser
-        this.context = null
+        this.context = browserContext
 
-        let outputConfiguration = new OutputConfiguration(outputDirectory,user)
+        let outputConfiguration = new OutputConfiguration(outputDirectory, user)
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration
     }
@@ -53,7 +51,6 @@ export class SessionManagement {
             contextOptions.storageState = sessionPath
         }
 
-        this.context = await this.browser.newContext(contextOptions)
 
        /* PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
             blocker.enableBlockingInPage(page);
@@ -61,11 +58,6 @@ export class SessionManagement {
 
         // this.context.storageState({path: sessionPath})
         // Start tracing before creating/navigating a page.
-        await this.context.tracing.start(
-            {
-                screenshots: true,
-                snapshots: true
-            });
 
         if(SessionManagement.sessionCounter == undefined){
             SessionManagement.sessionCounter = 0
@@ -90,11 +82,11 @@ export class SessionManagement {
     async finishSession() {
         this.outputConfiguration.writeOutput()
         await this.getContext().storageState({path: this.outputConfiguration.getSessionStatePath()})
-        await this.getContext().tracing.stop(
+        /*await this.getContext().tracing.stop(
             {
                 path: this.outputConfiguration.getNewFilelocation("trace.zip")
-            })
-        await this.getContext().close()
+            })*/
+        // await this.getContext().close()
     }
 
     getContext(): BrowserContext {

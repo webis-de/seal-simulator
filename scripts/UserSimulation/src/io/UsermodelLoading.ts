@@ -2,7 +2,7 @@ import {Usermodel} from "../datamodels/Usermodel";
 import {InteractionModule, traceModule} from "../interactionModules/InteractionModule";
 import {OutputConfiguration} from "./OutputConfiguration";
 import {Protocol} from "playwright/types/protocol";
-import {Browser} from "playwright";
+import {Browser, BrowserContext} from "playwright";
 import {INPUTUSERMODELFOLDER, TEMPFOLDER} from "../Constants";
 import {SessionManagement} from "./SessionManagement";
 import * as fs from 'fs';
@@ -93,11 +93,11 @@ async function runInteractionModules(sessionManagement: SessionManagement) {
     }
 }
 
-export async function runSimulations(user: Usermodel, browser: Browser, outputDirectory: string) {
+export async function runSimulations(user: Usermodel, browserContext: BrowserContext, outputDirectory: string) {
     /*for (let user of users) {
     }*/
 
-    let sessionManager = new SessionManagement(user, browser, outputDirectory)
+    let sessionManager = new SessionManagement(user, browserContext, outputDirectory)
 
     await sessionManager.setupSession()
 

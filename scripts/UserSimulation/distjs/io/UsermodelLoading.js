@@ -106,10 +106,11 @@ async function runInteractionModules(sessionManagement) {
         }
     }
 }
-async function runSimulations(user, browser, outputDirectory) {
+
+async function runSimulations(user, browserContext, outputDirectory) {
     /*for (let user of users) {
     }*/
-    let sessionManager = new SessionManagement_1.SessionManagement(user, browser, outputDirectory);
+    let sessionManager = new SessionManagement_1.SessionManagement(user, browserContext, outputDirectory);
     await sessionManager.setupSession();
     await runInteractionModules(sessionManager);
     await sessionManager.finishSession();

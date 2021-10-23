@@ -18,13 +18,13 @@ program
         + '--script-directory <directory> '
         + '--output-directory <directory>')
     .description("Runs a user simulation using the script in --script-directory")
-  .requiredOption('-s, --script-directory <directory>',
-    'the directory containing the SealScript.js and other run-independent '
-    + 'files for the user simulation script')
-  .option('-i, --input-directory <directory>',
-      'the directory containing files for this specific run; if "-" creates a '
-      + 'temporary directory containing a '
-      + seal.constants.SCRIPT_CONFIGURATION_FILE + ' read from standard input')
+    .requiredOption('-s, --script-directory <directory>',
+        'the directory containing the SealScript.js and other run-independent '
+        + 'files for the user simulation script')
+    .option('-i, --input-directory <directory>',
+        'the directory containing files for this specific run; if "-" creates a '
+        + 'temporary directory containing a '
+        + seal.constants.SCRIPT_CONFIGURATION_FILE + ' read from standard input')
     .requiredOption('-o, --output-directory <directory>',
         'the directory to write the run output to (can later be --input-directory '
         + 'for another run to continue this one)')
@@ -71,9 +71,9 @@ function getInputDirectory(options) {
             file: configurationFile,
             configuration: JSON.parse(configurationString)
         });
-    fs.writeFileSync(configurationFile, configurationString);
-    return inputDirectory;
-  }
+        fs.writeFileSync(configurationFile, configurationString);
+        return inputDirectory;
+    }
 }
 
 function getRunOptions(options) {
@@ -84,15 +84,15 @@ function getRunOptions(options) {
   if (options.har !== undefined) {
     runOptions[seal.constants.RUN_OPTION_HAR] = true;
   }
-  if (options.video !== undefined) {
-    if (options.video === true) {
-        runOptions[seal.constants.RUN_OPTION_VIDEO_SCALE_FACTOR] =
-            seal.constants.RUN_OPTION_VIDEO_SCALE_FACTOR_DEFAULT;
-    } else {
-        runOptions[seal.constants.RUN_OPTION_VIDEO_SCALE_FACTOR] =
-            parseFloat(options.video);
+    if (options.video !== undefined) {
+        if (options.video === true) {
+            runOptions[seal.constants.RUN_OPTION_VIDEO_SCALE_FACTOR] =
+                seal.constants.RUN_OPTION_VIDEO_SCALE_FACTOR_DEFAULT;
+        } else {
+            runOptions[seal.constants.RUN_OPTION_VIDEO_SCALE_FACTOR] =
+                parseFloat(options.video);
+        }
     }
-  }
     if (options.tracing !== undefined) {
         runOptions[seal.constants.RUN_OPTION_TRACING] = true;
     }
