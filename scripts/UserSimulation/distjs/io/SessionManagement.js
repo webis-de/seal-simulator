@@ -11,9 +11,15 @@ class SessionManagement {
     constructor(user, browserContext, outputDirectory) {
         this.user = user;
         this.context = browserContext;
+        // this works for some reason
+        this.mainOLD(browserContext);
         let outputConfiguration = new OutputConfiguration_1.OutputConfiguration(outputDirectory, user);
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration;
+    }
+    async mainOLD(browserContext) {
+        console.log("From Main Old");
+        let page = await browserContext.newPage();
     }
     /**
      * Setup Session by doing following steps:
@@ -56,7 +62,7 @@ class SessionManagement {
      */
     async finishSession() {
         this.outputConfiguration.writeOutput();
-        await this.getContext().storageState({ path: this.outputConfiguration.getSessionStatePath() });
+        // await this.getContext().storageState({path: this.outputConfiguration.getSessionStatePath()})
         /*await this.getContext().tracing.stop(
             {
                 path: this.outputConfiguration.getNewFilelocation("trace.zip")

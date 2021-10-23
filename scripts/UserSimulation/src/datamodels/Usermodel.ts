@@ -6,6 +6,7 @@ import {Time} from "./Time";
 import {ManualUrlModule} from "../interactionModules/general/ManualUrlModule";
 import {BrowserContextOptions, Geolocation} from "playwright";
 import {ContextOptions} from "./ContextOptions";
+import {arrayToJson} from "../io/UsermodelLoading";
 
 /**
  * The format of the json files that can be Used as an input.
@@ -68,7 +69,7 @@ export interface IUsermodel {
 export class Usermodel {
     name: string
     contextOptions : ContextOptions
-    intrests: Influence[]
+    interests: Influence[]
     influencedBy: Influence[]
     freqentlyVisits: InteractionModule[]
     useBuilder: boolean
@@ -101,7 +102,7 @@ export class Usermodel {
                     geolocation = undefined
                 }: IUsermodel) {
         this.name = name
-        this.intrests = interests
+        this.interests = interests
         this.influencedBy = influencedBy
         this.useBuilder = useBuilder
         this.freqentlyVisits = []
@@ -113,9 +114,9 @@ export class Usermodel {
         })
 
         for (let im of freqentlyVisits) {
-            switch (+InteractionModuleType[im.type]) {
+            switch (im.type) {
                 case InteractionModuleType.OpenUrl: {
-                    this.freqentlyVisits.push(new OpenUrlModule({url : im.url}))
+                    this.freqentlyVisits.push(new OpenUrlModule({url : im.url, executionTime : im.executionTime.toString()}))
                     break
                 }
                 case InteractionModuleType.ManualUrl: {
@@ -124,7 +125,7 @@ export class Usermodel {
                 }
                 default: {
                     // Solution from: https://github.com/microsoft/TypeScript/issues/17198
-                    let allPossibleInteractionModuleTypes = Object.keys(InteractionModuleType).filter(k => typeof InteractionModuleType[k as any] === `number`)
+                    let allPossibleInteractionModuleTypes = Object.values(InteractionModuleType)
                     console.log(`No Module found for ... Please only use ${allPossibleInteractionModuleTypes}`)
                     break
                 }
@@ -149,9 +150,9 @@ export class Usermodel {
             locale : this.contextOptions.locale,
             timezoneId : this.contextOptions.timezoneId,
             geolocation : this.contextOptions.geolocation,
-            interests : this.intrests,
+            interests : this.interests,
             influencedBy : this.influencedBy,
-            freqentlyVisits : this.freqentlyVisits,
+            freqentlyVisits : arrayToJson(this.freqentlyVisits),
             useBuilder : this.useBuilder
         }
     }

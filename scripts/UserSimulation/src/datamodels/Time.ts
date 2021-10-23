@@ -148,4 +148,8 @@ export class Time {
     toString(){
         return this._timeAsString
     }
+
+    toJson(){
+        return this.toString()
+    }
 }

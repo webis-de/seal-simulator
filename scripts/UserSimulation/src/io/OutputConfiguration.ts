@@ -39,12 +39,15 @@ export class OutputConfiguration {
         this._date = new Date()
 
         this._directory = `${outputDirectory}/scriptOutput`
+        this.directory // Will create the folder if not there
         this._outDirectory = `${(this._directory)}/${this.dateFormated}`
         this._tempDirectory = `${this._directory}/temp`
+        this.directory // Will create the folder if not there
 
         this._user = user
         this._fileCounter = 0
 
+        this.writeOutput()
 
     }
 

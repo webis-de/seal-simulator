@@ -10,15 +10,15 @@ var InteractionModuleType;
     /**
      * See [[OpenUrlModule]]
      */
-    InteractionModuleType[InteractionModuleType["OpenUrl"] = 0] = "OpenUrl";
+    InteractionModuleType["OpenUrl"] = "OpenUrl";
     /**
      * See [[YouTubeAboModule]]
      */
-    InteractionModuleType[InteractionModuleType["YouTubeAbo"] = 1] = "YouTubeAbo";
+    InteractionModuleType["YouTubeAbo"] = "YouTubeAbo";
     /**
      * See [[ManualUrlModule]]
      */
-    InteractionModuleType[InteractionModuleType["ManualUrl"] = 2] = "ManualUrl";
+    InteractionModuleType["ManualUrl"] = "ManualUrl";
 })(InteractionModuleType = exports.InteractionModuleType || (exports.InteractionModuleType = {}));
 class InteractionModule {
     /**
@@ -39,6 +39,18 @@ class InteractionModule {
             this.type = type;
         this.executionTime = new Time_1.Time(executionTime);
         this.subscriptions = subscriptions;
+    }
+    toString() {
+        return this.toJson();
+    }
+    toJson() {
+        return {
+            url: this.url,
+            id: this.id,
+            type: this.type,
+            executionTime: this.executionTime.toJson(),
+            subscriptions: this.subscriptions
+        };
     }
 }
 exports.InteractionModule = InteractionModule;

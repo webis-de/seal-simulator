@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runSimulations = exports.readUsermodelFormInputDirectory = exports.writeUsermodel = void 0;
+exports.arrayToJson = exports.runSimulations = exports.readUsermodelFormInputDirectory = exports.writeUsermodel = void 0;
 const Usermodel_1 = require("../datamodels/Usermodel");
 const Constants_1 = require("../Constants");
 const SessionManagement_1 = require("./SessionManagement");
@@ -115,3 +115,7 @@ async function runSimulations(user, browserContext, outputDirectory) {
     await sessionManager.finishSession();
 }
 exports.runSimulations = runSimulations;
+function arrayToJson(array) {
+    return array.map(value => value.toJson());
+}
+exports.arrayToJson = arrayToJson;

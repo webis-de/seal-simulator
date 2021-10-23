@@ -106,3 +106,8 @@ export async function runSimulations(user: Usermodel, browserContext: BrowserCon
     await sessionManager.finishSession()
 
 }
+
+export function arrayToJson(array : any[]): any {
+    return array.map( value  => value.toJson())
+}
+

@@ -13,15 +13,16 @@ export enum InteractionModuleType{
     /**
      * See [[OpenUrlModule]]
      */
-    OpenUrl,
+    OpenUrl= "OpenUrl",
     /**
      * See [[YouTubeAboModule]]
      */
-    YouTubeAbo,
+    YouTubeAbo = "YouTubeAbo",
     /**
      * See [[ManualUrlModule]]
      */
-    ManualUrl
+    ManualUrl = "ManualUrl"
+
 }
 /**
  * Minimum requirements for every interaction module.
@@ -104,6 +105,19 @@ export abstract class InteractionModule {
      */
     abstract runModuleSetup(sessionManagement : SessionManagement) :  Promise<void>
 
+    toString(): any{
+        return this.toJson()
+    }
+
+    toJson() : any{
+        return {
+            url : this.url,
+            id : this.id,
+            type : this.type,
+            executionTime : this.executionTime.toJson(),
+            subscriptions  : this.subscriptions
+        }
+    }
 }
 
 /**

@@ -1,5 +1,5 @@
 import {Usermodel} from "../datamodels/Usermodel";
-import {Browser, BrowserContext, BrowserContextOptions, devices} from "playwright";
+import {Browser, BrowserContext, BrowserContextOptions, chromium, devices} from "playwright";
 import {OutputConfiguration} from "./OutputConfiguration";
 import {OUTPUTDIRECTORY, TEMPFOLDER} from "../Constants";
 // import {TempConfiguration} from "./TempConfiguration";
@@ -27,9 +27,18 @@ export class SessionManagement {
         this.user = user
         this.context = browserContext
 
+        // this works for some reason
+        this.mainOLD(browserContext)
+
         let outputConfiguration = new OutputConfiguration(outputDirectory, user)
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration
+    }
+
+    async mainOLD(browserContext : BrowserContext): Promise<void> {
+
+        console.log("From Main Old");
+        let page = await browserContext.newPage()
     }
 
     /**
@@ -81,7 +90,7 @@ export class SessionManagement {
      */
     async finishSession() {
         this.outputConfiguration.writeOutput()
-        await this.getContext().storageState({path: this.outputConfiguration.getSessionStatePath()})
+        // await this.getContext().storageState({path: this.outputConfiguration.getSessionStatePath()})
         /*await this.getContext().tracing.stop(
             {
                 path: this.outputConfiguration.getNewFilelocation("trace.zip")
