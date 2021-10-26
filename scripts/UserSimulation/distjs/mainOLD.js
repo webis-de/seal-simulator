@@ -65,7 +65,7 @@ async function runTestSimulation(browser, inputDirectory) {
     // let loganlucky = LOGANLUCKY
     // let lena = LENA
     // let usermodels = [andrea, loganlucky,lena]
-    let usermodels = UsermodelLoading_1.readUsermodels(inputDirectory);
+    let usermodels = UsermodelLoading_1.readUsermodelFormInputDirectory(inputDirectory);
     /* writeUsermodel(andrea, "andrea.json")
      writeUsermodel(loganlucky, "loganlucky.json")*/
     // await runSimulations(usermodels,browser,inputDirectory)

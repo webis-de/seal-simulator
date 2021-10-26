@@ -6,7 +6,7 @@ const path = require('path');
 const seal = require('seal-simulator');
 
 const NAME = "ImageSearch";
-const VERSION = "1.0.0";
+const VERSION = "0.1.0";
 
 const SCRIPT_OPTION_QUERY = "query";
 const SCRIPT_OPTION_NUM_PAGES = "numPages";

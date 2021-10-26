@@ -1,48 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SealScript = void 0;
-const playwright_1 = require("playwright");
 const UsermodelLoading_1 = require("./io/UsermodelLoading");
 const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const Constants_1 = require("./Constants");
+const seal = require('../../../lib/index');
+const UnitTests_1 = require("./tests/UnitTests");
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
     //TODO Build function that find all directorys in out and new input direktory
     constructor(scriptDirectory, inputDirectory) {
         super("UserSimulation", "1.0.0", scriptDirectory, inputDirectory);
-        console.log("extended");
         this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
         this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
-    run(browserContext, outputDirectory) {
+    async run(browserContext, outputDirectory) {
+        /**
+         * runTests
+         */
+        UnitTests_1.UnitTests.runUnitTests();
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        this.main(browserContext, outputDirectory);
+        await this.main(browserContext, outputDirectory);
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
         const intervalObj = setInterval(async () => {
             await this.main(browserContext, outputDirectory);
         }, Constants_1.TICKPERIOD); // 10min = 600000ms
+        let i = 3;
     }
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
      */
-    async main(browserContext, outputDirectory) {
-        // console.log("Started Simulation");
-        const browser = await playwright_1.chromium.launch({
-            headless: false
-        });
+    async main(browserContexts, outputDirectory) {
+        // console.log("Started Simulation")
+        const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
+        const page = await browserContext.newPage();
+        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
+        await page.pause();
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        await UsermodelLoading_1.runSimulations(this.user, browser, outputDirectory);
-        await browser.close();
+        await UsermodelLoading_1.runSimulations(this.user, browserContext, outputDirectory);
+        // await browser.close();
     }
-    getContextOptions() {
+    getBrowserContextsOptions() {
         let contextOptions = this.user.contextOptions;
         if (this.inputConfiguration.sessionPathExists()) {
             //

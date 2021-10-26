@@ -16,7 +16,7 @@ class ManualUrlModule extends InteractionModule_1.InteractionModule {
             id: 0,
             url: url,
             type: InteractionModule_1.InteractionModuleType.ManualUrl,
-            executionTime: "start"
+            executionTime: "atStart"
         });
     }
     /**

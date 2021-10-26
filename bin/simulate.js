@@ -12,18 +12,19 @@ const seal = require('../lib/index.js');
 ////////////////////////////////////////////////////////////////////////////////
 
 // Declare
-program.version(seal.constants.VERSION);
 program
+  .version(seal.constants.VERSION)
+  .usage('[options] '
+    + '--script-directory <directory> '
+    + '--output-directory <directory>')
+  .description("Runs a user simulation using the script in --script-directory")
   .requiredOption('-s, --script-directory <directory>',
     'the directory containing the SealScript.js and other run-independent '
     + 'files for the user simulation script')
   .option('-i, --input-directory <directory>',
-    'the directory containing files for this specific run (conflicts with '
-    + '--configuration-from-stdin)')
-  .option('-c, --configuration-from-stdin',
-    'create and use a temporary --input-directory containing a '
-    + seal.constants.SCRIPT_CONFIGURATION_FILE + ' read from standard '
-    + 'input (conflicts with --input-directory)')
+    'the directory containing files for this specific run; if "-" creates a '
+    + 'temporary directory containing a '
+    + seal.constants.SCRIPT_CONFIGURATION_FILE + ' read from standard input')
   .requiredOption('-o, --output-directory <directory>',
     'the directory to write the run output to (can later be --input-directory '
     + 'for another run to continue this one)')
@@ -34,12 +35,13 @@ program
   .option('-v, --video [scale-factor]',
     'store a video recording of the run, and optionally set its scale factor '
     + 'based on the viewport')
-  .option('-t, --tracing', 'store a playwright trace of the run');
+  .option('-t, --tracing', 'store a playwright trace of the run')
+  .option('-x, --insecure', 'ignore HTTPS errors');
 
 // Parse
 program.parse(process.argv);
 const options = program.opts();
-seal.log('start', { version: seal.constants.VERSION, options: options });
+seal.log('start', options);
 
 const scriptDirectory = path.resolve(options.scriptDirectory);
 const inputDirectory = getInputDirectory(options);
@@ -58,18 +60,14 @@ script.start(outputDirectory, runOptions);
 ////////////////////////////////////////////////////////////////////////////////
 
 function getInputDirectory(options) {
-  if (options.configurationFromStdin === undefined) {
+  if (options.inputDirectory !== "-") {
     return options.inputDirectory;
   } else {
-    if (options.inputDirectory !== undefined) {
-      throw new Error("--input-directory and --configuration-from-stdin can not "
-        + "be specified at the same time");
-    }
     const inputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "seal-input-"));
     const configurationString = fs.readFileSync(0); // read from STDIN
     const configurationFile =
       path.join(inputDirectory, seal.constants.SCRIPT_CONFIGURATION_FILE);
-    seal.log("configuration-from-stdin", {
+    seal.log("temporary-input-directory", {
       file: configurationFile,
       configuration: JSON.parse(configurationString)
     });
@@ -97,6 +95,9 @@ function getRunOptions(options) {
   }
   if (options.tracing !== undefined) {
     runOptions[seal.constants.RUN_OPTION_TRACING] = true;
+  }
+  if (options.insecure !== undefined) {
+    runOptions[seal.constants.RUN_OPTION_INSECURE] = true;
   }
   seal.log("run-options", runOptions);
   return runOptions;

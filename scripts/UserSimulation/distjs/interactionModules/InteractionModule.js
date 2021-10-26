@@ -10,22 +10,22 @@ var InteractionModuleType;
     /**
      * See [[OpenUrlModule]]
      */
-    InteractionModuleType[InteractionModuleType["OpenUrl"] = 0] = "OpenUrl";
+    InteractionModuleType["OpenUrl"] = "OpenUrl";
     /**
      * See [[YouTubeAboModule]]
      */
-    InteractionModuleType[InteractionModuleType["YouTubeAbo"] = 1] = "YouTubeAbo";
+    InteractionModuleType["YouTubeAbo"] = "YouTubeAbo";
     /**
      * See [[ManualUrlModule]]
      */
-    InteractionModuleType[InteractionModuleType["ManualUrl"] = 2] = "ManualUrl";
+    InteractionModuleType["ManualUrl"] = "ManualUrl";
 })(InteractionModuleType = exports.InteractionModuleType || (exports.InteractionModuleType = {}));
 class InteractionModule {
     /**
      * Is used to create a new [[InteractionModule]] from a json file.
      * @param See [[IInteractionModule]] for more documentation.
      */
-    constructor({ url, id, executionTime = "1200", subscriptions = [], type }) {
+    constructor({ url, id, executionTime = "12:00", subscriptions = [], type }) {
         this.url = url;
         if (id == undefined) {
             throw new Error("ID cant be left empty when creating an Interaction Module");
@@ -39,6 +39,18 @@ class InteractionModule {
             this.type = type;
         this.executionTime = new Time_1.Time(executionTime);
         this.subscriptions = subscriptions;
+    }
+    toString() {
+        return this.toJson();
+    }
+    toJson() {
+        return {
+            url: this.url,
+            id: this.id,
+            type: this.type,
+            executionTime: this.executionTime.toJson(),
+            subscriptions: this.subscriptions
+        };
     }
 }
 exports.InteractionModule = InteractionModule;

@@ -9,48 +9,122 @@ class Time {
     /**
      *
      * @param string Pass a time as a string. \
-     * "1000" for 10:00
-     * "1230" for 12:30
-     * "905" for 9:05
+     * "10:00" for 10:00
+     * "12:30" for 12:30
+     * "09:05" for 9:05
      * "start" will be executed once at the start of the simulation.
      */
-    constructor(string) {
-        this.atStart = false;
-        if (string == "start") {
-            this.atStart = true;
-        }
-        else {
-            this.time = parseInt(string);
+    constructor(time) {
+        switch (typeof time) {
+            case "string":
+                this._time = 0; // will be overwritten
+                this._timeAsString = ""; // will be overwritten
+                this.timeAsString = time;
+                break;
+            case "number":
+                this._time = 0; // will be overwritten
+                this._timeAsString = ""; // will be overwritten
+                this.time = time;
+                break;
+            default:
+                throw new Error("Time needs to be a String or a Number");
         }
     }
+    set timeAsString(time) {
+        this._timeAsString = time;
+        this._time = this.convertStringTimeToTime(time);
+        this.checkTime();
+    }
+    set time(time) {
+        this._time = time;
+        this._timeAsString = this.convertTimeToStringTime(time);
+        this.checkTime();
+    }
+    convertStringTimeToTime(timeAsString) {
+        if (timeAsString == "atStart") {
+            return -1;
+        }
+        if (!timeAsString.includes(":") && timeAsString.length >= 4 && timeAsString.length <= 5)
+            throw Error("The Time is not in the right format. it needs to be like \"hh:mm\" or \"atStart\"");
+        let splitedStrings = timeAsString.split(":");
+        let hours = parseInt(splitedStrings[0]);
+        if (hours > 24) {
+            throw Error("The time can't have more than 24 hours.");
+        }
+        let minutes = parseInt(splitedStrings[1]);
+        if (minutes >= 60) {
+            throw Error("The time can't have more than 60 minutes.");
+        }
+        return hours * 60 + minutes;
+    }
+    convertTimeToStringTime(time) {
+        if (time == -1) {
+            return "atStart";
+        }
+        let hours = Math.floor(time / 60);
+        let minutes = time - (hours * 60);
+        return `${hours}:${minutes}`;
+    }
     isNow() {
-        let now = new Date();
-        let dateStringNow = now.getHours().toString() + now.getMinutes().toString(); // "930"
-        let timePeriod = Constants_1.TICKPERIOD / 60000; // timeperiod in min
-        if (this.time != null) {
+        /**
+         * check if it the Module should be executed Only Once
+         */
+        if (this.executeOnFirstStart()) {
+            return false;
+        }
+        /**
+         * Sets the timer for the periodicly executing SealScript
+         */
+        let timePeriod = Constants_1.TICKPERIOD / 60000;
+        let currentTime = Time.getCurrentTime();
+        let timeDifference = currentTime.minus(this);
+        return (timeDifference < timePeriod && timeDifference >= 0);
+        /*let dateStringNow = now.getHours().toString() + now.getMinutes().toString() // "930"
+         // timeperiod in min
+        if(this.time != null) {
             // TODO 1000 - 930 = 70 ... Liegt aber nur 30 min zurück nicht 70. Besser mit echten Zeiten rechnen
             // Less than 0 means execution is in future.
-            let timeDifference = parseInt(dateStringNow) - this.time;
+            let timeDifference = parseInt(dateStringNow) - this.time
             // timeDifference needs to be between 0 and the timePeriod of the ExecutionIntervall
-            return (timeDifference < timePeriod && timeDifference >= 0);
-        }
-        else {
-            return false;
+            return (timeDifference < timePeriod && timeDifference >= 0)
+        }else{
+            return false
+        }*/
+    }
+    plus(time) {
+        // let newTime = new Time( this._time + time._time)
+        /*while(newTime._time > 1440){
+            newTime = newTime.minus(new Time(1440))
+        }*/
+        return this._time + time._time;
+    }
+    minus(time) {
+        // let newTime = new Time( this._time - time._time)
+        /*while(newTime._time < 0){
+            newTime = newTime.plus(new Time(1440))
+        }*/
+        return this._time - time._time;
+    }
+    equals(time) {
+        return (time._time == this._time);
+    }
+    static getCurrentTime() {
+        let now = new Date();
+        return new Time(now.getHours() * 60 + now.getMinutes());
+    }
+    checkTime() {
+        if (this._time < -1 || this._time > 1440) {
+            throw new Error("The Time needs to be between -1 and 1440");
         }
     }
     executeOnFirstStart() {
-        return this.atStart;
+        return (this._time == -1);
     }
     toString() {
-        if (this.time != null) {
-            return this.time.toString();
-        }
-        else if (this.atStart) {
-            return "start";
-        }
-        else {
-            return "";
-        }
+        return this._timeAsString;
+    }
+    toJson() {
+        return this.toString();
     }
 }
 exports.Time = Time;

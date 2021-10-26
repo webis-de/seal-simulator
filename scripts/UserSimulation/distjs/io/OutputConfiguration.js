@@ -14,11 +14,14 @@ class OutputConfiguration {
      */
     constructor(outputDirectory, user) {
         this._date = new Date();
-        this.directory = this.createIfNotThere(`${outputDirectory}/scriptOutput`);
-        this.outDirectory = this.createIfNotThere(`${(this.directory)}/${this.dateFormated}`);
-        this.tempDirectory = this.createIfNotThere(`${this.directory}/temp`);
+        this._directory = `${outputDirectory}/scriptOutput`;
+        this.directory; // Will create the folder if not there
+        this._outDirectory = `${(this._directory)}/${this.dateFormated}`;
+        this._tempDirectory = `${this._directory}/temp`;
+        this.directory; // Will create the folder if not there
         this._user = user;
         this._fileCounter = 0;
+        this.writeOutput();
     }
     /**
      * Write Output for next execution:
@@ -28,6 +31,24 @@ class OutputConfiguration {
     writeOutput() {
         this.writeUsermodel(this._user);
         this.writeContextOptions(this._user);
+    }
+    /**
+     * Create the directory just when its used
+     */
+    get directory() {
+        return this.createIfNotThere(this._directory);
+    }
+    /**
+     * Create the outDirectory just when its used
+     */
+    get outDirectory() {
+        return this.createIfNotThere(this._outDirectory);
+    }
+    /**
+     * Create the tempDirectory just when its used
+     */
+    get tempDirectory() {
+        return this.createIfNotThere(this._tempDirectory);
     }
     /**
      * @return Date in format "year-month-day"\
