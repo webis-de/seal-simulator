@@ -15,7 +15,7 @@ const SCRIPT_OPTION_IMAGE_TIMEOUT = "imageTimeout";
 const DEFAULT_IMAGE_TIMEOUT = 10 * 1000;
 
 const HOME_URL = "https://www.startpage.com/en/pics.html";
-const HOME_QUERY_BOX = "#query"
+const HOME_QUERY_BOX = "#q"
 
 exports.SealScript = class extends seal.AbstractSealScript {
 
@@ -39,6 +39,10 @@ exports.SealScript = class extends seal.AbstractSealScript {
     await page.goto(HOME_URL);
     await page.fill(HOME_QUERY_BOX, query);
     await page.keyboard.press("Enter");
+    await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
+    const imageSearchButton = await page.$('button:has-text("Images")');
+    await imageSearchButton.click();
     await page.waitForLoadState("domcontentloaded");
     await page.waitForLoadState("networkidle");
 
