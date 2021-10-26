@@ -15,7 +15,7 @@ class SealScript extends AbstractSealScript {
         this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
         this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
-    run(browserContext, outputDirectory) {
+    async run(browserContext, outputDirectory) {
         /**
          * runTests
          */
@@ -23,13 +23,14 @@ class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        this.main(browserContext, outputDirectory);
+        await this.main(browserContext, outputDirectory);
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
         const intervalObj = setInterval(async () => {
             await this.main(browserContext, outputDirectory);
-        }, Constants_1.TICKPERIOD); // 10min = 600000ms*/
+        }, Constants_1.TICKPERIOD); // 10min = 600000ms
+        let i = 3;
     }
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
@@ -37,6 +38,9 @@ class SealScript extends AbstractSealScript {
     async main(browserContexts, outputDirectory) {
         // console.log("Started Simulation")
         const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
+        const page = await browserContext.newPage();
+        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
+        await page.pause();
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
@@ -44,7 +48,7 @@ class SealScript extends AbstractSealScript {
         await UsermodelLoading_1.runSimulations(this.user, browserContext, outputDirectory);
         // await browser.close();
     }
-    getContextOptions() {
+    getBrowserContextsOptions() {
         let contextOptions = this.user.contextOptions;
         if (this.inputConfiguration.sessionPathExists()) {
             //

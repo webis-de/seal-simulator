@@ -30,7 +30,7 @@ export class SealScript extends AbstractSealScript {
     }
 
 
-    run(browserContext: any, outputDirectory: string) {
+    async run(browserContext: any, outputDirectory: string) {
         /**
          * runTests
          */
@@ -39,13 +39,15 @@ export class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        this.main(browserContext, outputDirectory)
+        await this.main(browserContext, outputDirectory)
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
         const intervalObj = setInterval(async () => {
             await this.main(browserContext, outputDirectory)
-        }, TICKPERIOD); // 10min = 600000ms*/
+        }, TICKPERIOD);// 10min = 600000ms
+
+        let i = 3
     }
 
     /**
@@ -54,7 +56,11 @@ export class SealScript extends AbstractSealScript {
     async main(browserContexts: any, outputDirectory: string): Promise<void> {
 
         // console.log("Started Simulation")
-        const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
+        const browserContext : BrowserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
+
+        const page = await browserContext.newPage()
+        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
+        await page.pause()
 
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
@@ -67,7 +73,7 @@ export class SealScript extends AbstractSealScript {
     }
 
 
-    getContextOptions(): BrowserContextOptions {
+    getBrowserContextsOptions(): BrowserContextOptions {
         let contextOptions: BrowserContextOptions = this.user.contextOptions
         if (this.inputConfiguration.sessionPathExists()) {
             //
