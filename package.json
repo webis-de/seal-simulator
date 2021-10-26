@@ -1,12 +1,9 @@
 {
   "name": "seal-simulator",
-  "version": "2.0.0",
+  "version": "0.2.0",
   "description": "Web user simulation and archiving framework",
   "main": "lib/index.js",
-  "files": [
-    "bin",
-    "lib"
-  ],
+  "files": [ "bin", "lib" ],
   "bin": {
     "seal-simulate": "bin/simulate.js",
     "seal-archive-proxy-start": "bin/archive-proxy-start.js"
@@ -17,7 +14,6 @@
   },
   "dependencies": {
     "fs-extra": "^10.0.0",
-    "npm": "^8.1.0",
     "playwright": "1.15.0"
   },
   "keywords": [

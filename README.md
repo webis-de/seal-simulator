@@ -5,8 +5,7 @@ Web user simulation and archiving framework.
 [[node](https://www.npmjs.com/package/seal-simulator)]
 [[docker](https://github.com/webis-de/seal-simulator/pkgs/container/seal-simulator)]
 
-## Quickstart
-
+## Quickstart 
 Global installation
 ```
 npm install -g # may require sudo

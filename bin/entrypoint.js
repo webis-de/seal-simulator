@@ -32,14 +32,14 @@ const outputDirectory = "/output";
 
 // Write config from stdin if it is open
 if (!process.stdin.isTTY) {
-    const configurationString = fs.readFileSync(0); // read from STDIN
-    const configurationFile =
-        path.join(inputDirectory, seal.constants.SCRIPT_CONFIGURATION_FILE);
-    seal.log("config-from-stdin", {
-        file: configurationFile,
-        configuration: JSON.parse(configurationString)
-    });
-    fs.writeFileSync(configurationFile, configurationString);
+  const configurationString = fs.readFileSync(0); // read from STDIN
+  const configurationFile =
+    path.join(inputDirectory, seal.constants.SCRIPT_CONFIGURATION_FILE);
+  seal.log("config-from-stdin", {
+    file: configurationFile,
+    configuration: JSON.parse(configurationString)
+  });
+  fs.writeFileSync(configurationFile, configurationString);
 }
 
 // TODO
