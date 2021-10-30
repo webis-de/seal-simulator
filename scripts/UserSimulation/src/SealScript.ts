@@ -10,6 +10,7 @@ import Console = Protocol.Console;
 import {TICKPERIOD} from "./Constants";
 const seal = require('../../../lib/index');
 import {UnitTests} from "./tests/UnitTests";
+import {ModuleTests} from "./tests/ModuleTests";
 
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 
@@ -30,16 +31,23 @@ export class SealScript extends AbstractSealScript {
     }
 
 
-    async run(browserContext: any, outputDirectory: string) {
+    async run(browserContexts: any, outputDirectory: string) {
         /**
          * runTests
          */
         UnitTests.runUnitTests()
+        ModuleTests.runModuleTests()
 
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        await this.main(browserContext, outputDirectory)
+            //await this.main(browserContexts, outputDirectory)
+
+        const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
+
+        const page = await browserContext.newPage()
+        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
+        await page.pause()
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
@@ -56,25 +64,25 @@ export class SealScript extends AbstractSealScript {
     async main(browserContexts: any, outputDirectory: string): Promise<void> {
 
         // console.log("Started Simulation")
-        const browserContext : BrowserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
 
-        const page = await browserContext.newPage()
-        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
-        await page.pause()
 
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
 
-        await runSimulations(this.user, browserContext, outputDirectory)
+        // await runSimulations(this.user, browserContext, outputDirectory)
 
         // await browser.close();
     }
 
 
     getBrowserContextsOptions(): BrowserContextOptions {
-        let contextOptions: BrowserContextOptions = this.user.contextOptions
+        let contextOptions: any = this.user.contextOptions.build()
+        // To See Browser set this to true
+        if (true) {
+            // contextOptions.headless = false
+        }
         if (this.inputConfiguration.sessionPathExists()) {
             //
             contextOptions.storageState = this.inputConfiguration.getSessionStatePath()

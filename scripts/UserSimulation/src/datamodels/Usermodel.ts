@@ -68,7 +68,7 @@ export interface IUsermodel {
 
 export class Usermodel {
     name: string
-    contextOptions : BrowserContextOptions
+    contextOptions: ContextOptions
     interests: Influence[]
     influencedBy: Influence[]
     freqentlyVisits: InteractionModule[]
@@ -107,11 +107,11 @@ export class Usermodel {
         this.useBuilder = useBuilder
         this.freqentlyVisits = []
         this.contextOptions = new ContextOptions({
-            device : device,
+            device: device,
             locale: locale,
-            timezoneId : timezoneId,
-            geolocation:geolocation
-        }).build()
+            timezoneId: timezoneId,
+            geolocation: geolocation
+        })
 
         for (let im of freqentlyVisits) {
             switch (im.type) {

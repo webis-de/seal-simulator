@@ -35,7 +35,7 @@ class Usermodel {
             locale: locale,
             timezoneId: timezoneId,
             geolocation: geolocation
-        }).build();
+        });
         for (let im of freqentlyVisits) {
             switch (im.type) {
                 case InteractionModule_1.InteractionModuleType.OpenUrl: {

@@ -27,11 +27,12 @@ export class ContextOptions{
 
     build() : BrowserContextOptions{
         // let usedDevice = devices[this.device]
-        let contextOptions : BrowserContextOptions = {
+        let contextOptions: BrowserContextOptions = {
             ...devices[this.device],
             locale: this.locale,
             timezoneId: this.timezoneId,
         }
+        let i = 3
         if(this.geolocation != undefined){
             contextOptions.geolocation = this.geolocation
             contextOptions.permissions = [`geolocation`]

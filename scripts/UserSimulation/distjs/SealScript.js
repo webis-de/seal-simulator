@@ -6,6 +6,7 @@ const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const Constants_1 = require("./Constants");
 const seal = require('../../../lib/index');
 const UnitTests_1 = require("./tests/UnitTests");
+const ModuleTests_1 = require("./tests/ModuleTests");
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
@@ -15,15 +16,21 @@ class SealScript extends AbstractSealScript {
         this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
         this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
-    async run(browserContext, outputDirectory) {
+
+    async run(browserContexts, outputDirectory) {
         /**
          * runTests
          */
         UnitTests_1.UnitTests.runUnitTests();
+        ModuleTests_1.ModuleTests.runModuleTests();
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        await this.main(browserContext, outputDirectory);
+            //await this.main(browserContexts, outputDirectory)
+        const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
+        const page = await browserContext.newPage();
+        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
+        await page.pause();
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
@@ -37,19 +44,19 @@ class SealScript extends AbstractSealScript {
      */
     async main(browserContexts, outputDirectory) {
         // console.log("Started Simulation")
-        const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
-        const page = await browserContext.newPage();
-        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
-        await page.pause();
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        await UsermodelLoading_1.runSimulations(this.user, browserContext, outputDirectory);
+        // await runSimulations(this.user, browserContext, outputDirectory)
         // await browser.close();
     }
     getBrowserContextsOptions() {
-        let contextOptions = this.user.contextOptions;
+        let contextOptions = this.user.contextOptions.build();
+        // To See Browser set this to true
+        if (true) {
+            // contextOptions.headless = false
+        }
         if (this.inputConfiguration.sessionPathExists()) {
             //
             contextOptions.storageState = this.inputConfiguration.getSessionStatePath();
