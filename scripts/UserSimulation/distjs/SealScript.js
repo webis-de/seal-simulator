@@ -16,7 +16,6 @@ class SealScript extends AbstractSealScript {
         this.user = UsermodelLoading_1.readUsermodelFormInputDirectory(this.getInputDirectory());
         this.inputConfiguration = new OutputConfiguration_1.OutputConfiguration(inputDirectory, this.user);
     }
-
     async run(browserContexts, outputDirectory) {
         /**
          * runTests
@@ -26,7 +25,7 @@ class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-            //await this.main(browserContexts, outputDirectory)
+        //await this.main(browserContexts, outputDirectory)
         const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
         const page = await browserContext.newPage();
         await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
