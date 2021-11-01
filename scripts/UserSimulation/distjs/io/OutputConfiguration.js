@@ -14,6 +14,7 @@ class OutputConfiguration {
      */
     constructor(outputDirectory, user) {
         this._date = new Date();
+        this._sourceDirectory = outputDirectory;
         this._directory = `${outputDirectory}/scriptOutput`;
         this.directory; // Will create the folder if not there
         this._outDirectory = `${(this._directory)}/${this.dateFormated}`;
@@ -133,7 +134,7 @@ class OutputConfiguration {
      * Writes down the ContextOptions for a specific user. They can be read from the file or by calling user.contextOptions.build()
      */
     writeContextOptions(usermodel) {
-        fs.writeFileSync(`${this.tempDirectory}/contextOptions.json`, JSON.stringify(usermodel.contextOptions.build(), null, 2), function (err) {
+        fs.writeFileSync(`${this._sourceDirectory}/browserContexts/default/browser.json`, JSON.stringify(usermodel.contextOptions.build(), null, 2), function (err) {
             if (err) {
                 console.log(err);
             }

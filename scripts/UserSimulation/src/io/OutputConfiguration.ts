@@ -19,15 +19,20 @@ export class OutputConfiguration {
     /**
      * Holds the current directory for the temp files like state.json, usermodel.json, and contextoptions
      */
-    _tempDirectory : string
+    _tempDirectory: string
     /**
      * Holds the current executed User, so the output directory can be named after the user.
      */
-    _user : Usermodel
+    _user: Usermodel
     /**
      * TODO Keeps track of the number of traces or files already created.
      */
-    _fileCounter : number //Todo: Check for override. Can be fatal mistake.
+    _fileCounter: number //Todo: Check for override. Can be fatal mistake.
+    /**
+     *
+     * @private
+     */
+    _sourceDirectory: string
     private _date: Date
 
     /**
@@ -37,6 +42,7 @@ export class OutputConfiguration {
      */
     constructor(outputDirectory: string, user: Usermodel) {
         this._date = new Date()
+        this._sourceDirectory = outputDirectory
 
         this._directory = `${outputDirectory}/scriptOutput`
         this.directory // Will create the folder if not there
@@ -173,7 +179,7 @@ export class OutputConfiguration {
      * Writes down the ContextOptions for a specific user. They can be read from the file or by calling user.contextOptions.build()
      */
     writeContextOptions(usermodel : Usermodel){
-        fs.writeFileSync(`${this.tempDirectory}/contextOptions.json`, JSON.stringify(usermodel.contextOptions.build(), null, 2), function (err: Error) {
+        fs.writeFileSync(`${this._sourceDirectory}/browserContexts/default/browser.json`, JSON.stringify(usermodel.contextOptions.build(), null, 2), function (err: Error) {
             if (err) {
                 console.log(err);
             }
