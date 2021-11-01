@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SealScript = void 0;
 const UsermodelLoading_1 = require("./io/UsermodelLoading");
 const OutputConfiguration_1 = require("./io/OutputConfiguration");
-const Constants_1 = require("./Constants");
 const seal = require('../../../lib/index');
 const UnitTests_1 = require("./tests/UnitTests");
-const ModuleTests_1 = require("./tests/ModuleTests");
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
@@ -21,7 +19,7 @@ class SealScript extends AbstractSealScript {
          * runTests
          */
         UnitTests_1.UnitTests.runUnitTests();
-        ModuleTests_1.ModuleTests.runModuleTests();
+        // ModuleTests.runModuleTests()
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
@@ -34,9 +32,12 @@ class SealScript extends AbstractSealScript {
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
+        /*
         const intervalObj = setInterval(async () => {
             // await this.main(browserContext, outputDirectory)
-        }, Constants_1.TICKPERIOD); // 10min = 600000ms
+        }, TICKPERIOD);// 10min = 600000ms
+        */
+        return true;
     }
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
@@ -48,8 +49,9 @@ class SealScript extends AbstractSealScript {
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
         const page = await browserContext.newPage();
-        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
-        await UsermodelLoading_1.runSimulations(this.user, browserContext, outputDirectory);
+        await page.goto("https://youtube.com");
+        await page.pause();
+        // await runSimulations(this.user, browserContext, outputDirectory)
         //await browser.close();
     }
     getBrowserContextsOption() {

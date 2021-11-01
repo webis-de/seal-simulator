@@ -36,7 +36,7 @@ export class SealScript extends AbstractSealScript {
          * runTests
          */
         UnitTests.runUnitTests()
-        ModuleTests.runModuleTests()
+        // ModuleTests.runModuleTests()
 
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
@@ -53,10 +53,12 @@ export class SealScript extends AbstractSealScript {
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
+        /*
         const intervalObj = setInterval(async () => {
             // await this.main(browserContext, outputDirectory)
         }, TICKPERIOD);// 10min = 600000ms
-
+        */
+        return true
     }
 
     /**
@@ -73,9 +75,10 @@ export class SealScript extends AbstractSealScript {
          */
 
         const page = await browserContext.newPage()
-        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
+        await page.goto("https://youtube.com")
+        await page.pause()
 
-        await runSimulations(this.user, browserContext, outputDirectory)
+        // await runSimulations(this.user, browserContext, outputDirectory)
 
         //await browser.close();
     }
