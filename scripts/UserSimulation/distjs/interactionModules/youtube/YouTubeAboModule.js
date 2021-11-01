@@ -3,16 +3,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.YouTubeAboModule = void 0;
 const InteractionModule_1 = require("../InteractionModule");
 class YouTubeAboModule extends InteractionModule_1.InteractionModule {
-    constructor() {
+    constructor(iYouTubeAboModule) {
         super({
             type: InteractionModule_1.InteractionModuleType.YouTubeAbo,
             url: "youtube.com",
+            subscriptions: iYouTubeAboModule.subscriptions,
             id: 0,
         });
+        this.channelUrls = [];
+        for (const subscription of this.subscriptions) {
+            this.channelUrls.push(`${this.url}/channel/${subscription.representation}/videos`);
+        }
     }
     async runModule(sessionManagement) {
         const page = await sessionManagement.getContext().newPage();
-        await page.goto(this.url);
+        for (const channelUrl of this.channelUrls) {
+            await page.goto(channelUrl);
+        }
     }
     /**
      * TODO Clean up and Test

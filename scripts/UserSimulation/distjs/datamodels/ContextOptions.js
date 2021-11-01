@@ -16,7 +16,8 @@ class ContextOptions {
             locale: this.locale,
             timezoneId: this.timezoneId,
         };
-        let i = 3;
+        // Set If a visible Browser is needed
+        contextOptions.headless = false;
         if (this.geolocation != undefined) {
             contextOptions.geolocation = this.geolocation;
             contextOptions.permissions = [`geolocation`];

@@ -1,6 +1,7 @@
 import {Time} from "../datamodels/Time";
 import {chromium, devices, LaunchOptions} from "playwright";
 import {Protocol} from "playwright/types/protocol";
+import {Subscription} from "../datamodels/Subscription";
 
 export class ModuleTests {
 
@@ -9,7 +10,7 @@ export class ModuleTests {
         })
     }
 
-    static async testYoutube() {
+    static async testYoutube(subscriptions : Subscription[] = ModuleTests.DEFAULT_SUBSCRIPTIONS) {
 
         // Get Context
         const browser = await chromium.launch({headless: false})
@@ -33,9 +34,19 @@ export class ModuleTests {
             "locale": "de-DE",
             "timezoneId": "Europe/Berlin",
         })
+
+
         const page = await browserContext.newPage() // Create pages, interact with UI elements, assert values  await browser.close();})();
         await page.goto("https://www.youtube.com/watch?v=PwE5NqeeFk0")
         await page.pause()
         await browser.close()
+    }
+
+    public static get DEFAULT_SUBSCRIPTIONS():Subscription[] {
+        return [
+            new Subscription({name : "ZDFheute Nachrichten" , representation : "UCeqKIgPQfNInOswGRWt48kQ"}),
+            new Subscription({name : "Rammstein Official" , representation : "UCYp3rk70ACGXQ4gFAiMr1SQ"}),
+            new Subscription({name : "Daily Dose Of Internet" , representation : "UCdC0An4ZPNr_YiFiYoVbwaw"})
+        ]
     }
 }

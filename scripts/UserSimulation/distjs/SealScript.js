@@ -25,32 +25,34 @@ class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        //await this.main(browserContexts, outputDirectory)
         const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
-        const page = await browserContext.newPage();
-        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
-        await page.pause();
+        await this.main(browserContext, outputDirectory);
+        /*
+                const page = await browserContext.newPage()
+                await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
+                await page.pause()*/
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */
         const intervalObj = setInterval(async () => {
-            await this.main(browserContext, outputDirectory);
+            // await this.main(browserContext, outputDirectory)
         }, Constants_1.TICKPERIOD); // 10min = 600000ms
-        let i = 3;
     }
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
      */
-    async main(browserContexts, outputDirectory) {
+    async main(browserContext, outputDirectory) {
         // console.log("Started Simulation")
         /**
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        // await runSimulations(this.user, browserContext, outputDirectory)
-        // await browser.close();
+        const page = await browserContext.newPage();
+        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke");
+        await UsermodelLoading_1.runSimulations(this.user, browserContext, outputDirectory);
+        //await browser.close();
     }
-    getBrowserContextsOptions() {
+    getBrowserContextsOption() {
         let contextOptions = this.user.contextOptions.build();
         // To See Browser set this to true
         if (true) {
