@@ -27,19 +27,11 @@ export class SessionManagement {
         this.user = user
         this.context = browserContext
 
-        // this works for some reason
-        this.mainOLD(browserContext)
-
         let outputConfiguration = new OutputConfiguration(outputDirectory, user)
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration
     }
 
-    async mainOLD(browserContext : BrowserContext): Promise<void> {
-
-        console.log("From Main Old");
-        let page = await browserContext.newPage()
-    }
 
     /**
      * Setup Session by doing following steps:
@@ -103,6 +95,17 @@ export class SessionManagement {
             throw new Error('Session wasn\'t started correctly. Context is still null. Make sure to call setupSession() before finishSession()');
         } else {
             return this.context
+        }
+    }
+
+
+    async runInteractionModules() {
+        // output.user = user
+        let modules = this.user.modules
+        for (const indexModul of modules) {
+            if (indexModul.executionTime.isNow()) {
+                await indexModul.runModule(this);
+            }
         }
     }
 }

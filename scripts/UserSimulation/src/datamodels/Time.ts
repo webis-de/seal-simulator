@@ -78,9 +78,7 @@ export class Time {
         if(time == -1){
             return "atStart"
         }
-        let hours = Math.floor(time / 60)
-        let minutes = time - (hours*60)
-        return `${hours}:${minutes}`
+        return `${this.hours}:${this.minutes}`
     }
 
     isNow() : boolean{
@@ -126,6 +124,14 @@ export class Time {
         return this._time - time._time
     }
 
+    get hours(): number{
+        return Math.floor(this._time / 60)
+    }
+
+    get minutes() : number{
+        return this._time - (this.hours*60)
+    }
+
     equals(time : Time): boolean {
         return (time._time == this._time)
     }
@@ -133,6 +139,13 @@ export class Time {
     public static getCurrentTime() : Time{
         let now = new Date()
         return new Time(now.getHours()*60 + now.getMinutes())
+    }
+
+    private toDate() : Date{
+        let now = new Date()
+        now.setHours(this.hours)
+        now.setMinutes(this.minutes)
+        return now
     }
 
     private checkTime(){
@@ -151,5 +164,11 @@ export class Time {
 
     toJson(){
         return this.toString()
+    }
+
+    getDifferenceInMinutes() : number {
+        // let minutesNow = new Date().getMinutes()
+        // let minutesTime = this.toDate().getMinutes()
+        return this.minus(Time.getCurrentTime())
     }
 }

@@ -53,5 +53,11 @@ export class UnitTests{
         //    throw Error(`Test failed, the current Time is not created right or the time check is broken.`)
         }
 
+        //Test 6
+        let time7 = new Time("17:40")
+        let time8 = new Time("14:50")
+        console.log(time7.getDifferenceInMinutes())
+        console.log(time8.getDifferenceInMinutes())
+
     }
 }

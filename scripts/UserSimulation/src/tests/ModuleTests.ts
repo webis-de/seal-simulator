@@ -6,8 +6,10 @@ import {Subscription} from "../datamodels/Subscription";
 export class ModuleTests {
 
     static runModuleTests() {
+        /*
         this.testYoutube().then(r => {
         })
+        */
     }
 
     static async testYoutube(subscriptions : Subscription[] = ModuleTests.DEFAULT_SUBSCRIPTIONS) {

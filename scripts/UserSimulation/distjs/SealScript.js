@@ -5,6 +5,7 @@ const UsermodelLoading_1 = require("./io/UsermodelLoading");
 const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const seal = require('../../../lib/index');
 const UnitTests_1 = require("./tests/UnitTests");
+const SessionManagement_1 = require("./io/SessionManagement");
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
 class SealScript extends AbstractSealScript {
@@ -23,8 +24,12 @@ class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
+        let nextModules = this.user.nextModules;
+        let executionDelay = nextModules[0].executionTime.getDifferenceInMinutes()
+        await sleep(executionDelay * 60000);
         const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
         await this.main(browserContext, outputDirectory);
+        return true;
         /*
                 const page = await browserContext.newPage()
                 await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
@@ -37,7 +42,6 @@ class SealScript extends AbstractSealScript {
             // await this.main(browserContext, outputDirectory)
         }, TICKPERIOD);// 10min = 600000ms
         */
-        return true;
     }
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
@@ -48,10 +52,11 @@ class SealScript extends AbstractSealScript {
          * Load multiple usermodels. All need to be located in the inputDirectory.
          * Currently just the first Usermodel is processed since the Simulation just needs to work with one Usermodel. The others will run in different environments.
          */
-        const page = await browserContext.newPage();
-        await page.goto("https://youtube.com");
-        await page.pause();
-        // await runSimulations(this.user, browserContext, outputDirectory)
+        /*
+                const page = await browserContext.newPage()
+                await page.goto("https://youtube.com")
+                await page.pause()*/
+        await this.runSimulations(this.user, browserContext, outputDirectory);
         //await browser.close();
     }
     getBrowserContextsOption() {
@@ -66,8 +71,20 @@ class SealScript extends AbstractSealScript {
         }
         return contextOptions;
     }
+    async runSimulations(user, browserContext, outputDirectory) {
+        let session = await new SessionManagement_1.SessionManagement(user, browserContext, outputDirectory);
+        await session.setupSession();
+        await session.runInteractionModules();
+        await session.finishSession();
+    }
 }
 exports.SealScript = SealScript;
+/**
+ * Sleep Function since JavaScript doesnt provide a default Implementation
+ */
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 /**
  * Tests the Wikipedia page Simulation
  * @param browser Instance of the Playwright browser

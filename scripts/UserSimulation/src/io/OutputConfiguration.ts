@@ -179,6 +179,8 @@ export class OutputConfiguration {
      * Writes down the ContextOptions for a specific user. They can be read from the file or by calling user.contextOptions.build()
      */
     writeContextOptions(usermodel : Usermodel){
+        this.createIfNotThere(`${this._sourceDirectory}/browserContexts`)
+        this.createIfNotThere(`${this._sourceDirectory}/browserContexts/default`)
         fs.writeFileSync(`${this._sourceDirectory}/browserContexts/default/browser.json`, JSON.stringify(usermodel.contextOptions.build(), null, 2), function (err: Error) {
             if (err) {
                 console.log(err);

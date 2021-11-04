@@ -52,6 +52,18 @@ class InteractionModule {
             subscriptions: this.subscriptions
         };
     }
+    /**
+     * Returns time until execution time in Milliseconds
+     */
+    timeToExecution() {
+        let difference = this.executionTime.getDifferenceInMinutes();
+        if (difference <= 0) {
+            return Number.MAX_SAFE_INTEGER;
+        }
+        else {
+            return difference;
+        }
+    }
 }
 exports.InteractionModule = InteractionModule;
 InteractionModule.idCount = 0; // Todo: For auto generating Ids.

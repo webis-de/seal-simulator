@@ -143,6 +143,12 @@ export class Usermodel {
         return this.freqentlyVisits
     }
 
+    get nextModules() : InteractionModule[]{
+        let nextTimeArray : number[] = this.modules.map<number>(value => {return value.timeToExecution()})
+        let nextTime : number = Math.min(...nextTimeArray)
+        return this.modules.filter(value => value.timeToExecution() == nextTime)
+    }
+
     toJSON() : IUsermodel{
         return {
             name : this.name,

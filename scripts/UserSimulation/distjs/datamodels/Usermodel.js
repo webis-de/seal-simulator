@@ -62,6 +62,11 @@ class Usermodel {
     get modules() {
         return this.freqentlyVisits;
     }
+    get nextModules() {
+        let nextTimeArray = this.modules.map(value => { return value.timeToExecution(); });
+        let nextTime = Math.min(...nextTimeArray);
+        return this.modules.filter(value => value.timeToExecution() == nextTime);
+    }
     toJSON() {
         return {
             name: this.name,

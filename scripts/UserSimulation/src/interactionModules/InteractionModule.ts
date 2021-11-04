@@ -118,6 +118,18 @@ export abstract class InteractionModule {
             subscriptions  : this.subscriptions
         }
     }
+
+    /**
+     * Returns time until execution time in Milliseconds
+     */
+    timeToExecution() : number {
+        let difference = this.executionTime.getDifferenceInMinutes()
+        if(difference <= 0 ) {
+            return Number.MAX_SAFE_INTEGER
+        }else {
+            return difference
+        }
+    }
 }
 
 /**
