@@ -7,6 +7,7 @@ import {expect} from "playwright/types/test";
 // import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
 // import fetch from 'cross-fetch';
 import {Protocol} from "playwright/types/protocol";
+import {InteractionModule} from "../interactionModules/InteractionModule";
 
 
 const fs = require('fs');
@@ -99,13 +100,9 @@ export class SessionManagement {
     }
 
 
-    async runInteractionModules() {
-        // output.user = user
-        let modules = this.user.modules
-        for (const indexModul of modules) {
-            if (indexModul.executionTime.isNow()) {
-                await indexModul.runModule(this);
-            }
-        }
+    async runInteractionModules(nextModules : InteractionModule[]) {
+        for (const indexModul of nextModules)
+            await indexModul.runModule(this)
+
     }
 }

@@ -53,12 +53,19 @@ class InteractionModule {
         };
     }
     /**
-     * Returns time until execution time in Milliseconds
+     * Returns time until execution time in Minutes
      */
     timeToExecution() {
         let difference = this.executionTime.getDifferenceInMinutes();
+        /*
+                    Minutes of the Day - Minutes passed since last execution of the first Module of the Day
+                    0 -> Start of the day
+                    24 -> End of the day
+                            <-----------nextTime------------->
+                    0.....FIM........IM.............IM.......now.....24
+                 */
         if (difference <= 0) {
-            return Number.MAX_SAFE_INTEGER;
+            return 60 * 24 + difference;
         }
         else {
             return difference;

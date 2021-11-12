@@ -2,14 +2,22 @@ import {Time} from "../datamodels/Time";
 import {chromium, devices, LaunchOptions} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Subscription} from "../datamodels/Subscription";
+import {Usermodel} from "../datamodels/Usermodel";
+import {InteractionModule} from "../interactionModules/InteractionModule";
+import {OpenUrlModule} from "../interactionModules/general/OpenUrlModule";
 
 export class ModuleTests {
 
     static runModuleTests() {
+        console.log("-------------------ModuleTests Start--------------------")
+
         /*
         this.testYoutube().then(r => {
         })
         */
+        // this.testNextModules()
+
+        console.log("-------------------ModuleTests End----------------------")
     }
 
     static async testYoutube(subscriptions : Subscription[] = ModuleTests.DEFAULT_SUBSCRIPTIONS) {
@@ -50,5 +58,18 @@ export class ModuleTests {
             new Subscription({name : "Rammstein Official" , representation : "UCYp3rk70ACGXQ4gFAiMr1SQ"}),
             new Subscription({name : "Daily Dose Of Internet" , representation : "UCdC0An4ZPNr_YiFiYoVbwaw"})
         ]
+    }
+
+    static testNextModules(){
+        let testusermodel = new Usermodel({
+            freqentlyVisits : [
+                new OpenUrlModule({url:"test",executionTime:"12:15"}),
+                new OpenUrlModule({url:"test",executionTime:"12:00"}),
+                new OpenUrlModule({url:"test",executionTime:"11:00"})
+            ]
+        })
+        console.log(testusermodel.nextTime)
+        console.log(testusermodel.nextModules)
+        let i = 3
     }
 }

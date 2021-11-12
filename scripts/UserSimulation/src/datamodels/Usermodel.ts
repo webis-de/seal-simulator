@@ -144,9 +144,32 @@ export class Usermodel {
     }
 
     get nextModules() : InteractionModule[]{
+
+        let nextTime = this.nextTime
+
+        return this.modules.filter(value => value.timeToExecution() == nextTime )
+    }
+
+    get nextTime() : number{
         let nextTimeArray : number[] = this.modules.map<number>(value => {return value.timeToExecution()})
-        let nextTime : number = Math.min(...nextTimeArray)
-        return this.modules.filter(value => value.timeToExecution() == nextTime)
+        return Math.min(...nextTimeArray)
+
+        function old() : number{ //Pattern to only return one value for nextTime
+            let nextTimeArrayPositives = nextTimeArray.filter(num => num >= 1)
+
+            // If there are Modules in the Future of the same Day
+            // -> nextTimeArrayPositives is not Empty
+            // -> take the Module that's next in the line
+            if(nextTimeArrayPositives.length > 0){
+                return Math.min(...nextTimeArrayPositives)
+            }else{
+                //If the are no more Modules on the same day left return the first of the next day
+                // -> first one of nextTimeArrayNegatives
+                return Math.min(...nextTimeArray)
+
+
+            }
+        }
     }
 
     toJSON() : IUsermodel{

@@ -3,7 +3,11 @@ import {Time} from "../datamodels/Time";
 export class UnitTests{
 
     static runUnitTests() {
+        console.log("-------------------UnitTests Start----------------------")
+
         this.testTime()
+
+        console.log("-------------------UnitTests End------------------------")
     }
 
     public static testTime() {
@@ -56,8 +60,8 @@ export class UnitTests{
         //Test 6
         let time7 = new Time("17:40")
         let time8 = new Time("14:50")
-        console.log(time7.getDifferenceInMinutes())
-        console.log(time8.getDifferenceInMinutes())
+        // console.log(time7.getDifferenceInMinutes())
+        // console.log(time8.getDifferenceInMinutes())
 
     }
 }

@@ -37,7 +37,7 @@ export class SealScript extends AbstractSealScript {
         /**
          * runTests
          */
-        UnitTests.runUnitTests()
+        // UnitTests.runUnitTests()
         // ModuleTests.runModuleTests()
 
         /**
@@ -45,12 +45,12 @@ export class SealScript extends AbstractSealScript {
          */
         let nextModules : InteractionModule[] = this.user.nextModules
 
-        await sleep(3000)
+        await sleep(this.user.nextTime * 60 * 1000)
 
         const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
 
 
-        await this.main(browserContext, outputDirectory)
+        await this.main(browserContext, outputDirectory, nextModules)
 
         return true
 /*
@@ -71,7 +71,7 @@ export class SealScript extends AbstractSealScript {
     /**
      * Main Entry Point for the simulation. That will be executed periodically in the [[intervalObj]].
      */
-    async main(browserContext: BrowserContext, outputDirectory: string): Promise<void> {
+    async main(browserContext: BrowserContext, outputDirectory: string, nextModules : InteractionModule[]): Promise<void> {
 
         // console.log("Started Simulation")
 
@@ -85,7 +85,7 @@ export class SealScript extends AbstractSealScript {
         await page.goto("https://youtube.com")
         await page.pause()*/
 
-        await this.runSimulations(this.user, browserContext, outputDirectory)
+        await this.runSimulations(this.user, browserContext, outputDirectory,nextModules)
 
         //await browser.close();
     }
@@ -104,12 +104,12 @@ export class SealScript extends AbstractSealScript {
         return contextOptions
     }
 
-    async runSimulations(user: Usermodel, browserContext: BrowserContext, outputDirectory: string) {
+    async runSimulations(user: Usermodel, browserContext: BrowserContext, outputDirectory: string, nextModules : InteractionModule[]) {
         let session = await new SessionManagement(user,browserContext,outputDirectory)
 
         await session.setupSession()
 
-        await session.runInteractionModules()
+        await session.runInteractionModules(nextModules)
 
         await session.finishSession()
 

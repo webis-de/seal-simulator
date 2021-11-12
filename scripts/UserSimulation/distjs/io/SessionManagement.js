@@ -71,14 +71,9 @@ class SessionManagement {
             return this.context;
         }
     }
-    async runInteractionModules() {
-        // output.user = user
-        let modules = this.user.modules;
-        for (const indexModul of modules) {
-            if (indexModul.executionTime.isNow()) {
-                await indexModul.runModule(this);
-            }
-        }
+    async runInteractionModules(nextModules) {
+        for (const indexModul of nextModules)
+            await indexModul.runModule(this);
     }
 }
 exports.SessionManagement = SessionManagement;
