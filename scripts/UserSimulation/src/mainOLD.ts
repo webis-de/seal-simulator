@@ -1,7 +1,7 @@
 import {Browser, chromium, devices} from "playwright";
 import {Protocol} from "playwright/types/protocol";
 import {Usermodel} from "./datamodels/Usermodel";
-import {readUsermodelFormInputDirectory, runSimulations, writeUsermodel} from "./io/UsermodelLoading";
+import {readUsermodelFormInputDirectory,  writeUsermodel} from "./io/UsermodelLoading";
 import {OutputConfiguration} from "./io/OutputConfiguration";
 import {Influence} from "./datamodels/Influence";
 import {OpenUrlModule} from "./interactionModules/general/OpenUrlModule";

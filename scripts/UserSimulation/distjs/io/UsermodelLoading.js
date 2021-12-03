@@ -19,10 +19,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.arrayToJson = exports.runSimulations = exports.readUsermodelFormInputDirectory = exports.writeUsermodel = void 0;
+exports.arrayToJson = exports.readUsermodelFormInputDirectory = exports.writeUsermodel = void 0;
 const Usermodel_1 = require("../datamodels/Usermodel");
 const Constants_1 = require("../Constants");
-const SessionManagement_1 = require("./SessionManagement");
 const fs = __importStar(require("fs"));
 const p = __importStar(require("path"));
 function writeUsermodel(usermodel, path) {
@@ -97,24 +96,6 @@ function readUsermodel(path) {
     }();
     return usermodel;
 }
-async function runInteractionModules(sessionManagement) {
-    // output.user = user
-    let modules = sessionManagement.user.modules;
-    for (const indexModul of modules) {
-        if (indexModul.executionTime.isNow()) {
-            await indexModul.runModule(sessionManagement);
-        }
-    }
-}
-async function runSimulations(user, browserContext, outputDirectory) {
-    /*for (let user of users) {
-    }*/
-    let sessionManager = new SessionManagement_1.SessionManagement(user, browserContext, outputDirectory);
-    await sessionManager.setupSession();
-    await runInteractionModules(sessionManager);
-    await sessionManager.finishSession();
-}
-exports.runSimulations = runSimulations;
 function arrayToJson(array) {
     return array.map(value => value.toJson());
 }

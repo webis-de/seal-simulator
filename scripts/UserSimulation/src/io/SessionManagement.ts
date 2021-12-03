@@ -7,6 +7,7 @@ import {expect} from "playwright/types/test";
 // import { PlaywrightBlocker } from '@cliqz/adblocker-playwright';
 // import fetch from 'cross-fetch';
 import {Protocol} from "playwright/types/protocol";
+import {InteractionModule} from "../interactionModules/InteractionModule";
 
 
 const fs = require('fs');
@@ -27,19 +28,11 @@ export class SessionManagement {
         this.user = user
         this.context = browserContext
 
-        // this works for some reason
-        this.mainOLD(browserContext)
-
         let outputConfiguration = new OutputConfiguration(outputDirectory, user)
         // this.tempConfiguration = new TempConfiguration(user)
         this.outputConfiguration = outputConfiguration
     }
 
-    async mainOLD(browserContext : BrowserContext): Promise<void> {
-
-        console.log("From Main Old");
-        let page = await browserContext.newPage()
-    }
 
     /**
      * Setup Session by doing following steps:
@@ -104,5 +97,12 @@ export class SessionManagement {
         } else {
             return this.context
         }
+    }
+
+
+    async runInteractionModules(nextModules : InteractionModule[]) {
+        for (const indexModul of nextModules)
+            await indexModul.runModule(this)
+
     }
 }

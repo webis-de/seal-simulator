@@ -61,9 +61,7 @@ class Time {
         if (time == -1) {
             return "atStart";
         }
-        let hours = Math.floor(time / 60);
-        let minutes = time - (hours * 60);
-        return `${hours}:${minutes}`;
+        return `${this.hours}:${this.minutes}`;
     }
     isNow() {
         /**
@@ -105,12 +103,24 @@ class Time {
         }*/
         return this._time - time._time;
     }
+    get hours() {
+        return Math.floor(this._time / 60);
+    }
+    get minutes() {
+        return this._time - (this.hours * 60);
+    }
     equals(time) {
         return (time._time == this._time);
     }
     static getCurrentTime() {
         let now = new Date();
         return new Time(now.getHours() * 60 + now.getMinutes());
+    }
+    toDate() {
+        let now = new Date();
+        now.setHours(this.hours);
+        now.setMinutes(this.minutes);
+        return now;
     }
     checkTime() {
         if (this._time < -1 || this._time > 1440) {
@@ -125,6 +135,11 @@ class Time {
     }
     toJson() {
         return this.toString();
+    }
+    getDifferenceInMinutes() {
+        // let minutesNow = new Date().getMinutes()
+        // let minutesTime = this.toDate().getMinutes()
+        return this.minus(Time.getCurrentTime());
     }
 }
 exports.Time = Time;

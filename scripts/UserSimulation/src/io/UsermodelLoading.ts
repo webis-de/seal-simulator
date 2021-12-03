@@ -83,29 +83,6 @@ function readUsermodel(path: string): Usermodel {
     return usermodel
 }
 
-async function runInteractionModules(sessionManagement: SessionManagement) {
-    // output.user = user
-    let modules = sessionManagement.user.modules
-    for (const indexModul of modules) {
-        if (indexModul.executionTime.isNow()) {
-            await indexModul.runModule(sessionManagement);
-        }
-    }
-}
-
-export async function runSimulations(user: Usermodel, browserContext: BrowserContext, outputDirectory: string) {
-    /*for (let user of users) {
-    }*/
-
-    let sessionManager = new SessionManagement(user, browserContext, outputDirectory)
-
-    await sessionManager.setupSession()
-
-    await runInteractionModules(sessionManager)
-
-    await sessionManager.finishSession()
-
-}
 
 export function arrayToJson(array : any[]): any {
     return array.map( value  => value.toJson())
