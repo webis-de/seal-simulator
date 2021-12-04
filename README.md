@@ -1,3 +1,8 @@
+DEPRECATION NOTICE:
+
+Development will continue under the name "scriptor": https://github.com/webis-de/scriptor (this repository will be deleted once the other one is working)
+
+
 # SEAL Simulator
 Web user simulation and archiving framework.
 
