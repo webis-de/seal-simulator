@@ -29,16 +29,18 @@ class InteractionModule {
         this.url = url;
         if (id == undefined) {
             throw new Error("ID cant be left empty when creating an Interaction Module");
-        }
-        else
+        } else
             this.id = id;
         if (type == undefined) {
             throw new Error("Type cant be left empty when creating an Interaction Module");
-        }
-        else
+        } else
             this.type = type;
         this.executionTime = new Time_1.Time(executionTime);
         this.subscriptions = subscriptions;
+        this.needsSetup = true;
+        if (this.executionTime.isAtStart && this.needsSetup) {
+            throw new Error("You can't execute the Module at the Start and have a Setup Method for the Module. Please change the execution time or set needsSetup to false.");
+        }
     }
     toString() {
         return this.toJson();

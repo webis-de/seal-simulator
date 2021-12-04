@@ -17,9 +17,14 @@ export class OpenUrlModule extends InteractionModule{
         super({
             id: 0,
             url: url,
-            executionTime : executionTime,
-            type : InteractionModuleType.OpenUrl
+            executionTime: executionTime,
+            type: InteractionModuleType.OpenUrl
         });
+        /**
+         * Assign needsSetup to false if you dont add a runModuleSetup() function
+         * otherwise you can delete the line
+         */
+        this.needsSetup = true
     }
 
     /**

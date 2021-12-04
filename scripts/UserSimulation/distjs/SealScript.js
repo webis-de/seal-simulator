@@ -24,6 +24,8 @@ class SealScript extends AbstractSealScript {
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
         let nextModules = this.user.nextModules;
+        let startModules = this.user.startModules;
+        console.log(`Next Module will start in ${this.user.nextTime}min`);
         await sleep(this.user.nextTime * 60 * 1000);
         const browserContext = browserContexts[seal.constants.BROWSER_CONTEXT_DEFAULT];
         await this.main(browserContext, outputDirectory, nextModules);

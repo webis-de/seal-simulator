@@ -143,18 +143,25 @@ export class Usermodel {
         return this.freqentlyVisits
     }
 
-    get nextModules() : InteractionModule[]{
+    get nextModules(): InteractionModule[] {
 
         let nextTime = this.nextTime
 
-        return this.modules.filter(value => value.timeToExecution() == nextTime )
+        return this.modules.filter(value => value.timeToExecution() == nextTime)
     }
 
-    get nextTime() : number{
-        let nextTimeArray : number[] = this.modules.map<number>(value => {return value.timeToExecution()})
+    get startModules(): InteractionModule[] {
+        // TODO Add Modules that got a setupMethod (needsSetup)
+        return this.modules.filter(value => value.executionTime.isAtStart)
+    }
+
+    get nextTime(): number {
+        let nextTimeArray: number[] = this.modules.map<number>(value => {
+            return value.timeToExecution()
+        })
         return Math.min(...nextTimeArray)
 
-        function old() : number{ //Pattern to only return one value for nextTime
+        function old(): number { //Pattern to only return one value for nextTime
             let nextTimeArrayPositives = nextTimeArray.filter(num => num >= 1)
 
             // If there are Modules in the Future of the same Day
@@ -175,14 +182,18 @@ export class Usermodel {
     toJSON() : IUsermodel{
         return {
             name : this.name,
-            device : this.contextOptions.device,
-            locale : this.contextOptions.locale,
-            timezoneId : this.contextOptions.timezoneId,
-            geolocation : this.contextOptions.geolocation,
-            interests : this.interests,
-            influencedBy : this.influencedBy,
-            freqentlyVisits : arrayToJson(this.freqentlyVisits),
-            useBuilder : this.useBuilder
+            device: this.contextOptions.device,
+            locale: this.contextOptions.locale,
+            timezoneId: this.contextOptions.timezoneId,
+            geolocation: this.contextOptions.geolocation,
+            interests: this.interests,
+            influencedBy: this.influencedBy,
+            freqentlyVisits: arrayToJson(this.freqentlyVisits),
+            useBuilder: this.useBuilder
         }
+    }
+
+    toString() {
+        return `My name is ${name} and my Interests are `
     }
 }

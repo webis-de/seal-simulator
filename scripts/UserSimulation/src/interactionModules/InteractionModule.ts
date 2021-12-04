@@ -74,22 +74,33 @@ export abstract class InteractionModule {
      * @protected Is a list of all the members for a given module. They can vary in their meaning. For Youtube it could represent subscriptions, for instagram follows or for google news it could be relevant topics.
      */
     protected subscriptions: Subscription[];
+
+    /**
+     *
+     * @private
+     */
+    protected needsSetup: boolean;
+
     private static idCount = 0 // Todo: For auto generating Ids.
 
     /**
      * Is used to create a new [[InteractionModule]] from a json file.
      * @param See [[IInteractionModule]] for more documentation.
      */
-    protected constructor({url, id, executionTime = "12:00", subscriptions=[], type }: IInteractionModule) {
+    protected constructor({url, id, executionTime = "12:00", subscriptions = [], type}: IInteractionModule) {
         this.url = url
-        if(id == undefined){
+        if (id == undefined) {
             throw new Error("ID cant be left empty when creating an Interaction Module")
-        }else this.id = id
-        if(type == undefined){
+        } else this.id = id
+        if (type == undefined) {
             throw new Error("Type cant be left empty when creating an Interaction Module")
-        }else this.type = type
+        } else this.type = type
         this.executionTime = new Time(executionTime)
         this.subscriptions = subscriptions
+        this.needsSetup = true
+        if (this.executionTime.isAtStart && this.needsSetup) {
+            throw new Error("You can't execute the Module at the Start and have a Setup Method for the Module. Please change the execution time or set needsSetup to false.")
+        }
     }
 
     /**

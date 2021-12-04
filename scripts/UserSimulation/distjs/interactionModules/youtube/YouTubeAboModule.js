@@ -14,6 +14,7 @@ class YouTubeAboModule extends InteractionModule_1.InteractionModule {
         for (const subscription of this.subscriptions) {
             this.channelUrls.push(`${this.url}/channel/${subscription.representation}/videos`);
         }
+        // will default needsSetup to true
     }
     async runModule(sessionManagement) {
         const page = await sessionManagement.getContext().newPage();
@@ -21,8 +22,9 @@ class YouTubeAboModule extends InteractionModule_1.InteractionModule {
             await page.goto(channelUrl);
         }
     }
+
     /**
-     * TODO Clean up and Test
+     * TODO Clean up and Test || Fix: Will not write the Module correctly in the Usermodel
      * 1. Pls accept all windows, so the page you want to visit is clear to see.
      * 2. Click Resume
      * e.g. Accept Cookies...

@@ -56,19 +56,30 @@ class Usermodel {
         }
         // console.log(this)
     }
+
     /**
      * Get all [[InteractionModule]]s of the user.
      */
     get modules() {
         return this.freqentlyVisits;
     }
+
     get nextModules() {
         let nextTime = this.nextTime;
         return this.modules.filter(value => value.timeToExecution() == nextTime);
     }
+
+    get startModules() {
+        // TODO Add Modules that got a setupMethod (needsSetup)
+        return this.modules.filter(value => value.executionTime.isAtStart);
+    }
+
     get nextTime() {
-        let nextTimeArray = this.modules.map(value => { return value.timeToExecution(); });
+        let nextTimeArray = this.modules.map(value => {
+            return value.timeToExecution();
+        });
         return Math.min(...nextTimeArray);
+
         function old() {
             let nextTimeArrayPositives = nextTimeArray.filter(num => num >= 1);
             // If there are Modules in the Future of the same Day
@@ -96,6 +107,10 @@ class Usermodel {
             freqentlyVisits: UsermodelLoading_1.arrayToJson(this.freqentlyVisits),
             useBuilder: this.useBuilder
         };
+    }
+
+    toString() {
+        return `My name is ${name} and my Interests are `;
     }
 }
 exports.Usermodel = Usermodel;

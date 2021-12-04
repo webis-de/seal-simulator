@@ -43,7 +43,11 @@ export class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-        let nextModules : InteractionModule[] = this.user.nextModules
+        let nextModules: InteractionModule[] = this.user.nextModules
+
+        let startModules: InteractionModule[] = this.user.startModules
+
+        console.log(`Next Module will start in ${this.user.nextTime}min`)
 
         await sleep(this.user.nextTime * 60 * 1000)
 
@@ -53,10 +57,10 @@ export class SealScript extends AbstractSealScript {
         await this.main(browserContext, outputDirectory, nextModules)
 
         return true
-/*
-        const page = await browserContext.newPage()
-        await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
-        await page.pause()*/
+        /*
+                const page = await browserContext.newPage()
+                await page.goto("https://de.wikipedia.org/wiki/Ren%C3%A9_Bielke")
+                await page.pause()*/
         /**
          * Starts the simulation after given time period. -> Repeat forever.
          */

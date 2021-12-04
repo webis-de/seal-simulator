@@ -18,6 +18,11 @@ class OpenUrlModule extends InteractionModule_1.InteractionModule {
             executionTime: executionTime,
             type: InteractionModule_1.InteractionModuleType.OpenUrl
         });
+        /**
+         * Assign needsSetup to false if you dont add a runModuleSetup() function
+         * otherwise you can delete the line
+         */
+        this.needsSetup = true;
     }
     /**
      * The runModule function just opens the url and nothing more.
