@@ -22,7 +22,6 @@ class YouTubeAboModule extends InteractionModule_1.InteractionModule {
             await page.goto(channelUrl);
         }
     }
-
     /**
      * TODO Clean up and Test || Fix: Will not write the Module correctly in the Usermodel
      * 1. Pls accept all windows, so the page you want to visit is clear to see.

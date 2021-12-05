@@ -29,11 +29,13 @@ class InteractionModule {
         this.url = url;
         if (id == undefined) {
             throw new Error("ID cant be left empty when creating an Interaction Module");
-        } else
+        }
+        else
             this.id = id;
         if (type == undefined) {
             throw new Error("Type cant be left empty when creating an Interaction Module");
-        } else
+        }
+        else
             this.type = type;
         this.executionTime = new Time_1.Time(executionTime);
         this.subscriptions = subscriptions;

@@ -37,7 +37,7 @@ export class SealScript extends AbstractSealScript {
         /**
          * runTests
          */
-        // UnitTests.runUnitTests()
+        UnitTests.runUnitTests()
         // ModuleTests.runModuleTests()
 
         /**

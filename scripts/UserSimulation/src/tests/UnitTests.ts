@@ -1,16 +1,31 @@
 import {Time} from "../datamodels/Time";
+import {readUsermodelFormInputDirectory} from "../io/UsermodelLoading";
+import {Usermodel} from "../datamodels/Usermodel";
 
 export class UnitTests{
 
     static runUnitTests() {
         console.log("-------------------UnitTests Start----------------------")
 
-        this.testTime()
+        //console.log("-------------------UnitTests Time-----------------------")
+        //this.testTime()
+
+        console.log("-------------------UnitTests Usermodel String-----------")
+        this.testUsermodelString()
 
         console.log("-------------------UnitTests End------------------------")
     }
 
-    public static testTime() {
+    private static testUsermodelString(){
+        let usermodel1 = readUsermodelFormInputDirectory("inputUsermodels")
+        let usermodel2 = new Usermodel({
+            interests : [],
+            influencedBy : [],
+        })
+        console.log(usermodel2.toString())
+    }
+
+    private static testTime() {
 
         // Test 1
         let time1 = new Time(760)

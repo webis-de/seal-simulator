@@ -4,6 +4,7 @@ exports.SealScript = void 0;
 const UsermodelLoading_1 = require("./io/UsermodelLoading");
 const OutputConfiguration_1 = require("./io/OutputConfiguration");
 const seal = require('../../../lib/index');
+const UnitTests_1 = require("./tests/UnitTests");
 const SessionManagement_1 = require("./io/SessionManagement");
 const AbstractSealScript = require("../../../lib/AbstractSealScript");
 // import {ANDREA, LENA, LOGANLUCKY} from "./Constants";
@@ -18,7 +19,7 @@ class SealScript extends AbstractSealScript {
         /**
          * runTests
          */
-        // UnitTests.runUnitTests()
+        UnitTests_1.UnitTests.runUnitTests();
         // ModuleTests.runModuleTests()
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.

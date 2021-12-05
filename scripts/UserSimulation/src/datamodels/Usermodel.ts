@@ -42,17 +42,17 @@ export interface IUsermodel {
      * Sets a geolocation of the User and allows the browser to access the location of the user.
      * @default no geolocation permission
      */
-    geolocation? : Geolocation
+    geolocation?: Geolocation
     /**
      * Sets the locale/language of the user
      * @Default de-DE
      */
-    locale? : string
+    locale?: string
     /**
      * Sets the timezone of the User.
      * @default Europe/Berlin
      */
-    timezoneId? : string
+    timezoneId?: string
     /**
      * Represents the Routine of the User.\
      * Read the Documentation for [[IInteractionModule]] for more information.
@@ -116,7 +116,10 @@ export class Usermodel {
         for (let im of freqentlyVisits) {
             switch (im.type) {
                 case InteractionModuleType.OpenUrl: {
-                    this.freqentlyVisits.push(new OpenUrlModule({url : im.url, executionTime : im.executionTime.toString()}))
+                    this.freqentlyVisits.push(new OpenUrlModule({
+                        url: im.url,
+                        executionTime: im.executionTime.toString()
+                    }))
                     break
                 }
                 case InteractionModuleType.ManualUrl: {
@@ -167,9 +170,9 @@ export class Usermodel {
             // If there are Modules in the Future of the same Day
             // -> nextTimeArrayPositives is not Empty
             // -> take the Module that's next in the line
-            if(nextTimeArrayPositives.length > 0){
+            if (nextTimeArrayPositives.length > 0) {
                 return Math.min(...nextTimeArrayPositives)
-            }else{
+            } else {
                 //If the are no more Modules on the same day left return the first of the next day
                 // -> first one of nextTimeArrayNegatives
                 return Math.min(...nextTimeArray)
@@ -179,9 +182,9 @@ export class Usermodel {
         }
     }
 
-    toJSON() : IUsermodel{
+    toJSON(): IUsermodel {
         return {
-            name : this.name,
+            name: this.name,
             device: this.contextOptions.device,
             locale: this.contextOptions.locale,
             timezoneId: this.contextOptions.timezoneId,
@@ -194,6 +197,67 @@ export class Usermodel {
     }
 
     toString() {
-        return `My name is ${name} and my Interests are `
+        return `My name is ${this.name} ${this.interestsToString()}\n${this.influenceToString()}\n`
     }
+
+    interestsToString() : String {
+        let interests = this.interests
+        let text = function (): String {
+            switch (interests.length) {
+                case 0:
+                    return `and sadly there is nothing that is interesting for me.`
+                case 1:
+                    return `and I am very interested in ${interests[0].name}.`
+                default: {
+                    let interestsArrayString = `and my interests are `
+                    for (let i = 0; i < interests.length; i++) {
+                        switch (i + 1) {
+                            case interests.length:
+                                interestsArrayString += ` and especially ${interests[0].name}.`
+                                break
+                            case (interests.length - 1):
+                                interestsArrayString += `${interests[i + 1].name}`
+                                break
+                            default:
+                                interestsArrayString += `${interests[i + 1].name}, `
+                                break
+                        }
+                    }
+                    return interestsArrayString
+                }
+            }
+        }
+        return text()
+    }
+
+    influenceToString() : String{
+        let influences = this.influencedBy
+        let text = function (): String {
+            switch (influences.length) {
+                case 0:
+                    return `I think I am very independent, so there’s nothing that causes an influence on my behaviour in the web.`
+                case 1:
+                    return `In the recent time ${influences[0].name} is quite an influence for me.`
+                default: {
+                    let influencesArrayString = `In the recent time ${influences[0].name} is quite an influence for me. I also consume `
+                    for (let i = 1; i < influences.length; i++) {
+                        switch (i) {
+                            case (influences.length - 1): // Last Influence in Array
+                                influencesArrayString += `or ${influences[i].name}.`
+                                break
+                            case (influences.length - 2): // Second Last Influence in Array
+                                influencesArrayString += `${influences[i].name} `
+                                break
+                            default:
+                                influencesArrayString += `${influences[i].name}, `
+                                break
+                        }
+                    }
+                    return influencesArrayString
+                }
+            }
+        }
+        return text()
+    }
+
 }

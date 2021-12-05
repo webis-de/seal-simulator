@@ -39,7 +39,10 @@ class Usermodel {
         for (let im of freqentlyVisits) {
             switch (im.type) {
                 case InteractionModule_1.InteractionModuleType.OpenUrl: {
-                    this.freqentlyVisits.push(new OpenUrlModule_1.OpenUrlModule({ url: im.url, executionTime: im.executionTime.toString() }));
+                    this.freqentlyVisits.push(new OpenUrlModule_1.OpenUrlModule({
+                        url: im.url,
+                        executionTime: im.executionTime.toString()
+                    }));
                     break;
                 }
                 case InteractionModule_1.InteractionModuleType.ManualUrl: {
@@ -56,30 +59,25 @@ class Usermodel {
         }
         // console.log(this)
     }
-
     /**
      * Get all [[InteractionModule]]s of the user.
      */
     get modules() {
         return this.freqentlyVisits;
     }
-
     get nextModules() {
         let nextTime = this.nextTime;
         return this.modules.filter(value => value.timeToExecution() == nextTime);
     }
-
     get startModules() {
         // TODO Add Modules that got a setupMethod (needsSetup)
         return this.modules.filter(value => value.executionTime.isAtStart);
     }
-
     get nextTime() {
         let nextTimeArray = this.modules.map(value => {
             return value.timeToExecution();
         });
         return Math.min(...nextTimeArray);
-
         function old() {
             let nextTimeArrayPositives = nextTimeArray.filter(num => num >= 1);
             // If there are Modules in the Future of the same Day
@@ -108,9 +106,66 @@ class Usermodel {
             useBuilder: this.useBuilder
         };
     }
-
     toString() {
-        return `My name is ${name} and my Interests are `;
+        return `My name is ${this.name} ${this.interestsToString()}\n${this.influenceToString()}\n`;
+    }
+    interestsToString() {
+        let interests = this.interests;
+        let text = function () {
+            switch (interests.length) {
+                case 0:
+                    return `and sadly there is nothing that is interesting for me.`;
+                case 1:
+                    return `and I am very interested in ${interests[0].name}.`;
+                default: {
+                    let interestsArrayString = `and my interests are `;
+                    for (let i = 0; i < interests.length; i++) {
+                        switch (i + 1) {
+                            case interests.length:
+                                interestsArrayString += ` and especially ${interests[0].name}.`;
+                                break;
+                            case (interests.length - 1):
+                                interestsArrayString += `${interests[i + 1].name}`;
+                                break;
+                            default:
+                                interestsArrayString += `${interests[i + 1].name}, `;
+                                break;
+                        }
+                    }
+                    return interestsArrayString;
+                }
+            }
+        };
+        return text();
+    }
+    influenceToString() {
+        let influences = this.influencedBy;
+        let text = function () {
+            switch (influences.length) {
+                case 0:
+                    return `I think I am very independent, so there’s nothing that causes an influence on my behaviour in the web.`;
+                case 1:
+                    return `In the recent time ${influences[0].name} is quite an influence for me.`;
+                default: {
+                    let influencesArrayString = `In the recent time ${influences[0].name} is quite an influence for me. I also consume `;
+                    for (let i = 1; i < influences.length; i++) {
+                        switch (i) {
+                            case (influences.length - 1): // Last Influence in Array
+                                influencesArrayString += `or ${influences[i].name}.`;
+                                break;
+                            case (influences.length - 2): // Second Last Influence in Array
+                                influencesArrayString += `${influences[i].name} `;
+                                break;
+                            default:
+                                influencesArrayString += `${influences[i].name}, `;
+                                break;
+                        }
+                    }
+                    return influencesArrayString;
+                }
+            }
+        };
+        return text();
     }
 }
 exports.Usermodel = Usermodel;

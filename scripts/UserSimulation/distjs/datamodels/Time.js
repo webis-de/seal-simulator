@@ -102,28 +102,22 @@ class Time {
         }*/
         return this._time - time._time;
     }
-
     get hours() {
         return Math.floor(this._time / 60);
     }
-
     get minutes() {
         return this._time - (this.hours * 60);
     }
-
     get isAtStart() {
         return this._time == -1;
     }
-
     equals(time) {
         return (time._time == this._time);
     }
-
     static getCurrentTime() {
         let now = new Date();
         return new Time(now.getHours() * 60 + now.getMinutes());
     }
-
     toDate() {
         let now = new Date();
         now.setHours(this.hours);

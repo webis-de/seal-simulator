@@ -3,12 +3,22 @@
   "device" : "iPhone 6",
   "interests": [
     {
-      "name": "Playwright"
+      "name": "playwright by microsoft"
+    },{
+      "name": "politics"
+    },{
+      "name": "economics"
+    },{
+      "name": "health"
     }
   ],
   "influencedBy": [
     {
       "name": "Google"
+    },{
+      "name": "Internet Blogs"
+    },{
+      "name": "Der Spiegel"
     }
   ],
   "useBuilder": false,
