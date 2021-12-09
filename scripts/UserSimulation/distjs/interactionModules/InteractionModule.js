@@ -45,7 +45,7 @@ class InteractionModule {
         }
     }
     toString() {
-        return this.toJson();
+        return `At ${this.executionTime} o'clock I visit ${this.url}, sadly my ${this.type} did no more notes for this visit`;
     }
     toJson() {
         return {

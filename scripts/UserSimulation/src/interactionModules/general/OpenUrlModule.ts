@@ -27,11 +27,15 @@ export class OpenUrlModule extends InteractionModule{
         this.needsSetup = true
     }
 
+    override toString(): string {
+        return `At ${this.executionTime} o'clock I visit ${this.url}.`
+    }
+
     /**
      * The runModule function just opens the url and nothing more.
      * @param sessionManagement
      */
-    async runModule(sessionManagement : SessionManagement): Promise<void> {
+    async runModule(sessionManagement: SessionManagement): Promise<void> {
         const page = await sessionManagement.getContext().newPage();
         await page.goto(this.url);
     }

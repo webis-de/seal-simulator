@@ -150,12 +150,11 @@ export class Usermodel {
 
         let nextTime = this.nextTime
 
-        return this.modules.filter(value => value.timeToExecution() == nextTime)
+        return this.modules.filter(value => (value.timeToExecution() == nextTime))
     }
 
     get startModules(): InteractionModule[] {
-        // TODO Add Modules that got a setupMethod (needsSetup)
-        return this.modules.filter(value => value.executionTime.isAtStart)
+        return this.modules.filter(value => value.executionTime.isAtStart || value.needsSetup)
     }
 
     get nextTime(): number {

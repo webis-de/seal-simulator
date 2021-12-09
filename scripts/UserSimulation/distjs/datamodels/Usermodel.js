@@ -67,11 +67,10 @@ class Usermodel {
     }
     get nextModules() {
         let nextTime = this.nextTime;
-        return this.modules.filter(value => value.timeToExecution() == nextTime);
+        return this.modules.filter(value => (value.timeToExecution() == nextTime));
     }
     get startModules() {
-        // TODO Add Modules that got a setupMethod (needsSetup)
-        return this.modules.filter(value => value.executionTime.isAtStart);
+        return this.modules.filter(value => value.executionTime.isAtStart || value.needsSetup);
     }
     get nextTime() {
         let nextTimeArray = this.modules.map(value => {

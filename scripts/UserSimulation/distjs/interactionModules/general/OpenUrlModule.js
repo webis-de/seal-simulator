@@ -24,6 +24,11 @@ class OpenUrlModule extends InteractionModule_1.InteractionModule {
          */
         this.needsSetup = true;
     }
+
+    toString() {
+        return `At ${this.executionTime} o'clock I visit ${this.url}.`;
+    }
+
     /**
      * The runModule function just opens the url and nothing more.
      * @param sessionManagement
@@ -32,6 +37,7 @@ class OpenUrlModule extends InteractionModule_1.InteractionModule {
         const page = await sessionManagement.getContext().newPage();
         await page.goto(this.url);
     }
+
     /**
      * 1. Pls accept all windows, so the page you want to visit is clear to see.
      * 2. Click Resume

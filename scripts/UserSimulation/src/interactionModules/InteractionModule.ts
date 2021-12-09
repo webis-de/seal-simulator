@@ -79,7 +79,7 @@ export abstract class InteractionModule {
      *
      * @private
      */
-    protected needsSetup: boolean;
+    needsSetup: boolean;
 
     private static idCount = 0 // Todo: For auto generating Ids.
 
@@ -107,26 +107,26 @@ export abstract class InteractionModule {
      * Run Module is the main function on every module. It gets called if the executionTime is now.
      * @param sessionManagement
      */
-    abstract runModule(sessionManagement : SessionManagement) :  Promise<void>
+    abstract runModule(sessionManagement: SessionManagement): Promise<void>
 
     /**
      * This function is called on the fist start of the simulation. The function is used to setup the session. \
      * e.g. Accept Cookies, Log in Accounts, set Subscriptions, ...
      * @param sessionManagement
      */
-    abstract runModuleSetup(sessionManagement : SessionManagement) :  Promise<void>
+    abstract runModuleSetup(sessionManagement: SessionManagement): Promise<void>
 
-    toString(): any{
-        return this.toJson()
+    toString() {
+        return `At ${this.executionTime} o'clock I visit ${this.url}, sadly my ${this.type} did no more notes for this visit`
     }
 
-    toJson() : any{
+    toJson(): any {
         return {
-            url : this.url,
-            id : this.id,
-            type : this.type,
-            executionTime : this.executionTime.toJson(),
-            subscriptions  : this.subscriptions
+            url: this.url,
+            id: this.id,
+            type: this.type,
+            executionTime: this.executionTime.toJson(),
+            subscriptions: this.subscriptions
         }
     }
 
