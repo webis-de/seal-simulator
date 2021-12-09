@@ -91,7 +91,7 @@ export class SealScript extends AbstractSealScript {
         await page.pause()*/
 
         await this.runSimulations(this.user, browserContext, outputDirectory,nextModules)
-
+        let i = 3
         //await browser.close();
     }
 
@@ -117,7 +117,7 @@ export class SealScript extends AbstractSealScript {
         await session.runInteractionModules(nextModules)
 
         await session.finishSession()
-
+        let i = 3
     }
 
 }

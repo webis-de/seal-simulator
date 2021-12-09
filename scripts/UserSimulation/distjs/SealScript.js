@@ -24,7 +24,7 @@ class SealScript extends AbstractSealScript {
         /**
          * First execution is done manually, since the [[intervalObj]] starts after given time period.
          */
-            //TODO startModules need an extra function or state needs to be saved
+        //TODO startModules need an extra function or state needs to be saved
         let startModules = this.user.startModules;
         let nextModules = this.user.nextModules;
         console.log(`Next Module will start in ${this.user.nextTime}min`);
@@ -59,6 +59,7 @@ class SealScript extends AbstractSealScript {
                 await page.goto("https://youtube.com")
                 await page.pause()*/
         await this.runSimulations(this.user, browserContext, outputDirectory, nextModules);
+        let i = 3;
         //await browser.close();
     }
     getBrowserContextsOption() {
@@ -78,6 +79,7 @@ class SealScript extends AbstractSealScript {
         await session.setupSession();
         await session.runInteractionModules(nextModules);
         await session.finishSession();
+        let i = 3;
     }
 }
 exports.SealScript = SealScript;

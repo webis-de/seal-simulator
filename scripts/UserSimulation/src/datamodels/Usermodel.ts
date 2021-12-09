@@ -7,6 +7,7 @@ import {ManualUrlModule} from "../interactionModules/general/ManualUrlModule";
 import {BrowserContextOptions, Geolocation} from "playwright";
 import {ContextOptions} from "./ContextOptions";
 import {arrayToJson} from "../io/UsermodelLoading";
+import {YouTubeAboModule} from "../interactionModules/youtube/YouTubeAboModule";
 
 /**
  * The format of the json files that can be Used as an input.
@@ -126,10 +127,17 @@ export class Usermodel {
                     this.freqentlyVisits.push(new ManualUrlModule(im.url))
                     break
                 }
+                case InteractionModuleType.YouTubeAbo: {
+                    this.freqentlyVisits.push(new YouTubeAboModule({
+                        subscriptions: im.subscriptions,
+                        executionTime: im.executionTime.toString()
+                    }))
+                    break
+                }
                 default: {
                     // Solution from: https://github.com/microsoft/TypeScript/issues/17198
                     let allPossibleInteractionModuleTypes = Object.values(InteractionModuleType)
-                    console.log(`No Module found for ... Please only use ${allPossibleInteractionModuleTypes}`)
+                    throw new Error(`No Module found for ${im.type} Please only use ${allPossibleInteractionModuleTypes}`)
                     break
                 }
 

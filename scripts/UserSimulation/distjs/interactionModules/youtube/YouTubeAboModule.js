@@ -3,11 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.YouTubeAboModule = void 0;
 const InteractionModule_1 = require("../InteractionModule");
 class YouTubeAboModule extends InteractionModule_1.InteractionModule {
-    constructor(iYouTubeAboModule) {
+    constructor({subscriptions, executionTime}) {
         super({
             type: InteractionModule_1.InteractionModuleType.YouTubeAbo,
-            url: "youtube.com",
-            subscriptions: iYouTubeAboModule.subscriptions,
+            url: "https://www.youtube.com",
+            executionTime: executionTime,
+            subscriptions: subscriptions,
             id: 0,
         });
         this.channelUrls = [];

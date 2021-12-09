@@ -1,26 +1,34 @@
-import {InteractionModule, InteractionModuleType} from "../InteractionModule";
+import {IInteractionModule, InteractionModule, InteractionModuleType} from "../InteractionModule";
 import {BrowserContext} from "playwright";
 import {OutputConfiguration} from "../../io/OutputConfiguration";
 import {SessionManagement} from "../../io/SessionManagement";
 import {Subscription} from "../../datamodels/Subscription";
+import {Time} from "../../datamodels/Time";
 
-export interface IYouTubeAboModule {
+export interface iYouTubeAboModule {
+    /**
+     * See [[InteractionModule.executionTime]]
+     */
+    executionTime: string;
+    /**
+     * See [[InteractionModule.subscriptions]]
+     */
     subscriptions: Subscription[];
-
 }
 
 export class YouTubeAboModule extends InteractionModule{
 
     private channelUrls : string[] = []
 
-    constructor( iYouTubeAboModule :IYouTubeAboModule) {
+    constructor({subscriptions, executionTime}: iYouTubeAboModule) {
         super({
             type: InteractionModuleType.YouTubeAbo,
-            url : "youtube.com",
-            subscriptions: iYouTubeAboModule.subscriptions,
-            id : 0,
+            url: "https://www.youtube.com",
+            executionTime: executionTime,
+            subscriptions: subscriptions,
+            id: 0,
         });
-        for (const subscription of this.subscriptions){
+        for (const subscription of this.subscriptions) {
             this.channelUrls.push(`${this.url}/channel/${subscription.representation}/videos`)
         }
         // will default needsSetup to true

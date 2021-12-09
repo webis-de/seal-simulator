@@ -73,7 +73,7 @@ export abstract class InteractionModule {
      *
      * @protected Is a list of all the members for a given module. They can vary in their meaning. For Youtube it could represent subscriptions, for instagram follows or for google news it could be relevant topics.
      */
-    protected subscriptions: Subscription[];
+    subscriptions: Subscription[];
 
     /**
      *

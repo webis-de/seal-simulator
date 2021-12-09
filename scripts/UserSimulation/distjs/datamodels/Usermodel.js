@@ -7,6 +7,7 @@ const OpenUrlModule_1 = require("../interactionModules/general/OpenUrlModule");
 const ManualUrlModule_1 = require("../interactionModules/general/ManualUrlModule");
 const ContextOptions_1 = require("./ContextOptions");
 const UsermodelLoading_1 = require("../io/UsermodelLoading");
+const YouTubeAboModule_1 = require("../interactionModules/youtube/YouTubeAboModule");
 class Usermodel {
     /**
      * This is an essential part of the automated creation of the usermodel\
@@ -49,10 +50,17 @@ class Usermodel {
                     this.freqentlyVisits.push(new ManualUrlModule_1.ManualUrlModule(im.url));
                     break;
                 }
+                case InteractionModule_1.InteractionModuleType.YouTubeAbo: {
+                    this.freqentlyVisits.push(new YouTubeAboModule_1.YouTubeAboModule({
+                        subscriptions: im.subscriptions,
+                        executionTime: im.executionTime.toString()
+                    }));
+                    break;
+                }
                 default: {
                     // Solution from: https://github.com/microsoft/TypeScript/issues/17198
                     let allPossibleInteractionModuleTypes = Object.values(InteractionModule_1.InteractionModuleType);
-                    console.log(`No Module found for ... Please only use ${allPossibleInteractionModuleTypes}`);
+                    throw new Error(`No Module found for ${im.type} Please only use ${allPossibleInteractionModuleTypes}`);
                     break;
                 }
             }
