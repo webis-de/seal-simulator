@@ -31,7 +31,49 @@ export class YouTubeAboModule extends InteractionModule{
         for (const subscription of this.subscriptions) {
             this.channelUrls.push(`${this.url}/channel/${subscription.representation}/videos`)
         }
+        if(subscriptions.length == 0){
+            throw Error("You didn't set any Subscriptions. Please add some with name:ChannelName and representation:ChannelID")
+        }
         // will default needsSetup to true
+    }
+
+    override toString(): string {
+        return `At ${this.executionTime} o'clock I watch some youtube videos from the ${this.stringIds()}. `
+    }
+
+
+
+    stringIds(): string{
+        let channelIds : string[] = []
+        for (const subscription of this.subscriptions) {
+            channelIds.push(subscription.representation)
+        }
+        let text = function (): string {
+            switch (channelIds.length) {
+                case 0:
+                    throw Error(`There are no representations/channelIds in the Youtube Module`)
+                case 1:
+                    return `channel with th id ${channelIds[0]}.`
+                default: {
+                    let channelString = `channels with id `
+                    for (let i = 0; i < channelIds.length; i++) {
+                        switch (i + 1) {/*
+                            case interests.length:
+                                interestsArrayString += ` and especially ${interests[0].name}.`
+                                break
+                            case (interests.length - 1):
+                                interestsArrayString += `${interests[i + 1].name}`
+                                break
+                            default:
+                                interestsArrayString += `${interests[i + 1].name}, `
+                                break*/
+                        }
+                    }
+                    return channelString
+                }
+            }
+        }
+        return text()
     }
 
 
